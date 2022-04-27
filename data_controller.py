@@ -12,6 +12,7 @@ else:
     config = json.loads(Path('config.json').read_text())
     REDIS_URL = config["REDIS_URL"]
 
+print(REDIS_URL)
 r = redis.from_url(REDIS_URL)
 
 
