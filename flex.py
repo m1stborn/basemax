@@ -1,15 +1,6 @@
-import re
-import time
 import json
-import multiprocessing as mp
-from typing import List, Dict, Union
 import warnings
 from pathlib import Path
-from datetime import date
-
-import schedule
-from bs4 import BeautifulSoup
-from requests_html import HTMLSession
 
 from linebot.models import (
     FlexSendMessage,
