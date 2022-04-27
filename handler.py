@@ -23,15 +23,20 @@ from data_controller import (
 )
 
 ON_HEROKU = os.environ.get('ON_HEROKU', None)
-config = {}
 
-if ON_HEROKU is None:
+if ON_HEROKU:
+    LINE_CHANNEL_SECRET = os.environ.get('channel_secret', None)
+    LINE_ACCESS_TOKEN = os.environ.get('channel_access_token', None)
+else:
     config = json.loads(Path('config.json').read_text())
+    LINE_CHANNEL_SECRET = config["channel_secret"]
+    LINE_ACCESS_TOKEN = config["channel_access_token"]
+
 
 line_blueprint = Blueprint('line_controller', __name__, )
 
-line_bot_api = LineBotApi(config["channel_access_token"])
-handler = WebhookHandler(config["channel_secret"])
+line_bot_api = LineBotApi(LINE_ACCESS_TOKEN)
+handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 
 @line_blueprint.route("/line", methods=['POST'])
