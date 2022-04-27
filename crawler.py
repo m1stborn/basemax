@@ -3,9 +3,11 @@ import json
 import time
 import multiprocessing as mp
 import warnings
+import requests
 from pathlib import Path
 from typing import List, Dict, Union
 from datetime import date
+
 
 import schedule
 from bs4 import BeautifulSoup
@@ -28,9 +30,10 @@ def get_today_games_info() -> Dict:
     soup = BeautifulSoup(response.html.html, "lxml")
 
     today = str(date.today().day)
+    # TODO: check
+    # day_soup = soup.find('td', class_='today two_games')
 
-    day_soup = soup.find('div', class_='date', attrs={'data-date': today})
-
+    day_soup = soup.find('div', class_='date', attrs={'data-date': 26})
     games_soup = day_soup.parent.findAll('div', class_='game')
 
     team_away = [game.find('div', class_="team away").get_text() for game in games_soup]
@@ -176,6 +179,11 @@ def game_tracker(game_info: Dict):
                     tmp_scoring_plays = get_game_score_plays(game_info)
                     if len(tmp_scoring_plays) > len(scoring_plays):
                         print(tmp_scoring_plays[len(scoring_plays):])
+                        response = requests.post('http://127.0.0.1:5000/game/scoring_play',
+                                                 json={
+                                                     "game_url_postfix": game_info['game_url_postfix'],
+                                                     "scoring_play": tmp_scoring_plays[len(scoring_plays):]
+                                                 })
                         scoring_plays = tmp_scoring_plays
                         current_score = scoring_plays[-1]["score"].split(" ")
 
@@ -205,7 +213,7 @@ def main():
     print("Start Tracking")
     # 1. Get Today's Box url
     game_infos = get_today_games_info()
-    # print(game_infos)
+    print(game_infos)
     with open('games.json', 'w', encoding="utf-8") as f:
         json.dump(game_infos, f, indent=4, ensure_ascii=False)
 

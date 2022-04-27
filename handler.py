@@ -20,6 +20,7 @@ from flex import (
 from data_controller import (
     get_game_title,
     update_broadcast_list,
+    get_broadcast_list,
 )
 
 ON_HEROKU = os.environ.get('ON_HEROKU', None)
@@ -46,8 +47,6 @@ def callback():
 
     # get request body as text
     body = request.get_data(as_text=True)
-    # TODO: use logger
-    # logger.info("Request body: " + body)
 
     # handle webhook body
     try:
@@ -63,7 +62,10 @@ def callback():
 def handle_message(event):
     print(event)
     text = event.message.text
+
     game_titles = get_game_title()
+    game_titles_to_url = {v: k for k, v in game_titles.items()}
+
     print("Today's game:", game_titles)
     quick_reply = QuickReply(
         items=[
@@ -76,24 +78,30 @@ def handle_message(event):
     if text == "今日賽事":
         alt = "今日賽事"
         contents = today_game()
+        if len(contents) == 0:
+            line_bot_api.reply_message(
+                event.reply_token,
+                messages=TextSendMessage(text="今日中職沒有比賽", quick_reply=quick_reply)
+            )
+            return
 
     elif text == "文字轉播":
         quick_reply = QuickReply(
             items=[
                 QuickReplyButton(action=MessageAction(label=title, text=title))
-                for i, title in enumerate(game_titles)
+                for i, (url, title) in enumerate(game_titles.items())
             ]
         )
         line_bot_api.reply_message(
             event.reply_token,
-            messages=TextSendMessage(text=f"想要轉播的場次?", quick_reply=quick_reply),
+            messages=TextSendMessage(text=f"想要轉播的比賽?", quick_reply=quick_reply),
         )
         return
 
-    elif text in game_titles:
+    elif text in game_titles.values():
         print(event)
         print("Add user:", event.source)
-        update_broadcast_list(event.source.user_id)
+        update_broadcast_list(game_titles_to_url[text], event.source.user_id)
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=f"開始轉播{text}")
@@ -103,7 +111,12 @@ def handle_message(event):
     elif text == "即時比數":
         alt = "即時比數"
         contents = today_game()
-
+        if len(contents) == 0:
+            line_bot_api.reply_message(
+                event.reply_token,
+                messages=TextSendMessage(text="今日中職沒有比賽", quick_reply=quick_reply)
+            )
+        return
     else:
         line_bot_api.reply_message(
             event.reply_token,
@@ -117,3 +130,16 @@ def handle_message(event):
         event.reply_token,
         messages=flex
     )
+
+
+@line_blueprint.route("/game/scoring_play", methods=['POST'])
+def handel_scoring_play():
+    scoring_play_obj = request.get_json()
+    game_url = scoring_play_obj.get("game_url_postfix")
+    scoring_play = scoring_play_obj.get("scoring_play")
+    user_id_list = get_broadcast_list(game_url)
+    for play in scoring_play:
+        text = "".join(play.values())
+        line_bot_api.multicast(user_id_list, TextMessage(text=text))
+
+    return 'OK'
