@@ -1,0 +1,55 @@
+{
+    "/box?year=2022&kindCode=A&gameSno=40": {
+        "team_home": " 味全龍 ",
+        "team_away": " 中信兄弟 ",
+        "game_url_postfix": "/box?year=2022&kindCode=A&gameSno=40",
+        "game_url": "https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=40",
+        "game_live_url": "https://www.cpbl.com.tw/box/live?year=2022&kindCode=A&gameSno=40",
+        "game_index_url": "https://www.cpbl.com.tw/box/index?year=2022&kindCode=A&gameSno=40",
+        "baseball_field": " 天母 ",
+        "game_time": "April 27, 2022"
+    },
+    "/box?year=2022&kindCode=A&gameSno=41": {
+        "team_home": " 樂天桃猿 ",
+        "team_away": " 富邦悍將 ",
+        "game_url_postfix": "/box?year=2022&kindCode=A&gameSno=41",
+        "game_url": "https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=41",
+        "game_live_url": "https://www.cpbl.com.tw/box/live?year=2022&kindCode=A&gameSno=41",
+        "game_index_url": "https://www.cpbl.com.tw/box/index?year=2022&kindCode=A&gameSno=41",
+        "baseball_field": " 樂天桃園 ",
+        "game_time": "April 27, 2022",
+        "scoring_play": [
+            {
+                "inning": "4 下",
+                "play": " 第4棒 DH 林泓育： 擊出右外野滾地球，一壘安打 。1分打點。 三壘跑者成晉回本壘得分。 ",
+                "score": " 富邦悍將  0 : 1  樂天桃猿 "
+            },
+            {
+                "inning": "6 上",
+                "play": " 第1棒 2B 王正棠： 擊出中外野高飛球， 打者出局-犧牲飛球出局。1分打點。 2人出局。 三壘跑者林琨笙回本壘得分。 ",
+                "score": " 富邦悍將  1 : 1  樂天桃猿 "
+            },
+            {
+                "inning": "7 下",
+                "play": " 第8棒 PH 藍寅倫： 擊出右外野高飛球，二壘安打 。1分打點。 二壘跑者邱丹回本壘得分。 一壘跑者張閔勛 上三壘。 ",
+                "score": " 富邦悍將  1 : 2  樂天桃猿 "
+            },
+            {
+                "inning": "7 下",
+                "play": " 第9棒 CF 陳晨威： 擊出中外野高飛球， 打者出局-犧牲飛球出局。1分打點。 2人出局。 二壘跑者藍寅倫 上三壘。 三壘跑者張閔勛回本壘得分。 ",
+                "score": " 富邦悍將  1 : 3  樂天桃猿 "
+            },
+            {
+                "inning": "7 下",
+                "play": " 第1棒 2B 林立： 擊出左外野高飛球，二壘安打 。1分打點。 三壘跑者藍寅倫回本壘得分。 ",
+                "score": " 富邦悍將  1 : 4  樂天桃猿 "
+            },
+            {
+                "inning": "7 下",
+                "play": " 第2棒 RF 成晉： 擊出左外野高飛球，一壘安打 。1分打點。 二壘跑者林立回本壘得分。 ",
+                "score": " 富邦悍將  1 : 5  樂天桃猿 "
+            }
+        ],
+        "current_score": "1:5"
+    }
+}
