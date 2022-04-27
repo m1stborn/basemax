@@ -28,7 +28,6 @@ MarkupSafe==2.0.1
 multidict==5.2.0
 parse==1.19.0
 pyee==8.2.2
-pyppeteer==0.2.6
 pyquery==1.4.3
 requests==2.27.1
 requests-html==0.10.0
