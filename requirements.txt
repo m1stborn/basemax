@@ -11,7 +11,7 @@ charset-normalizer==2.0.12
 click==8.0.4
 colorama==0.4.4
 cssselect==1.1.0
-dataclasses==0.8
+dataclasses==0.6
 fake-useragent==0.1.11
 Flask==2.0.3
 frozenlist==1.2.0
