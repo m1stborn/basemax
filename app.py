@@ -35,4 +35,5 @@ def run_app():
 
 
 if __name__ == "__main__":
-    parallelize_functions(run_app, track)
+    # parallelize_functions(run_app, track)
+    app.run(debug=False)
