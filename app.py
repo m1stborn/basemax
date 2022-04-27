@@ -32,6 +32,7 @@ def parallelize_functions(*functions):
 def track():
     print("Start tracking CPBL")
     main()
+    # TODO: change back to scheduler
     # schedule.every().day.at("14:47").do(main)
     # while True:
     #     schedule.run_pending()
@@ -43,5 +44,5 @@ def run_app():
 
 
 if __name__ == "__main__":
-    # parallelize_functions(run_app, track)
+    parallelize_functions(run_app, track)
     app.run(host='0.0.0.0', debug=False, port=port)
