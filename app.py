@@ -1,5 +1,6 @@
-import multiprocessing as mp
+import os
 import time
+import multiprocessing as mp
 
 import schedule
 from flask import Flask
@@ -9,6 +10,13 @@ from handler import line_blueprint
 
 app = Flask(__name__)
 app.register_blueprint(line_blueprint)
+
+ON_HEROKU = os.environ.get('ON_HEROKU', None)
+
+if ON_HEROKU:
+    port = int(os.environ.get('PORT', 17995))
+else:
+    port = 3000
 
 
 def parallelize_functions(*functions):
@@ -36,4 +44,4 @@ def run_app():
 
 if __name__ == "__main__":
     # parallelize_functions(run_app, track)
-    app.run(debug=False)
+    app.run(debug=False, port=port)

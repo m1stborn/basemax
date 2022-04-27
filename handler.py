@@ -22,10 +22,10 @@ from data_controller import (
     update_broadcast_list,
 )
 
-env = os.environ.get('IS_HEROKU', None)
+ON_HEROKU = os.environ.get('ON_HEROKU', None)
 config = {}
 
-if env is None:
+if ON_HEROKU is None:
     config = json.loads(Path('config.json').read_text())
 
 line_blueprint = Blueprint('line_controller', __name__, )
