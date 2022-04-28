@@ -168,7 +168,7 @@ def game_state_flex(game_info, game_state):
                     "contents": [
                         {
                             "type": "text",
-                            "text": "統一獅",
+                            "text": team_away,
                             "align": "end",
                             "gravity": "center",
                             "weight": "bold",
@@ -192,7 +192,7 @@ def game_state_flex(game_info, game_state):
                         },
                         {
                             "type": "text",
-                            "text": "中信兄弟",
+                            "text": team_home,
                             "align": "start",
                             "gravity": "center",
                             "weight": "bold",
