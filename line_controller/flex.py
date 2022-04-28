@@ -202,7 +202,7 @@ def game_state_flex(game_info, game_state):
                 },
                 {
                     "type": "image",
-                    "url": "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/100.png",
+                    "url": img_url,
                     "margin": "none",
                     "size": "4xl",
                     "align": "center",
@@ -215,7 +215,7 @@ def game_state_flex(game_info, game_state):
                     "contents": [
                         {
                             "type": "text",
-                            "text": "5:5",
+                            "text": current_score,
                             "size": "3xl",
                             "align": "center",
                             "gravity": "center"
@@ -260,21 +260,21 @@ def game_state_flex(game_info, game_state):
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": "2",
+                                    "text": strike,
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
                                 },
                                 {
                                     "type": "text",
-                                    "text": "3",
+                                    "text": ball,
                                     "align": "start",
                                     "gravity": "center",
                                     "weight": "bold"
                                 },
                                 {
                                     "type": "text",
-                                    "text": "2",
+                                    "text": out,
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
@@ -294,18 +294,18 @@ def game_state_flex(game_info, game_state):
                                     "weight": "bold",
                                     "align": "end",
                                     "gravity": "center",
-                                    "text": " 7局下"
+                                    "text": inning
                                 },
                                 {
                                     "type": "text",
-                                    "text": "投手: XXX ",
+                                    "text": f"投手: {pitcher} ",
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
                                 },
                                 {
                                     "type": "text",
-                                    "text": "打者: XXX",
+                                    "text": f"打者: {batter}",
                                     "weight": "bold"
                                 }
                             ],
