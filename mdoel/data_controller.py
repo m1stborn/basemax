@@ -15,7 +15,7 @@ else:
 r = redis.from_url(REDIS_URL)
 
 
-def get_game_data():
+def get_games_info():
     game_infos = json.loads(r.get('games').decode('utf-8'))
     return game_infos
 
@@ -24,14 +24,22 @@ def get_game_title():
     game_infos = json.loads(r.get('games').decode('utf-8'))
     game_titles = {url: f"{game['team_away']}vs{game['team_home']}".strip()
                    for url, game in game_infos.items()}
-
     return game_titles
 
 
 def get_broadcast_list(game_url):
     broadcast_list = json.loads(r.get('broadcast_list').decode('utf-8'))
-
     return broadcast_list[game_url]
+
+
+def get_game_state(game_url):
+    game_state = json.loads(r.get('games_state').decode('utf-8'))
+    return game_state[game_url]
+
+
+def get_game_states():
+    game_state = json.loads(r.get('games_state').decode('utf-8'))
+    return game_state
 
 
 def update_broadcast_list(game_url, user_id):

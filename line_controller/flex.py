@@ -3,7 +3,8 @@ from linebot.models import (
 )
 
 from mdoel.data_controller import (
-    get_game_data
+    get_games_info,
+    get_game_states,
 )
 
 image_url = {
@@ -140,7 +141,193 @@ def game_flex(game_info):
     }
 
 
+def game_state_flex(game_info, game_state):
+    team_away = game_info["team_away"]
+    team_home = game_info["team_home"]
+    pitcher = game_state["pitcher"]
+    batter = game_state["batter"]
+    inning = game_state["inning"]
+    strike = game_state["strike"]
+    ball = game_state["ball"]
+    out = game_state["out"]
+
+    img_url = "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/100.png"
+    try:
+        current_score = game_info["current_score"]
+    except KeyError:
+        current_score = "0:0"
+    return {
+        "type": "bubble",
+        "header": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+                {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": team_away,
+                            "align": "end",
+                            "gravity": "center",
+                            "weight": "bold",
+                            "size": "xl"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "vs",
+                                    "align": "center",
+                                    "gravity": "center",
+                                    "weight": "bold",
+                                    "size": "xl",
+                                    "margin": "none"
+                                }
+                            ],
+                            "width": "20%"
+                        },
+                        {
+                            "type": "text",
+                            "text": team_home,
+                            "align": "start",
+                            "gravity": "center",
+                            "weight": "bold",
+                            "size": "xl"
+                        }
+                    ]
+                },
+                {
+                    "type": "image",
+                    "url": img_url,
+                    "margin": "none",
+                    "size": "4xl",
+                    "align": "center",
+                    "offsetTop": "xxl",
+                    "gravity": "bottom"
+                },
+                {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": current_score,
+                            "size": "3xl",
+                            "align": "center",
+                            "gravity": "center"
+                        }
+                    ]
+                },
+                {
+                    "type": "box",
+                    "layout": "horizontal",
+                    "contents": [
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "Strike",
+                                    "weight": "bold",
+                                    "align": "start",
+                                    "gravity": "center"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Ball",
+                                    "align": "start",
+                                    "gravity": "center",
+                                    "weight": "bold"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Out",
+                                    "weight": "bold",
+                                    "align": "start",
+                                    "gravity": "center"
+                                }
+                            ],
+                            "alignItems": "center"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": strike,
+                                    "weight": "bold",
+                                    "align": "start",
+                                    "gravity": "center"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": ball,
+                                    "align": "start",
+                                    "gravity": "center",
+                                    "weight": "bold"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": out,
+                                    "weight": "bold",
+                                    "align": "start",
+                                    "gravity": "center"
+                                }
+                            ],
+                            "alignItems": "flex-start",
+                            "position": "relative",
+                            "width": "15%",
+                            "offsetEnd": "xxl"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "weight": "bold",
+                                    "align": "end",
+                                    "gravity": "center",
+                                    "text": inning
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"投手: {pitcher} ",
+                                    "weight": "bold",
+                                    "align": "start",
+                                    "gravity": "center"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"打者: {batter}",
+                                    "weight": "bold"
+                                }
+                            ],
+                            "alignItems": "flex-start"
+                        }
+                    ],
+                    "alignItems": "flex-end"
+                }
+            ]
+        }
+    }
+
+
 def today_game():
-    game_infos = get_game_data()
+    game_infos = get_games_info()
     contents = [game_flex(game) for url, game in game_infos.items()]
+    return contents
+
+
+def current_score():
+    game_infos = get_games_info()
+    game_states = get_game_states()
+    contents = [game_state_flex(game_infos[url], state)
+                for url, state in game_states.items() if state != {}]
     return contents

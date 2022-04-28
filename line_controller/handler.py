@@ -17,6 +17,7 @@ from linebot.models import (
 from line_controller.flex import (
     flex_message_type_condition,
     today_game,
+    current_score,
 )
 from mdoel.data_controller import (
     get_game_title,
@@ -110,11 +111,11 @@ def handle_message(event):
         return
 
     elif text == "即時比數":
-        contents = today_game()
+        contents = current_score()
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
-                messages=TextSendMessage(text="今日中職沒有比賽", quick_reply=quick_reply)
+                messages=TextSendMessage(text="今日賽事已結束", quick_reply=quick_reply)
             )
             return
     else:
