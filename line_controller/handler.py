@@ -13,11 +13,12 @@ from linebot.models import (
     MessageAction,
     QuickReply,
 )
-from flex import (
+
+from line_controller.flex import (
     flex_message_type_condition,
     today_game,
 )
-from data_controller import (
+from mdoel.data_controller import (
     get_game_title,
     update_broadcast_list,
     get_broadcast_list,
@@ -29,7 +30,7 @@ if ON_HEROKU:
     LINE_CHANNEL_SECRET = os.environ.get('channel_secret', None)
     LINE_ACCESS_TOKEN = os.environ.get('channel_access_token', None)
 else:
-    config = json.loads(Path('config.json').read_text())
+    config = json.loads(Path('./config.json').read_text())
     LINE_CHANNEL_SECRET = config["channel_secret"]
     LINE_ACCESS_TOKEN = config["channel_access_token"]
 

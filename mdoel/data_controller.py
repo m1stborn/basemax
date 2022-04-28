@@ -9,7 +9,7 @@ ON_HEROKU = os.environ.get('ON_HEROKU', None)
 if ON_HEROKU:
     REDIS_URL = os.environ.get('REDIS_URL', None)
 else:
-    config = json.loads(Path('config.json').read_text())
+    config = json.loads(Path('./config.json').read_text())
     REDIS_URL = config["REDIS_URL"]
 
 r = redis.from_url(REDIS_URL)

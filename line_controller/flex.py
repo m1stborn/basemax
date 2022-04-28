@@ -1,16 +1,10 @@
-import json
-import warnings
-from pathlib import Path
-
 from linebot.models import (
     FlexSendMessage,
 )
 
-from data_controller import (
+from mdoel.data_controller import (
     get_game_data
 )
-
-warnings.filterwarnings("ignore")
 
 image_url = {
     " 中信兄弟 ": "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_brothers_large.png",
