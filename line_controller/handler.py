@@ -112,6 +112,7 @@ def handle_message(event):
 
     elif text == "即時比數":
         contents = current_score()
+        print(contents)
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
