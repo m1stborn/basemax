@@ -1,3 +1,5 @@
+import time
+import requests
 from argparse import ArgumentParser
 
 from mdoel.data_controller import (
@@ -83,3 +85,14 @@ if __name__ == "__main__":
 
     _ = get_games_info()
     _ = get_game_state(test_game_url)
+
+    broadcast_feed = test_game_info["scoring_play"][-3:]
+    print(broadcast_feed)
+    for feed in broadcast_feed:
+        url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
+        payload = {
+            "game_url_postfix": test_game_url,
+            "scoring_play": [feed]
+        }
+        response = requests.post(url, json=payload)
+        time.sleep(10)

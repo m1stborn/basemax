@@ -9,7 +9,6 @@ from typing import List, Dict
 from datetime import date
 from argparse import ArgumentParser, Namespace
 
-
 import schedule
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession

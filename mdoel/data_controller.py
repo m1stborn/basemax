@@ -75,9 +75,6 @@ def update_one_game_state(game_uid, game_state):
     print("Redis:", json.loads(r.get("games_state").decode('utf-8')))
 
 
-
-
-
 def init_data(game_infos):
     games_uid = [url for url, game in game_infos.items()]
 

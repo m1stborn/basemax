@@ -140,7 +140,7 @@ def handel_scoring_play():
     scoring_play = scoring_play_obj.get("scoring_play")
     user_id_list = get_broadcast_list(game_url)
     for play in scoring_play:
-        text = "".join(play.values())
+        text = "\n".join(play.values())
         line_bot_api.multicast(user_id_list, TextMessage(text=text))
 
     return 'OK'
