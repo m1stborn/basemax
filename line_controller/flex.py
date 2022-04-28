@@ -149,7 +149,7 @@ def game_state_flex(game_info, game_state):
     inning = game_state["inning"]
     strike = str(game_state["strike"])
     ball = str(game_state["ball"])
-    out = game_state["out"]
+    out = str(game_state["out"])
 
     img_url = "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/100.png"
     try:
