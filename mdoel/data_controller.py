@@ -53,12 +53,16 @@ def init_data(game_infos):
     games_uid = [url for url, game in game_infos.items()]
     empty_broadcast_list = {url: [] for url, game in game_infos.items()}
 
+    if r.exists("broadcast_list"):
+        current_broadcast_list = json.loads(r.get("broadcast_list").decode('utf-8'))
+        if games_uid[0] not in current_broadcast_list:
+            r.set("broadcast_list", json.dumps(empty_broadcast_list))
+
     # for uid in games_uid:
-    #     r.set(f"{uid}_broadcast_list", json.dumps([]))
+    # r.set(f"{uid}_broadcast_list", json.dumps([]))
 
     r.set("games_uid", json.dumps(games_uid))
     r.set("games", json.dumps(game_infos))
-    r.set("broadcast_list", json.dumps(empty_broadcast_list))
 
     print("Redis:", json.loads(r.get("games_uid").decode('utf-8')))
     print("Redis:", json.loads(r.get("games").decode('utf-8')))
