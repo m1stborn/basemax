@@ -105,12 +105,11 @@ def handle_message(event):
         update_broadcast_list(game_titles_to_url[text], event.source.user_id)
         line_bot_api.reply_message(
             event.reply_token,
-            messages=TextSendMessage(text=f"開始轉播{text}")
+            messages=TextSendMessage(text=f"開始轉播{text}", quick_reply=quick_reply)
         )
         return
 
     elif text == "即時比數":
-        alt = "即時比數"
         contents = today_game()
         if len(contents) == 0:
             line_bot_api.reply_message(

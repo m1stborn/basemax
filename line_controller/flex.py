@@ -43,6 +43,16 @@ def game_flex(game_info):
     team_away_image = image_url[team_away]
     team_home_image = image_url[team_home]
 
+    # team_away = " 中信兄弟 "
+    # team_home = " 中信兄弟 "
+    # baseball_field = "新莊棒球場"
+    # game_time = "4/28 (三)"
+    #
+    # current_score = "0:0"
+    #
+    # team_away_image = image_url[" 中信兄弟 "]
+    # team_home_image = image_url[" 中信兄弟 "]
+
     return {
         "type": "bubble",
         "header": {

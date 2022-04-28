@@ -40,10 +40,26 @@ def update_broadcast_list(game_url, user_id):
     if user_id not in broadcast_list[game_url]:
         broadcast_list[game_url].append(user_id)
 
+    print(broadcast_list)
+
     r.set("broadcast_list", json.dumps(broadcast_list))
 
 
 def update_games_data(games_infos):
     r.set("games", json.dumps(games_infos))
 
-# def clean_broadcast_list():
+
+def init_data(game_infos):
+    games_uid = [url for url, game in game_infos.items()]
+    empty_broadcast_list = {url: [] for url, game in game_infos.items()}
+
+    # for uid in games_uid:
+    #     r.set(f"{uid}_broadcast_list", json.dumps([]))
+
+    r.set("games_uid", json.dumps(games_uid))
+    r.set("games", json.dumps(game_infos))
+    r.set("broadcast_list", json.dumps(empty_broadcast_list))
+
+    print("Redis:", json.loads(r.get("games_uid").decode('utf-8')))
+    print("Redis:", json.loads(r.get("games").decode('utf-8')))
+    print("Redis:", json.loads(r.get("broadcast_list").decode('utf-8')))
