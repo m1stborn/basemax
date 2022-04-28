@@ -23,6 +23,7 @@ def get_game_data():
 
 def get_game_title():
     game_infos = json.loads(r.get('games').decode('utf-8'))
+    print("get_game_title", game_infos)
     game_titles = {url: f"{game['team_away']}vs{game['team_home']}".strip()
                    for url, game in game_infos.items()}
 
@@ -48,6 +49,16 @@ def update_broadcast_list(game_url, user_id):
 
 def update_games_data(games_infos):
     r.set("games", json.dumps(games_infos))
+
+
+def update_one_game_data(game_info):
+    games = json.loads(r.get("games").decode('utf-8'))
+    games[game_info["game_url_postfix"]] = {
+        **game_info
+    }
+
+    r.set("games", json.dumps(games))
+    print("Redis:", json.loads(r.get("games").decode('utf-8')))
 
 
 def init_data(game_infos):
