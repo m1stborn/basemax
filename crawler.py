@@ -5,13 +5,19 @@ import multiprocessing as mp
 import warnings
 import requests
 from pathlib import Path
-from typing import List, Dict, Union
+from typing import List, Dict
 from datetime import date
+from argparse import ArgumentParser, Namespace
 
-
-import schedule
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
+
+from mdoel.data_controller import (
+    init_data,
+    update_games_data,
+    update_one_game_data,
+    update_one_game_state,
+)
 
 warnings.filterwarnings("ignore")
 
@@ -30,10 +36,8 @@ def get_today_games_info() -> Dict:
     soup = BeautifulSoup(response.html.html, "lxml")
 
     today = str(date.today().day)
-    # TODO: check
-    # day_soup = soup.find('td', class_='today two_games')
 
-    day_soup = soup.find('div', class_='date', attrs={'data-date': 26})
+    day_soup = soup.findAll('div', class_='date', attrs={'data-date': today})[-1]
     games_soup = day_soup.parent.findAll('div', class_='game')
 
     team_away = [game.find('div', class_="team away").get_text() for game in games_soup]
@@ -62,42 +66,6 @@ def get_today_games_info() -> Dict:
     return game_infos
 
 
-def get_game_info(game_url_postfix: str) -> Dict:
-    game_url = BASE_URL + game_url_postfix
-    game_live_url = BASE_URL + game_url_postfix.replace('/box', '/box/live')
-    game_index_url = BASE_URL + game_url_postfix.replace('/box', '/box/index')
-
-    response = session.get(game_live_url, verify=False)
-    response.html.render(sleep=1)
-
-    soup = BeautifulSoup(response.html.html, "lxml")
-
-    #
-    game_live_soup = soup.find("div", class_="item ScoreBoard")
-    # TODO: handel empty team name
-    # team_away = game_live_soup.find("div", class_="team away").find("div", class_="team_name").get_text()
-    team_away = game_live_soup.find("div", class_="team away")
-    team_away_name = team_away.find("div", class_="team_name").get_text() if team_away is not None else ""
-
-    # team_home = game_live_soup.find("div", class_="team home").find("div", class_="team_name").get_text()
-    team_home = game_live_soup.find("div", class_="team home")
-    team_home_name = team_home.find("div", class_="team_name").get_text() if team_home is not None else ""
-
-    # team_away = soup.find("div", class_="team away").get_text()
-    # team_home = soup.find("div", class_="team home").get_text()
-
-    return {
-        "game_url_postfix": game_url_postfix,
-        "game_url": game_url,
-        "game_live_url": game_live_url,
-        "game_index_url": game_index_url,
-        "team_away": team_away_name,
-        "team_home": team_home_name,
-        "baseball_field": "tra",
-        "game_time": "",
-    }
-
-
 def get_score(game_info: Dict) -> Dict:
     response = session.get(game_info['game_live_url'], verify=False)
     response.html.render(sleep=1)
@@ -116,6 +84,48 @@ def get_score(game_info: Dict) -> Dict:
         **game_info,
         "score": f"{team_away_score}:{team_home_score}"
     }
+
+
+def get_game_state(game_url: str) -> Dict or None:
+    response = session.get(game_url, verify=False)
+    response.html.render(sleep=1)
+
+    soup = BeautifulSoup(response.html.html, "lxml")
+
+    game_state_soup = soup.find("div", class_="item GameMatchup")
+    if game_state_soup is not None:
+        # print(game_state_soup.prettify())
+        inning = game_state_soup.find("div", class_="title").get_text()
+
+        pitcher = game_state_soup.find("div", class_="picther")
+        pitcher = pitcher.find("div", class_="player").get_text()
+
+        batter = game_state_soup.find("div", class_="batter")
+        batter = batter.find("div", class_="player").get_text()
+
+        base_wrap = game_state_soup.find("div", class_="bases_wrap").findAll("span")
+        base_wrap = [len(base["class"]) == 3 for base in base_wrap]
+
+        sbo = game_state_soup.find("div", class_="sbo")
+        strike = sbo.find("div", class_="strike").findAll("span")
+        strike = sum([len(s["class"]) == 2 for s in strike])
+
+        ball = sbo.find("div", class_="ball").findAll("span")
+        ball = sum([len(s["class"]) == 2 for s in ball])
+
+        out = sbo.find("div", class_="out").findAll("span")
+        out = sum([len(s["class"]) == 2 for s in out])
+
+        return {
+            "inning": inning,
+            "pitcher": pitcher,
+            "batter": batter,
+            "base_wrap": base_wrap,
+            "strike": strike,
+            "ball": ball,
+            "out": out,
+        }
+    return None
 
 
 def get_game_score_plays(game_info: Dict) -> List[Dict]:
@@ -169,36 +179,40 @@ def check_game_end(game_index_url: str) -> bool:
     return game_brief is not None
 
 
-def game_tracker(game_info: Dict):
+def game_tracker(game_info: Dict, args):
     try:
         while True:
             # Check game started
             if check_game_start(game_info['game_url']):
                 scoring_plays = []
                 while True:
+                    game_state = get_game_state(game_info['game_url'])
+                    if game_state is not None:
+                        update_one_game_state(game_info['game_url'], game_state)
+
                     tmp_scoring_plays = get_game_score_plays(game_info)
                     if len(tmp_scoring_plays) > len(scoring_plays):
                         print(tmp_scoring_plays[len(scoring_plays):])
-                        response = requests.post('http://127.0.0.1:5000/game/scoring_play',
-                                                 json={
-                                                     "game_url_postfix": game_info['game_url_postfix'],
-                                                     "scoring_play": tmp_scoring_plays[len(scoring_plays):]
-                                                 })
+
+                        if not args.local:
+                            url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
+                            payload = {
+                                "game_url_postfix": game_info['game_url_postfix'],
+                                "scoring_play": tmp_scoring_plays[len(scoring_plays):]
+                            }
+                            response = requests.post(url, json=payload)
+
                         scoring_plays = tmp_scoring_plays
                         current_score = scoring_plays[-1]["score"].split(" ")
 
-                        # TODO: change to update function
-                        games_json = json.loads(Path("games.json").read_text(encoding="utf-8"))
-                        games_json[game_info['game_url_postfix']] = {
-                            **game_info,
-                            "scoring_play": scoring_plays,
-                            "current_score": "".join(current_score[3:6])
-                        }
-                        with open('games.json', 'w', encoding="utf-8") as f:
-                            json.dump(games_json, f, indent=4, ensure_ascii=False)
+                        if not args.local:
+                            update_one_game_data({
+                                **game_info,
+                                "scoring_play": scoring_plays,
+                                "current_score": "".join(current_score[3:6])
+                            })
 
                     if check_game_end(game_info['game_index_url']):
-                        # Clean the broadcast list
                         break
                     time.sleep(60)
             if check_game_end(game_info['game_index_url']):
@@ -209,26 +223,37 @@ def game_tracker(game_info: Dict):
     return
 
 
-def main():
+def main(args):
     print("Start Tracking")
     # 1. Get Today's Box url
     game_infos = get_today_games_info()
     print(game_infos)
-    with open('games.json', 'w', encoding="utf-8") as f:
-        json.dump(game_infos, f, indent=4, ensure_ascii=False)
+
+    if not args.local:
+        init_data(game_infos)
+        update_games_data(game_infos)
 
     # 2. Get box live
     process_list = []
     for i, (k, game_info) in enumerate(game_infos.items()):
-        process_list.append(mp.Process(target=game_tracker, args=(game_info,)))
+        process_list.append(mp.Process(target=game_tracker, args=(game_info, args,)))
         process_list[i].start()
 
     for i, game_info in enumerate(game_infos):
         process_list[i].join()
 
 
+def parse_args() -> Namespace:
+    parser = ArgumentParser()
+    parser.add_argument("--local", action="store_true")
+
+    args = parser.parse_args()
+    return args
+
+
 if __name__ == "__main__":
-    main()
+    arg = parse_args()
+    main(arg)
     # schedule.every().day.at("02:51").do(main)
     # while True:
     #     schedule.run_pending()
