@@ -1,3 +1,5 @@
+
+
 # CPBL Line bot - 中華職棒聊天機器人
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
@@ -12,9 +14,9 @@
 - 及時比數
 - 文字轉播
 
-| 今日賽事                             | 即時比數                             |
-|----------------------------------|----------------------------------|
-| ![image](./assets/demo_pic1.jpg) | ![image](./assets/demo_pic2.jpg) |
+| 今日賽事                             | 即時比數                             | 文字轉播                             |
+|----------------------------------|----------------------------------|----------------------------------|
+| ![image](./assets/demo_pic1.jpg) | ![image](./assets/demo_pic2.jpg) | ![image](./assets/demo_pic3.jpg) |
 
 # Prerequisite
 
