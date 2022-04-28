@@ -17,6 +17,7 @@ r = redis.from_url(REDIS_URL)
 
 def get_game_data():
     game_infos = json.loads(r.get('games').decode('utf-8'))
+    print(game_infos)
     return game_infos
 
 
