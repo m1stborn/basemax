@@ -168,7 +168,7 @@ def game_state_flex(game_info, game_state):
                     "contents": [
                         {
                             "type": "text",
-                            "text": team_away,
+                            "text": "統一獅",
                             "align": "end",
                             "gravity": "center",
                             "weight": "bold",
@@ -192,7 +192,7 @@ def game_state_flex(game_info, game_state):
                         },
                         {
                             "type": "text",
-                            "text": team_home,
+                            "text": "中信兄弟",
                             "align": "start",
                             "gravity": "center",
                             "weight": "bold",
@@ -202,7 +202,7 @@ def game_state_flex(game_info, game_state):
                 },
                 {
                     "type": "image",
-                    "url": img_url,
+                    "url": "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/100.png",
                     "margin": "none",
                     "size": "4xl",
                     "align": "center",
@@ -215,7 +215,7 @@ def game_state_flex(game_info, game_state):
                     "contents": [
                         {
                             "type": "text",
-                            "text": current_score,
+                            "text": "5:5",
                             "size": "3xl",
                             "align": "center",
                             "gravity": "center"
@@ -260,21 +260,21 @@ def game_state_flex(game_info, game_state):
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": strike,
+                                    "text": "2",
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
                                 },
                                 {
                                     "type": "text",
-                                    "text": ball,
+                                    "text": "3",
                                     "align": "start",
                                     "gravity": "center",
                                     "weight": "bold"
                                 },
                                 {
                                     "type": "text",
-                                    "text": out,
+                                    "text": "2",
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
@@ -294,18 +294,18 @@ def game_state_flex(game_info, game_state):
                                     "weight": "bold",
                                     "align": "end",
                                     "gravity": "center",
-                                    "text": inning
+                                    "text": " 7局下"
                                 },
                                 {
                                     "type": "text",
-                                    "text": f"投手: {pitcher} ",
+                                    "text": "投手: XXX ",
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
                                 },
                                 {
                                     "type": "text",
-                                    "text": f"打者: {batter}",
+                                    "text": "打者: XXX",
                                     "weight": "bold"
                                 }
                             ],
@@ -317,6 +317,167 @@ def game_state_flex(game_info, game_state):
             ]
         }
     }
+    # return {
+    #     "type": "bubble",
+    #     "header": {
+    #         "type": "box",
+    #         "layout": "vertical",
+    #         "contents": [
+    #             {
+    #                 "type": "box",
+    #                 "layout": "horizontal",
+    #                 "contents": [
+    #                     {
+    #                         "type": "text",
+    #                         "text": team_away,
+    #                         "align": "end",
+    #                         "gravity": "center",
+    #                         "weight": "bold",
+    #                         "size": "xl"
+    #                     },
+    #                     {
+    #                         "type": "box",
+    #                         "layout": "vertical",
+    #                         "contents": [
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": "vs",
+    #                                 "align": "center",
+    #                                 "gravity": "center",
+    #                                 "weight": "bold",
+    #                                 "size": "xl",
+    #                                 "margin": "none"
+    #                             }
+    #                         ],
+    #                         "width": "20%"
+    #                     },
+    #                     {
+    #                         "type": "text",
+    #                         "text": team_home,
+    #                         "align": "start",
+    #                         "gravity": "center",
+    #                         "weight": "bold",
+    #                         "size": "xl"
+    #                     }
+    #                 ]
+    #             },
+    #             {
+    #                 "type": "image",
+    #                 "url": img_url,
+    #                 "margin": "none",
+    #                 "size": "4xl",
+    #                 "align": "center",
+    #                 "offsetTop": "xxl",
+    #                 "gravity": "bottom"
+    #             },
+    #             {
+    #                 "type": "box",
+    #                 "layout": "horizontal",
+    #                 "contents": [
+    #                     {
+    #                         "type": "text",
+    #                         "text": current_score,
+    #                         "size": "3xl",
+    #                         "align": "center",
+    #                         "gravity": "center"
+    #                     }
+    #                 ]
+    #             },
+    #             {
+    #                 "type": "box",
+    #                 "layout": "horizontal",
+    #                 "contents": [
+    #                     {
+    #                         "type": "box",
+    #                         "layout": "vertical",
+    #                         "contents": [
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": "Strike",
+    #                                 "weight": "bold",
+    #                                 "align": "start",
+    #                                 "gravity": "center"
+    #                             },
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": "Ball",
+    #                                 "align": "start",
+    #                                 "gravity": "center",
+    #                                 "weight": "bold"
+    #                             },
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": "Out",
+    #                                 "weight": "bold",
+    #                                 "align": "start",
+    #                                 "gravity": "center"
+    #                             }
+    #                         ],
+    #                         "alignItems": "center"
+    #                     },
+    #                     {
+    #                         "type": "box",
+    #                         "layout": "vertical",
+    #                         "contents": [
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": strike,
+    #                                 "weight": "bold",
+    #                                 "align": "start",
+    #                                 "gravity": "center"
+    #                             },
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": ball,
+    #                                 "align": "start",
+    #                                 "gravity": "center",
+    #                                 "weight": "bold"
+    #                             },
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": out,
+    #                                 "weight": "bold",
+    #                                 "align": "start",
+    #                                 "gravity": "center"
+    #                             }
+    #                         ],
+    #                         "alignItems": "flex-start",
+    #                         "position": "relative",
+    #                         "width": "15%",
+    #                         "offsetEnd": "xxl"
+    #                     },
+    #                     {
+    #                         "type": "box",
+    #                         "layout": "vertical",
+    #                         "contents": [
+    #                             {
+    #                                 "type": "text",
+    #                                 "weight": "bold",
+    #                                 "align": "end",
+    #                                 "gravity": "center",
+    #                                 "text": inning
+    #                             },
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": f"投手: {pitcher} ",
+    #                                 "weight": "bold",
+    #                                 "align": "start",
+    #                                 "gravity": "center"
+    #                             },
+    #                             {
+    #                                 "type": "text",
+    #                                 "text": f"打者: {batter}",
+    #                                 "weight": "bold"
+    #                             }
+    #                         ],
+    #                         "alignItems": "flex-start"
+    #                     }
+    #                 ],
+    #                 "alignItems": "flex-end"
+    #             }
+    #         ]
+    #     }
+    # }
 
 
 def today_game():

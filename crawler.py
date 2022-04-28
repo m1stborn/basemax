@@ -188,19 +188,19 @@ def game_tracker(game_info: Dict, args):
                 while True:
                     game_state = get_game_state(game_info['game_url'])
                     if game_state is not None:
-                        update_one_game_state(game_info['game_url'], game_state)
+                        update_one_game_state(game_info['game_url_postfix'], game_state)
 
                     tmp_scoring_plays = get_game_score_plays(game_info)
                     if len(tmp_scoring_plays) > len(scoring_plays):
                         print(tmp_scoring_plays[len(scoring_plays):])
 
-                        if not args.local:
-                            url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
-                            payload = {
-                                "game_url_postfix": game_info['game_url_postfix'],
-                                "scoring_play": tmp_scoring_plays[len(scoring_plays):]
-                            }
-                            response = requests.post(url, json=payload)
+                        # if not args.local:
+                        #     url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
+                        #     payload = {
+                        #         "game_url_postfix": game_info['game_url_postfix'],
+                        #         "scoring_play": tmp_scoring_plays[len(scoring_plays):]
+                        #     }
+                        #     response = requests.post(url, json=payload)
 
                         scoring_plays = tmp_scoring_plays
                         current_score = scoring_plays[-1]["score"].split(" ")
