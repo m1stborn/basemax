@@ -1,7 +1,7 @@
 import os
 from flask import Flask
 
-from handler import line_blueprint
+from line_controller.handler import line_blueprint
 
 app = Flask(__name__)
 app.register_blueprint(line_blueprint)
