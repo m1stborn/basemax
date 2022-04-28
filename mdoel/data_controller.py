@@ -62,6 +62,7 @@ def update_one_game_state(game_uid, game_state):
     games_state[game_uid] = game_state
 
     r.set("games_state", json.dumps(games_state))
+    print("Redis:", json.loads(r.get("games_state").decode('utf-8')))
 
 
 def init_data(game_infos):
@@ -82,3 +83,4 @@ def init_data(game_infos):
     print("Redis:", json.loads(r.get("games_uid").decode('utf-8')))
     print("Redis:", json.loads(r.get("games").decode('utf-8')))
     print("Redis:", json.loads(r.get("broadcast_list").decode('utf-8')))
+    print("Redis:", json.loads(r.get("games_state").decode('utf-8')))
