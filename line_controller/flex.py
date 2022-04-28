@@ -329,27 +329,7 @@ def today_game():
 def current_score():
     game_infos = get_games_info()
     game_states = get_game_states()
-    if len(game_states.values()) == 0:
-        game_states = {
-            "/box?year=2022&kindCode=A&gameSno=42": {
-                'inning': '12局下',
-                'pitcher': '江承峰',
-                'batter': '林智平',
-                'base_wrap': [True, True, True],
-                'strike': 1,
-                'ball': 2,
-                'out': 1
-            },
-            "/box?year=2022&kindCode=A&gameSno=43": {
-                'inning': '12局下',
-                'pitcher': '江承峰',
-                'batter': '林智平',
-                'base_wrap': [False, True, True],
-                'strike': 2,
-                'ball': 2,
-                'out': 0
-            }
-        }
+
     contents = [game_state_flex(game_infos[url], state)
                 for url, state in game_states.items() if state != {}]
     return contents

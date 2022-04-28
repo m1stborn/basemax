@@ -9,6 +9,8 @@ from typing import List, Dict
 from datetime import date
 from argparse import ArgumentParser, Namespace
 
+
+import schedule
 from bs4 import BeautifulSoup
 from requests_html import HTMLSession
 
@@ -194,13 +196,13 @@ def game_tracker(game_info: Dict, args):
                     if len(tmp_scoring_plays) > len(scoring_plays):
                         print(tmp_scoring_plays[len(scoring_plays):])
 
-                        # if not args.local:
-                        #     url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
-                        #     payload = {
-                        #         "game_url_postfix": game_info['game_url_postfix'],
-                        #         "scoring_play": tmp_scoring_plays[len(scoring_plays):]
-                        #     }
-                        #     response = requests.post(url, json=payload)
+                        if not args.local:
+                            url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
+                            payload = {
+                                "game_url_postfix": game_info['game_url_postfix'],
+                                "scoring_play": tmp_scoring_plays[len(scoring_plays):]
+                            }
+                            response = requests.post(url, json=payload)
 
                         scoring_plays = tmp_scoring_plays
                         current_score = scoring_plays[-1]["score"].split(" ")
@@ -254,7 +256,7 @@ def parse_args() -> Namespace:
 if __name__ == "__main__":
     arg = parse_args()
     main(arg)
-    # schedule.every().day.at("02:51").do(main)
+    # schedule.every().day.at("00:00").do(main)
     # while True:
     #     schedule.run_pending()
     #     time.sleep(1)
