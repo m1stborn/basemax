@@ -44,6 +44,8 @@ def get_game_states():
 
 def update_broadcast_list(game_url, user_id):
     broadcast_list = json.loads(r.get('broadcast_list').decode('utf-8'))
+    if game_url not in broadcast_list:
+        broadcast_list[game_url] = []
 
     if user_id not in broadcast_list[game_url]:
         broadcast_list[game_url].append(user_id)
@@ -71,6 +73,9 @@ def update_one_game_state(game_uid, game_state):
 
     r.set("games_state", json.dumps(games_state))
     print("Redis:", json.loads(r.get("games_state").decode('utf-8')))
+
+
+
 
 
 def init_data(game_infos):

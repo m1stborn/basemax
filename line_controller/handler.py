@@ -115,7 +115,7 @@ def handle_message(event):
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
-                messages=TextSendMessage(text="今日賽事已結束", quick_reply=quick_reply)
+                messages=TextSendMessage(text="今日賽事尚未開始", quick_reply=quick_reply)
             )
             return
     else:

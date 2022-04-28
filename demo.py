@@ -4,10 +4,11 @@ from mdoel.data_controller import (
     update_one_game_state,
     update_one_game_data,
     update_broadcast_list,
-    update_games_data,
+    get_game_state,
+    get_games_info,
 )
 
-test_game_url = "/box?year=2022&kindCode=A&gameSno=43"
+test_game_url = "/box?year=2022&kindCode=A&gameSno=38"
 
 test_game_state = {
     'inning': '12局下',
@@ -80,3 +81,5 @@ if __name__ == "__main__":
     # Show live broadcast
     update_one_game_data(test_game_info)
 
+    _ = get_games_info()
+    _ = get_game_state(test_game_url)
