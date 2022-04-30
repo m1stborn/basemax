@@ -6,6 +6,7 @@ from mdoel.data_controller import (
     get_games_info,
     get_game_states,
 )
+from schemas.game import Game, GameState
 
 image_url = {
     " 中信兄弟 ": "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_brothers_large.png",
@@ -31,18 +32,11 @@ def flex_message_type_condition(alt: str, contents: list or dict, **kwargs):
     )
 
 
-def game_flex(game_info):
-    team_away = game_info["team_away"]
-    team_home = game_info["team_home"]
-    baseball_field = game_info["baseball_field"]
-    game_time = game_info["game_time"]
-    try:
-        current_score = game_info["current_score"]
-    except KeyError:
-        current_score = "0:0"
+def game_flex(game: Game):
+    current_scores = game.current_score if game.current_score is not None else "0:0"
 
-    team_away_image = image_url[team_away]
-    team_home_image = image_url[team_home]
+    team_away_image = image_url[game.team_away]
+    team_home_image = image_url[game.team_home]
 
     # team_away = " 中信兄弟 "
     # team_home = " 中信兄弟 "
@@ -70,7 +64,7 @@ def game_flex(game_info):
                         },
                         {
                             "type": "text",
-                            "text": team_away,
+                            "text": game.team_away,
                             "size": "lg",
                             "weight": "bold"
                         }
@@ -95,7 +89,7 @@ def game_flex(game_info):
                         },
                         {
                             "type": "text",
-                            "text": team_home,
+                            "text": game.team_home,
                             "size": "lg",
                             "weight": "bold"
                         }
@@ -109,7 +103,7 @@ def game_flex(game_info):
             "contents": [
                 {
                     "type": "text",
-                    "text": current_score,
+                    "text": current_scores,
                     "align": "center",
                     "gravity": "center",
                     "weight": "bold",
@@ -124,14 +118,14 @@ def game_flex(game_info):
             "contents": [
                 {
                     "type": "text",
-                    "text": baseball_field,
+                    "text": game.baseball_field,
                     "weight": "bold",
                     "align": "center",
                     "gravity": "center"
                 },
                 {
                     "type": "text",
-                    "text": game_time,
+                    "text": game.game_time,
                     "weight": "bold",
                     "align": "center",
                     "gravity": "center"
@@ -141,22 +135,11 @@ def game_flex(game_info):
     }
 
 
-def game_state_flex(game_info, game_state):
-    team_away = game_info["team_away"]
-    team_home = game_info["team_home"]
-    pitcher = game_state["pitcher"]
-    batter = game_state["batter"]
-    inning = game_state["inning"]
-    strike = str(game_state["strike"])
-    ball = str(game_state["ball"])
-    out = str(game_state["out"])
-    base_wrap = game_state["base_wrap"]
-    wrap = "".join([str(int(b)) for b in base_wrap])
+def game_state_flex(game: Game, game_state: GameState):
+    wrap = "".join([str(int(b)) for b in game_state.base_wrap])
     img_url = f"https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/{wrap}.png"
-    try:
-        current_score = game_info["current_score"]
-    except KeyError:
-        current_score = "0:0"
+    current_scores = game.current_score if game.current_score is not None else "0:0"
+
     return {
         "type": "bubble",
         "header": {
@@ -169,7 +152,7 @@ def game_state_flex(game_info, game_state):
                     "contents": [
                         {
                             "type": "text",
-                            "text": team_away,
+                            "text": game.team_away,
                             "align": "end",
                             "gravity": "center",
                             "weight": "bold",
@@ -193,7 +176,7 @@ def game_state_flex(game_info, game_state):
                         },
                         {
                             "type": "text",
-                            "text": team_home,
+                            "text": game.team_home,
                             "align": "start",
                             "gravity": "center",
                             "weight": "bold",
@@ -216,7 +199,7 @@ def game_state_flex(game_info, game_state):
                     "contents": [
                         {
                             "type": "text",
-                            "text": current_score,
+                            "text": current_scores,
                             "size": "3xl",
                             "align": "center",
                             "gravity": "center"
@@ -261,21 +244,21 @@ def game_state_flex(game_info, game_state):
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": strike,
+                                    "text": str(game_state.strike),
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
                                 },
                                 {
                                     "type": "text",
-                                    "text": ball,
+                                    "text": str(game_state.ball),
                                     "align": "start",
                                     "gravity": "center",
                                     "weight": "bold"
                                 },
                                 {
                                     "type": "text",
-                                    "text": out,
+                                    "text": str(game_state.out),
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
@@ -295,18 +278,18 @@ def game_state_flex(game_info, game_state):
                                     "weight": "bold",
                                     "align": "end",
                                     "gravity": "center",
-                                    "text": inning
+                                    "text": game_state.inning
                                 },
                                 {
                                     "type": "text",
-                                    "text": f"投手: {pitcher} ",
+                                    "text": f"投手: {game_state.pitcher} ",
                                     "weight": "bold",
                                     "align": "start",
                                     "gravity": "center"
                                 },
                                 {
                                     "type": "text",
-                                    "text": f"打者: {batter}",
+                                    "text": f"打者: {game_state.batter}",
                                     "weight": "bold"
                                 }
                             ],

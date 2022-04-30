@@ -35,7 +35,6 @@ else:
     LINE_CHANNEL_SECRET = config["channel_secret"]
     LINE_ACCESS_TOKEN = config["channel_access_token"]
 
-
 line_blueprint = Blueprint('line_controller', __name__, )
 
 line_bot_api = LineBotApi(LINE_ACCESS_TOKEN)
@@ -60,6 +59,15 @@ def callback():
     return 'OK'
 
 
+default_quick_reply = QuickReply(
+    items=[
+        QuickReplyButton(action=MessageAction(label="今日賽事", text="今日賽事")),
+        QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
+        QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
+    ]
+)
+
+
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     print(event)
@@ -69,13 +77,9 @@ def handle_message(event):
     game_titles_to_url = {v: k for k, v in game_titles.items()}
 
     print("Today's game:", game_titles)
-    quick_reply = QuickReply(
-        items=[
-            QuickReplyButton(action=MessageAction(label="今日賽事", text="今日賽事")),
-            QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
-            QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
-        ])
     alt = "觀看更多"
+
+    quick_reply = default_quick_reply
 
     if text == "今日賽事":
         alt = "今日賽事"
@@ -140,7 +144,7 @@ def handel_scoring_play():
     scoring_play = scoring_play_obj.get("scoring_play")
     user_id_list = get_broadcast_list(game_url)
     for play in scoring_play:
-        text = "\n".join(play.values())
-        line_bot_api.multicast(user_id_list, TextMessage(text=text))
+        text = "\n\n".join(play.values())
+        line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))
 
     return 'OK'

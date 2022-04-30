@@ -1,11 +1,9 @@
 import re
-import json
 import time
 import multiprocessing as mp
 import warnings
 import requests
-from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 from datetime import date
 from argparse import ArgumentParser, Namespace
 
@@ -19,6 +17,7 @@ from mdoel.data_controller import (
     update_one_game_data,
     update_one_game_state,
 )
+from schemas.game import Game, GameState, Play
 
 warnings.filterwarnings("ignore")
 
@@ -30,7 +29,7 @@ SCHEDULE_URL = "https://www.cpbl.com.tw/schedule"
 session = HTMLSession()
 
 
-def get_today_games_info() -> Dict:
+def crawl_today_games_info() -> Dict[str, Game]:
     response = session.get(SCHEDULE_URL, verify=False)
     response.html.render(sleep=1)
 
@@ -64,10 +63,10 @@ def get_today_games_info() -> Dict:
             "game_time": date.today().strftime("%B %d, %Y"),
         } for i in range(len(game_url_postfix))}
 
-    return game_infos
+    return {url: Game(**game) for url, game in game_infos.items()}
 
 
-def get_score(game_info: Dict) -> Dict:
+def crawl_score(game_info: Dict) -> Dict:
     response = session.get(game_info['game_live_url'], verify=False)
     response.html.render(sleep=1)
 
@@ -87,7 +86,7 @@ def get_score(game_info: Dict) -> Dict:
     }
 
 
-def get_game_state(game_url: str) -> Dict or None:
+def crawl_game_state(game_url: str) -> Optional[GameState]:
     response = session.get(game_url, verify=False)
     response.html.render(sleep=1)
 
@@ -116,28 +115,26 @@ def get_game_state(game_url: str) -> Dict or None:
 
         out = sbo.find("div", class_="out").findAll("span")
         out = sum([len(s["class"]) == 2 for s in out])
+        return GameState(inning=inning,
+                         pitcher=pitcher,
+                         batter=batter,
+                         base_wrap=base_wrap,
+                         strike=strike,
+                         ball=ball,
+                         out=out,)
 
-        return {
-            "inning": inning,
-            "pitcher": pitcher,
-            "batter": batter,
-            "base_wrap": base_wrap,
-            "strike": strike,
-            "ball": ball,
-            "out": out,
-        }
     return None
 
 
-def get_game_score_plays(game_info: Dict) -> List[Dict]:
-    response = session.get(game_info['game_live_url'], verify=False)
+def crawl_game_score_plays(game: Game) -> List[Play]:
+    response = session.get(game.game_live_url, verify=False)
     response.html.render(sleep=1)
 
     soup = BeautifulSoup(response.html.html, "lxml")
     game_live_soup = soup.find("div", class_="InningPlays")
     innings = game_live_soup.findAll("section") if game_live_soup is not None else []
 
-    game_play: List[Dict] = []
+    game_play: List[Play] = []
     for scoring in innings:
         # print(scoring.find("header").next_element.next_element.next_element.replace(' ', ''))
         inning = scoring.find("header").find(text=True, recursive=False).strip()
@@ -147,14 +144,12 @@ def get_game_score_plays(game_info: Dict) -> List[Dict]:
             play_desc_clean = re.sub('\\s{2,}', ' ', play_desc)
             score = play.find("div", class_="vs_box").get_text()
 
-            score = score.replace("富邦悍將", game_info["team_home"])
-            score = score.replace("Rakuten Monkeys", game_info["team_away"])
+            score = score.replace("富邦悍將", game.team_home)
+            score = score.replace("Rakuten Monkeys", game.team_away)
 
-            game_play.append({
-                "inning": inning,
-                "play": play_desc_clean,
-                "score": score,
-            })
+            game_play.append(Play(inning=inning,
+                                  play=play_desc_clean,
+                                  score=score))
 
     return game_play
 
@@ -180,43 +175,47 @@ def check_game_end(game_index_url: str) -> bool:
     return game_brief is not None
 
 
-def game_tracker(game_info: Dict, args):
+def stream_scoring_play(game: Game, plays: List[Play]):
+    url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
+    payload = {
+        "game_url_postfix": game.game_url_postfix,
+        "scoring_play": plays
+    }
+    response = requests.post(url, json=payload)
+    # TODO: handel status code
+
+
+def game_tracker(game: Game, args):
     try:
         while True:
             # Check game started
-            if check_game_start(game_info['game_url']):
+            if check_game_start(game.game_url):
                 scoring_plays = []
                 while True:
-                    game_state = get_game_state(game_info['game_url'])
+                    game_state = crawl_game_state(game.game_url)
                     if game_state is not None:
-                        update_one_game_state(game_info['game_url_postfix'], game_state)
+                        update_one_game_state(game.game_url_postfix, game_state)
 
-                    tmp_scoring_plays = get_game_score_plays(game_info)
+                    tmp_scoring_plays = crawl_game_score_plays(game)
                     if len(tmp_scoring_plays) > len(scoring_plays):
-                        print(tmp_scoring_plays[len(scoring_plays):])
-
-                        if not args.local:
-                            url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
-                            payload = {
-                                "game_url_postfix": game_info['game_url_postfix'],
-                                "scoring_play": tmp_scoring_plays[len(scoring_plays):]
-                            }
-                            response = requests.post(url, json=payload)
+                        new_scoring_plays = tmp_scoring_plays[len(scoring_plays):]
+                        print(new_scoring_plays)
 
                         scoring_plays = tmp_scoring_plays
-                        current_score = scoring_plays[-1]["score"].split(" ")
+                        current_score = scoring_plays[-1].score.split(" ")
+
+                        updated_game = game
+                        updated_game.current_score = "".join(current_score[3:6])
+                        updated_game.scoring_play = scoring_plays
 
                         if not args.local:
-                            update_one_game_data({
-                                **game_info,
-                                "scoring_play": scoring_plays,
-                                "current_score": "".join(current_score[3:6])
-                            })
+                            stream_scoring_play(game, new_scoring_plays)
+                            update_one_game_data(updated_game)
 
-                    if check_game_end(game_info['game_index_url']):
+                    if check_game_end(game.game_index_url):
                         break
                     time.sleep(60)
-            if check_game_end(game_info['game_index_url']):
+            if check_game_end(game.game_index_url):
                 break
     except KeyboardInterrupt:
         pass
@@ -227,20 +226,20 @@ def game_tracker(game_info: Dict, args):
 def main(args):
     print("Start Tracking")
     # 1. Get Today's Box url
-    game_infos = get_today_games_info()
-    print(game_infos)
+    games = crawl_today_games_info()
+    print(games)
 
     if not args.local:
-        init_data(game_infos)
-        update_games_data(game_infos)
+        init_data(games)
+        update_games_data(games)
 
     # 2. Get box live
     process_list = []
-    for i, (k, game_info) in enumerate(game_infos.items()):
-        process_list.append(mp.Process(target=game_tracker, args=(game_info, args,)))
+    for i, (k, game) in enumerate(games.items()):
+        process_list.append(mp.Process(target=game_tracker, args=(game, args,)))
         process_list[i].start()
 
-    for i, game_info in enumerate(game_infos):
+    for i, game in enumerate(games):
         process_list[i].join()
 
 
