@@ -1,16 +1,20 @@
+import json
 import time
 import requests
+import pprint
 from argparse import ArgumentParser
 
 from mdoel.data_controller import (
     update_one_game_state,
     update_one_game_data,
     update_broadcast_list,
+    update_games_data,
     get_game_state,
     get_games_info,
+    get_game_states,
 )
 
-test_game_url = "/box?year=2022&kindCode=A&gameSno=38"
+test_game_url = "/box?year=2022&kindCode=A&gameSno=44"
 
 test_game_state = {
     'inning': '12局下',
@@ -78,21 +82,33 @@ test_game_info = {
 
 if __name__ == "__main__":
     # Show Game State
-    update_one_game_state(test_game_url, test_game_state)
+    # update_one_game_state(test_game_url, test_game_state)
 
     # Show live broadcast
-    update_one_game_data(test_game_info)
+    # update_one_game_data(test_game_info)
 
-    _ = get_games_info()
-    _ = get_game_state(test_game_url)
+    # broadcast_feed = test_game_info["scoring_play"][-3:]
+    # for feed in broadcast_feed:
+    #     url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
+    #     payload = {
+    #         "game_url_postfix": test_game_url,
+    #         "scoring_play": [feed]
+    #     }
+    #     response = requests.post(url, json=payload)
+    #     time.sleep(10)
 
-    broadcast_feed = test_game_info["scoring_play"][-3:]
-    print(broadcast_feed)
-    for feed in broadcast_feed:
-        url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
-        payload = {
-            "game_url_postfix": test_game_url,
-            "scoring_play": [feed]
-        }
-        response = requests.post(url, json=payload)
-        time.sleep(10)
+    info_before = get_games_info()
+    update_games_data(info_before)
+    info_after = get_games_info()
+
+    assert info_after == info_before
+
+    update_one_game_data(get_games_info()["/box?year=2022&kindCode=A&gameSno=44"])
+    info_after = get_games_info()
+    assert info_after == info_before
+
+    game_state_before = get_game_states()
+    state = game_state_before["/box?year=2022&kindCode=A&gameSno=44"]
+    update_one_game_state(test_game_url, state)
+    game_state_after = get_game_states()
+    assert game_state_after == game_state_before

@@ -4,6 +4,7 @@ import time
 import multiprocessing as mp
 import warnings
 import requests
+import logging
 from typing import List, Dict, Optional
 from datetime import date
 from argparse import ArgumentParser, Namespace
@@ -21,9 +22,15 @@ from mdoel.data_controller import (
 from schemas.game import Game, GameState, Play
 
 warnings.filterwarnings("ignore")
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+    datefmt="%m/%d/%Y %H:%M:%S",
+    level=logging.INFO,
+)
+logging.getLogger("pyppeteer.launcher").disabled = True
+logger = logging.getLogger(__name__)
 
 EMPTY_LINK = 'javascript:;'
-
 BASE_URL = "https://www.cpbl.com.tw"
 SCHEDULE_URL = "https://www.cpbl.com.tw/schedule"
 
@@ -180,10 +187,12 @@ def stream_scoring_play(game: Game, plays: List[Play]):
     url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
     payload = {
         "game_url_postfix": game.game_url_postfix,
-        "scoring_play": json.dumps(plays, default=vars, ensure_ascii=False)
+        "scoring_play": json.loads(json.dumps(plays, default=vars))
     }
     response = requests.post(url, json=payload)
-    # TODO: handel status code
+
+    if response.status_code == 400:
+        logger.error(f"Status code 400: payload = {payload}")
 
 
 def game_tracker(game: Game, args):
@@ -200,7 +209,7 @@ def game_tracker(game: Game, args):
                     tmp_scoring_plays = crawl_game_score_plays(game)
                     if len(tmp_scoring_plays) > len(scoring_plays):
                         new_scoring_plays = tmp_scoring_plays[len(scoring_plays):]
-                        print(new_scoring_plays)
+                        logger.info(f"Game: {game.game_url}, New scoring play = {new_scoring_plays}")
 
                         scoring_plays = tmp_scoring_plays
                         current_score = scoring_plays[-1].score.split(" ")
@@ -225,10 +234,12 @@ def game_tracker(game: Game, args):
 
 
 def main(args):
-    print("Start Tracking")
+    logger.info("Start tracking")
+
     # 1. Get Today's Box url
     games = crawl_today_games_info()
-    print(games)
+
+    logger.info(f"Init games: {games}")
 
     if not args.local:
         init_data(games)

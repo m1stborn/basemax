@@ -34,19 +34,8 @@ def flex_message_type_condition(alt: str, contents: list or dict, **kwargs):
 
 def game_flex(game: Game):
     current_scores = game.current_score if game.current_score is not None else "0:0"
-
     team_away_image = image_url[game.team_away]
     team_home_image = image_url[game.team_home]
-
-    # team_away = " 中信兄弟 "
-    # team_home = " 中信兄弟 "
-    # baseball_field = "新莊棒球場"
-    # game_time = "4/28 (三)"
-    #
-    # current_score = "0:0"
-    #
-    # team_away_image = image_url[" 中信兄弟 "]
-    # team_home_image = image_url[" 中信兄弟 "]
 
     return {
         "type": "bubble",
@@ -304,15 +293,15 @@ def game_state_flex(game: Game, game_state: GameState):
 
 
 def today_game():
-    game_infos = get_games_info()
-    contents = [game_flex(game) for url, game in game_infos.items()]
+    games = get_games_info()
+    contents = [game_flex(game) for url, game in games.items()]
     return contents
 
 
 def current_score():
-    game_infos = get_games_info()
+    game = get_games_info()
     game_states = get_game_states()
 
-    contents = [game_state_flex(game_infos[url], state)
+    contents = [game_state_flex(game[url], state)
                 for url, state in game_states.items() if state != {}]
     return contents
