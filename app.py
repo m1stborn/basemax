@@ -1,13 +1,15 @@
 import os
+import logging
 from flask import Flask
+
 
 from line_controller.handler import line_blueprint
 
 app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
 app.register_blueprint(line_blueprint)
 
 ON_HEROKU = os.environ.get('ON_HEROKU', None)
-
 if ON_HEROKU:
     port = int(os.environ.get('PORT', 17995))
 else:
