@@ -93,7 +93,7 @@ def init_data(game_infos):
             r.set("broadcast_list", json.dumps(empty_broadcast_list))
 
     r.set("games_uid", json.dumps(games_uid))
-    r.set("games", json.dumps(game_infos))
+    r.set("games", json.dumps(game_infos, default=vars, ensure_ascii=False))
     r.set("games_state", json.dumps(empty_games_state))
 
     print("Redis:", json.loads(r.get("games_uid").decode('utf-8')))

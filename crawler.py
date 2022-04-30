@@ -1,3 +1,4 @@
+import json
 import re
 import time
 import multiprocessing as mp
@@ -179,7 +180,7 @@ def stream_scoring_play(game: Game, plays: List[Play]):
     url = "https://cpbl-linebot.herokuapp.com/game/scoring_play"
     payload = {
         "game_url_postfix": game.game_url_postfix,
-        "scoring_play": plays
+        "scoring_play": json.dumps(plays, default=vars, ensure_ascii=False)
     }
     response = requests.post(url, json=payload)
     # TODO: handel status code
