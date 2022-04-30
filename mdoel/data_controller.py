@@ -48,7 +48,7 @@ def get_game_state(game_uid: str) -> GameState:
 def get_game_states() -> Dict[str, GameState]:
     game_state_json = json.loads(r.get('games_state').decode('utf-8'))
     game_state = {url: GameState(**game)
-                  for url, game in game_state_json.items() if game is not None}
+                  for url, game in game_state_json.items() if game != {}}
     return game_state
 
 
