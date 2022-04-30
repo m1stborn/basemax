@@ -1,5 +1,6 @@
 import os
 import json
+import logging
 from pathlib import Path
 
 from flask import Blueprint, request, abort
@@ -25,8 +26,9 @@ from mdoel.data_controller import (
     get_broadcast_list,
 )
 
-ON_HEROKU = os.environ.get('ON_HEROKU', None)
+logger = logging.getLogger(__name__)
 
+ON_HEROKU = os.environ.get('ON_HEROKU', None)
 if ON_HEROKU:
     LINE_CHANNEL_SECRET = os.environ.get('channel_secret', None)
     LINE_ACCESS_TOKEN = os.environ.get('channel_access_token', None)
@@ -53,7 +55,7 @@ def callback():
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        print("Invalid signature. Please check your channel access token/channel secret.")
+        logger.error("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
 
     return 'OK'
@@ -70,13 +72,12 @@ default_quick_reply = QuickReply(
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    print(event)
     text = event.message.text
 
     game_titles = get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
 
-    print("Today's game:", game_titles)
+    logger.info(f"Message Event = {event}")
     alt = "觀看更多"
 
     quick_reply = default_quick_reply
@@ -105,8 +106,6 @@ def handle_message(event):
         return
 
     elif text in game_titles.values():
-        print(event)
-        print("Add user:", event.source)
         update_broadcast_list(game_titles_to_url[text], event.source.user_id)
         line_bot_api.reply_message(
             event.reply_token,
