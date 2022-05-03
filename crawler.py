@@ -6,7 +6,7 @@ import warnings
 import requests
 import logging
 from typing import List, Dict, Optional
-from datetime import date
+from datetime import date, datetime
 from argparse import ArgumentParser, Namespace
 
 import schedule
@@ -45,15 +45,22 @@ def crawl_today_games_info() -> Dict[str, Game]:
 
     today = str(date.today().day)
 
-    day_soup = soup.findAll('div', class_='date', attrs={'data-date': today})[-1]
-    games_soup = day_soup.parent.findAll('div', class_='game')
+    day_to_exclude = [25, 26, 27, 28, 29, 30]
 
+    day_soup = soup.findAll('div', class_='date', attrs={'data-date': today})[0 if today not in day_to_exclude else -1]
+
+    games_soup = day_soup.parent.findAll('div', class_='game')
     team_away = [game.find('div', class_="team away").get_text() for game in games_soup]
     team_away = [re.sub('\\s{2,}', ' ', team) for team in team_away]
 
     team_home = [game.find('div', class_="team home").get_text() for game in games_soup]
     team_home = [re.sub('\\s{2,}', ' ', team) for team in team_home]
 
+    game_time = [game.find('div', class_="remark").get_text() for game in games_soup]
+    game_time = [re.sub('\\s{2,}', ' ', t) for t in game_time]
+    # game_time = [int(t) for t_all in game_time for t in t_all.split(":")]
+    # # game_time = [datetime.now().replace(hour=t[0], ) for t in game_time]
+    # print(game_time)
     place = [game.find('div', class_="place").get_text() for game in games_soup]
 
     result = day_soup.parent.findAll('a') if day_soup is not None else []
@@ -68,7 +75,7 @@ def crawl_today_games_info() -> Dict[str, Game]:
             "game_live_url": BASE_URL + game_url_postfix[i].replace('/box', '/box/live'),
             "game_index_url": BASE_URL + game_url_postfix[i].replace('/box', '/box/index'),
             "baseball_field": place[i],
-            "game_time": date.today().strftime("%B %d, %Y"),
+            "game_time": date.today().strftime("%B %d, %Y ") + game_time[i],
         } for i in range(len(game_url_postfix))}
 
     return {url: Game(**game) for url, game in game_infos.items()}
@@ -129,7 +136,7 @@ def crawl_game_state(game_url: str) -> Optional[GameState]:
                          base_wrap=base_wrap,
                          strike=strike,
                          ball=ball,
-                         out=out,)
+                         out=out, )
 
     return None
 
@@ -231,6 +238,38 @@ def game_tracker(game: Game, args):
         pass
 
     return
+
+
+class GameTracker:
+    def __init__(self, game: Game, local: bool = False):
+        self.is_ongoing = "1234"
+        self.game = game
+        self.game_state = None
+        self.scoring_plays = []
+        self.local = local
+
+    def track(self):
+        while self.is_ongoing:
+            self.game_state = crawl_game_state(self.game.game_url)
+
+            if self.game_state is not None:
+                update_one_game_state(self.game.game_url, self.game_state)
+
+            tmp_scoring_plays = crawl_game_score_plays(self.game)
+
+            if len(tmp_scoring_plays) > len(self.scoring_plays):
+                new_scoring_plays = tmp_scoring_plays[len(self.scoring_plays):]
+                logger.info(f"Game: {self.game.game_url}, New scoring play = {new_scoring_plays}")
+
+                scoring_plays = tmp_scoring_plays
+                current_score = scoring_plays[-1].score.split(" ")
+
+                self.game.current_score = "".join(current_score[3:6])
+                self.game.scoring_play = scoring_plays
+
+                if self.local:
+                    stream_scoring_play(self.game, new_scoring_plays)
+                    update_one_game_data(self.game)
 
 
 def main(args):
