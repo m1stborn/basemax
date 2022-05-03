@@ -14,6 +14,8 @@ from bs4 import BeautifulSoup
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+# from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.chrome.webdriver import WebDriver
 
 from mdoel.data_controller import (
     update_games_data,
@@ -31,18 +33,18 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-options = Options()
+options = webdriver.ChromeOptions()
 options.add_argument("--headless")
 options.add_argument("--log-level=3")
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 if os.name == "nt":
-    driver = webdriver.Chrome(options=options)
+    drivers = [webdriver.Chrome(options=options) for i in range(2)]
+    # driver = webdriver.Chrome(options=options)
 else:
-    driver = webdriver.Remote("http://selenium:4444/wd/hub",
-                              options=webdriver.ChromeOptions())
+    drivers = [webdriver.Remote("http://selenium:4444/wd/hub", options=options) for i in range(2)]
+    # driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
 
-# logging.getLogger("pyppeteer.launcher").disabled = True
 logger = logging.getLogger(__name__)
 
 EMPTY_LINK = 'javascript:;'
@@ -50,7 +52,7 @@ BASE_URL = "https://www.cpbl.com.tw"
 SCHEDULE_URL = "https://www.cpbl.com.tw/schedule"
 
 
-def crawl_today_games_info() -> Dict[str, Game]:
+def crawl_today_games_info(driver: WebDriver) -> Dict[str, Game]:
     driver.get(SCHEDULE_URL)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -90,7 +92,7 @@ def crawl_today_games_info() -> Dict[str, Game]:
     return {url: Game(**game) for url, game in game_infos.items()}
 
 
-def crawl_score(game_info: Dict) -> Dict:
+def crawl_score(game_info: Dict, driver: WebDriver) -> Dict:
     driver.get(game_info['game_live_url'])
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -109,7 +111,7 @@ def crawl_score(game_info: Dict) -> Dict:
     }
 
 
-def crawl_game_state(game_url: str) -> Optional[GameState]:
+def crawl_game_state(game_url: str, driver: WebDriver) -> Optional[GameState]:
     driver.get(game_url)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -148,7 +150,7 @@ def crawl_game_state(game_url: str) -> Optional[GameState]:
     return None
 
 
-def crawl_game_score_plays(game: Game) -> List[Play]:
+def crawl_game_score_plays(game: Game, driver: WebDriver) -> List[Play]:
     driver.get(game.game_live_url)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
@@ -175,7 +177,7 @@ def crawl_game_score_plays(game: Game) -> List[Play]:
     return game_play
 
 
-def check_game_start(game_url: str) -> bool:
+def check_game_start(game_url: str, driver: WebDriver) -> bool:
     driver.get(game_url)
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
@@ -184,7 +186,7 @@ def check_game_start(game_url: str) -> bool:
     return not_start is None
 
 
-def check_game_end(game_index_url: str) -> bool:
+def check_game_end(game_index_url: str, driver: WebDriver) -> bool:
     driver.get(game_index_url)
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
@@ -206,18 +208,18 @@ def stream_scoring_play(game: Game, plays: List[Play]):
         logger.error(f"Status code 400: payload = {payload}")
 
 
-def game_tracker(game: Game, args):
+def game_tracker(game: Game, driver: WebDriver, args):
     try:
         while True:
             # Check game started
-            if check_game_start(game.game_url):
+            if check_game_start(game.game_url, driver):
                 scoring_plays = []
                 while True:
-                    game_state = crawl_game_state(game.game_url)
+                    game_state = crawl_game_state(game.game_url, driver)
                     if game_state is not None:
                         update_one_game_state(game.game_url_postfix, game_state)
 
-                    tmp_scoring_plays = crawl_game_score_plays(game)
+                    tmp_scoring_plays = crawl_game_score_plays(game, driver)
                     if len(tmp_scoring_plays) > len(scoring_plays):
                         new_scoring_plays = tmp_scoring_plays[len(scoring_plays):]
                         logger.info(f"Game: {game.game_url}, New scoring play = {new_scoring_plays}")
@@ -233,10 +235,10 @@ def game_tracker(game: Game, args):
                             stream_scoring_play(game, new_scoring_plays)
                             update_one_game_data(updated_game)
 
-                    if check_game_end(game.game_index_url):
+                    if check_game_end(game.game_index_url, driver):
                         break
                     time.sleep(60)
-            if check_game_end(game.game_index_url):
+            if check_game_end(game.game_index_url, driver):
                 break
     except KeyboardInterrupt:
         pass
@@ -244,43 +246,11 @@ def game_tracker(game: Game, args):
     return
 
 
-class GameTracker:
-    def __init__(self, game: Game, local: bool = False):
-        self.is_ongoing = "1234"
-        self.game = game
-        self.game_state = None
-        self.scoring_plays = []
-        self.local = local
-
-    def track(self):
-        while self.is_ongoing:
-            self.game_state = crawl_game_state(self.game.game_url)
-
-            if self.game_state is not None:
-                update_one_game_state(self.game.game_url, self.game_state)
-
-            tmp_scoring_plays = crawl_game_score_plays(self.game)
-
-            if len(tmp_scoring_plays) > len(self.scoring_plays):
-                new_scoring_plays = tmp_scoring_plays[len(self.scoring_plays):]
-                logger.info(f"Game: {self.game.game_url}, New scoring play = {new_scoring_plays}")
-
-                scoring_plays = tmp_scoring_plays
-                current_score = scoring_plays[-1].score.split(" ")
-
-                self.game.current_score = "".join(current_score[3:6])
-                self.game.scoring_play = scoring_plays
-
-                if self.local:
-                    stream_scoring_play(self.game, new_scoring_plays)
-                    update_one_game_data(self.game)
-
-
 def main(args):
     logger.info("Start tracking")
 
     # 1. Get Today's Box url
-    games = crawl_today_games_info()
+    games = crawl_today_games_info(drivers[0])
 
     logger.info(f"Init games: {games}")
 
@@ -291,7 +261,7 @@ def main(args):
     # 2. Get box live
     process_list = []
     for i, (k, game) in enumerate(games.items()):
-        process_list.append(mp.Process(target=game_tracker, args=(game, args,)))
+        process_list.append(mp.Process(target=game_tracker, args=(game, drivers[i], args,)))
         process_list[i].start()
 
     for i, game in enumerate(games):
