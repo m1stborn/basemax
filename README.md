@@ -76,12 +76,16 @@ DATABASE_URL=
 
 ## Crawler
 
-1. start the web crawler to update CPBL games data
+1. build docker image
 
     ```
-    python crawler.py
+    docker-compose build
     ```
+2. start crawler
 
+    ```
+    docker-compose up
+    ```
 # License
 
 MIT License
