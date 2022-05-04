@@ -53,6 +53,7 @@ def get_driver() -> WebDriver:
     if os.name == "nt":
         driver = webdriver.Chrome(options=options)
     else:
+        # options.add_argument('--disable-browser-side-navigation')
         driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
     return driver
 
@@ -63,7 +64,7 @@ def crawl_today_games_info() -> Dict[str, Game]:
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
-    driver.close()
+    driver.quit()
 
     today = str(date.today().day)
 
@@ -106,7 +107,7 @@ def crawl_score(game_info: Dict) -> Dict:
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
-    driver.close()
+    driver.quit()
 
     game_live_soup = soup.find("div", class_="item ScoreBoard")
 
@@ -128,7 +129,7 @@ def crawl_game_state(game_url: str) -> Optional[GameState]:
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
 
-    driver.close()
+    driver.quit()
 
     game_state_soup = soup.find("div", class_="item GameMatchup")
     if game_state_soup is not None:
@@ -169,7 +170,7 @@ def crawl_game_score_plays(game: Game) -> List[Play]:
     driver.get(game.game_live_url)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
-    driver.close()
+    driver.quit()
     game_live_soup = soup.find("div", class_="InningPlays")
     innings = game_live_soup.findAll("section") if game_live_soup is not None else []
 
@@ -197,7 +198,7 @@ def check_game_start(game_url: str) -> bool:
     driver = get_driver()
     driver.get(game_url)
     soup = BeautifulSoup(driver.page_source, "html.parser")
-    driver.close()
+    driver.quit()
     not_start = soup.find("div", class_="game_canceled")
 
     return not_start is None
@@ -207,7 +208,7 @@ def check_game_end(game_index_url: str) -> bool:
     driver = get_driver()
     driver.get(game_index_url)
     soup = BeautifulSoup(driver.page_source, "html.parser")
-    driver.close()
+    driver.quit()
     # game_brief = soup.find("div", class_="GameNote")
     game_brief = soup.find("div", class_="editable_content")
 
@@ -259,6 +260,7 @@ def game_tracker(game: Game, args):
 
             # 4. Check game end
             if check_game_end(game.game_index_url):
+                logger.info(f"Game {game.game_url_postfix} ended.")
                 break
 
             time.sleep(60)
@@ -267,6 +269,33 @@ def game_tracker(game: Game, args):
         pass
 
     return
+
+
+driver = get_driver()
+
+
+def job1():
+    logger.info("start driver 1")
+    for i in range(5):
+        time.sleep(3)
+        driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=53")
+    logger.info("end driver 1")
+
+
+def job2():
+    logger.info("start driver 2")
+    for i in range(5):
+        time.sleep(3)
+        driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=54")
+    logger.info("end driver 2")
+
+
+def test_driver():
+
+    p = mp.Process(target=job2, args=())
+    p.start()
+    job1()
+    p.join()
 
 
 def main(args):
