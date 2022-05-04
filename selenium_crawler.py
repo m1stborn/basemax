@@ -37,12 +37,12 @@ options.add_argument("--headless")
 options.add_argument("--log-level=3")
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
-if os.name == "nt":
-    drivers = [webdriver.Chrome(options=options) for i in range(2)]
-    # driver = webdriver.Chrome(options=options)
-else:
-    drivers = [webdriver.Remote("http://selenium:4444/wd/hub", options=options) for i in range(2)]
-    # driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
+# if os.name == "nt":
+#     drivers = [webdriver.Chrome(options=options) for i in range(2)]
+#     # driver = webdriver.Chrome(options=options)
+# else:
+#     drivers = [webdriver.Remote("http://selenium:4444/wd/hub", options=options) for i in range(2)]
+#     # driver = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
 
 EMPTY_LINK = 'javascript:;'
 BASE_URL = "https://www.cpbl.com.tw"
