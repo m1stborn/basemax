@@ -35,7 +35,7 @@ Fill in the following environment variables:
 ```
 LINE_CHANNEL_ACCESS_TOKEN=
 LINE_CHANNEL_SECRET=
-DATABASE_URL=
+REDIS_URL=
 ```
 
 > You need to modify REDIS_URL as your redis settings.
@@ -76,6 +76,7 @@ DATABASE_URL=
 
 ## Crawler
 
+Run in docker container:
 1. build docker image
 
     ```
@@ -86,6 +87,18 @@ DATABASE_URL=
     ```
     docker-compose up
     ```
+You can also run crawler locally
+1. install requirement
+
+    ```
+    pip install crawler_requirements.txt
+    ```
+2. start crawler
+
+    ```
+    python selenium_crawler.py --local
+    ```
+
 # License
 
 MIT License
