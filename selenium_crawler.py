@@ -271,33 +271,6 @@ def game_tracker(game: Game, args):
     return
 
 
-driver = get_driver()
-
-
-def job1():
-    logger.info("start driver 1")
-    for i in range(5):
-        time.sleep(3)
-        driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=53")
-    logger.info("end driver 1")
-
-
-def job2():
-    logger.info("start driver 2")
-    for i in range(5):
-        time.sleep(3)
-        driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=54")
-    logger.info("end driver 2")
-
-
-def test_driver():
-
-    p = mp.Process(target=job2, args=())
-    p.start()
-    job1()
-    p.join()
-
-
 def main(args):
     # 1. Get Today's Box url
     games = crawl_today_games_info()
