@@ -1,9 +1,9 @@
 import json
 import logging
+import multiprocessing as mp
 import os
 import re
 import time
-import multiprocessing as mp
 from argparse import Namespace, ArgumentParser
 from datetime import date
 from typing import Dict
@@ -11,9 +11,7 @@ from typing import List, Optional
 
 import requests
 from bs4 import BeautifulSoup
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 # from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 
@@ -51,7 +49,7 @@ BASE_URL = "https://www.cpbl.com.tw"
 SCHEDULE_URL = "https://www.cpbl.com.tw/schedule"
 
 
-def get_driver():
+def get_driver() -> WebDriver:
     if os.name == "nt":
         driver = webdriver.Chrome(options=options)
     else:
@@ -229,37 +227,42 @@ def stream_scoring_play(game: Game, plays: List[Play]):
 
 
 def game_tracker(game: Game, args):
+    logger.info(f"Start tracking: {game.game_url_postfix}")
+    scoring_plays = []
     try:
         while True:
-            # Check game started
-            if check_game_start(game.game_url):
-                scoring_plays = []
-                while True:
-                    game_state = crawl_game_state(game.game_url)
-                    if game_state is not None:
-                        update_one_game_state(game.game_url_postfix, game_state)
+            # 1. Check game started
+            if not check_game_start(game.game_url):
+                continue
 
-                    tmp_scoring_plays = crawl_game_score_plays(game)
-                    if len(tmp_scoring_plays) > len(scoring_plays):
-                        new_scoring_plays = tmp_scoring_plays[len(scoring_plays):]
-                        logger.info(f"Game: {game.game_url}, New scoring play = {new_scoring_plays}")
+            # 2. Get game state
+            game_state = crawl_game_state(game.game_url)
+            if game_state is not None and not args.local:
+                update_one_game_state(game.game_url_postfix, game_state)
 
-                        scoring_plays = tmp_scoring_plays
-                        current_score = scoring_plays[-1].score.split(" ")
+            # 3. Get Scoring plays
+            tmp_scoring_plays = crawl_game_score_plays(game)
+            if len(tmp_scoring_plays) > len(scoring_plays):
+                new_scoring_plays = tmp_scoring_plays[len(scoring_plays):]
+                logger.info(f"Game: {game.game_url}, New scoring play = {new_scoring_plays}")
 
-                        updated_game = game
-                        updated_game.current_score = "".join(current_score[3:6])
-                        updated_game.scoring_play = scoring_plays
+                scoring_plays = tmp_scoring_plays
+                current_score = scoring_plays[-1].score.split(" ")
 
-                        if not args.local:
-                            stream_scoring_play(game, new_scoring_plays)
-                            update_one_game_data(updated_game)
+                updated_game = game
+                updated_game.current_score = "".join(current_score[3:6])
+                updated_game.scoring_play = scoring_plays
 
-                    if check_game_end(game.game_index_url):
-                        break
-                    time.sleep(60)
+                if not args.local:
+                    stream_scoring_play(game, new_scoring_plays)
+                    update_one_game_data(updated_game)
+
+            # 4. Check game end
             if check_game_end(game.game_index_url):
                 break
+
+            time.sleep(60)
+
     except KeyboardInterrupt:
         pass
 
@@ -267,18 +270,15 @@ def game_tracker(game: Game, args):
 
 
 def main(args):
-    logger.info("Start tracking")
-
     # 1. Get Today's Box url
     games = crawl_today_games_info()
-
     logger.info(f"Init games: {games}")
 
     if not args.local:
         init_data(games)
         update_games_data(games)
 
-    # 2. Get box live
+    # 2. Tracking today's games
     process_list = []
     for i, (k, game) in enumerate(games.items()):
         process_list.append(mp.Process(target=game_tracker, args=(game, args,)))
