@@ -2,7 +2,7 @@ from linebot.models import (
     FlexSendMessage,
 )
 
-from mdoel.data_controller import (
+from models.game_mod import (
     get_games_info,
     get_game_states,
 )

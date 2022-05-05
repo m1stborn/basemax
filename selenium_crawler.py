@@ -15,12 +15,7 @@ from selenium import webdriver
 # from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 
-from mdoel.data_controller import (
-    update_games_data,
-    init_data,
-    update_one_game_state,
-    update_one_game_data,
-)
+from models import game_mod
 from schemas.game import Game, GameState, Play
 
 time.sleep(5)
@@ -36,6 +31,9 @@ options = webdriver.ChromeOptions()
 options.add_argument("--headless")
 options.add_argument("--log-level=3")
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
+# Can't open multiple driver in docker container,
+# will causing the get() function stuck till other driver was closed.
 
 # if os.name == "nt":
 #     drivers = [webdriver.Chrome(options=options) for i in range(2)]
@@ -239,7 +237,7 @@ def game_tracker(game: Game, args):
             # 2. Get game state
             game_state = crawl_game_state(game.game_url)
             if game_state is not None and not args.local:
-                update_one_game_state(game.game_url_postfix, game_state)
+                game_mod.update_one_game_state(game.game_url_postfix, game_state)
 
             # 3. Get Scoring plays
             tmp_scoring_plays = crawl_game_score_plays(game)
@@ -256,7 +254,7 @@ def game_tracker(game: Game, args):
 
                 if not args.local:
                     stream_scoring_play(game, new_scoring_plays)
-                    update_one_game_data(updated_game)
+                    game_mod.update_one_game_data(updated_game)
 
             # 4. Check game end
             if check_game_end(game.game_index_url):
@@ -270,6 +268,34 @@ def game_tracker(game: Game, args):
 
     return
 
+# driver = get_driver()
+# def job1():
+#     logger.info("start driver 1")
+#     for i in range(5):
+#         # time.sleep(2)
+#         driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=53")
+#         driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=49")
+#
+#     logger.info("end driver 1")
+#
+#
+# def job2():
+#     logger.info("start driver 2")
+#     for i in range(5):
+#         # time.sleep(2)
+#         driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=54")
+#         driver.get("https://www.cpbl.com.tw/box?year=2022&kindCode=A&gameSno=55")
+#
+#     logger.info("end driver 2")
+#
+#
+# def test_driver():
+#
+#     p = mp.Process(target=job2, args=())
+#     p.start()
+#     job1()
+#     p.join()
+
 
 def main(args):
     # 1. Get Today's Box url
@@ -277,8 +303,8 @@ def main(args):
     logger.info(f"Init games: {games}")
 
     if not args.local:
-        init_data(games)
-        update_games_data(games)
+        game_mod.init_data(games)
+        game_mod.update_games_data(games)
 
     # 2. Tracking today's games
     process_list = []

@@ -15,16 +15,12 @@ from linebot.models import (
     QuickReply,
 )
 
-from line_controller.flex import (
+from line.flex import (
     flex_message_type_condition,
     today_game,
     current_score,
 )
-from mdoel.data_controller import (
-    get_game_title,
-    update_broadcast_list,
-    get_broadcast_list,
-)
+from models import game_mod
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +33,7 @@ else:
     LINE_CHANNEL_SECRET = config["channel_secret"]
     LINE_ACCESS_TOKEN = config["channel_access_token"]
 
-line_blueprint = Blueprint('line_controller', __name__, )
+line_blueprint = Blueprint('line', __name__, )
 
 line_bot_api = LineBotApi(LINE_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
@@ -74,7 +70,7 @@ default_quick_reply = QuickReply(
 def handle_message(event):
     text = event.message.text
 
-    game_titles = get_game_title()
+    game_titles = game_mod.get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
 
     logger.info(f"Message Event = {event}")
@@ -106,7 +102,7 @@ def handle_message(event):
         return
 
     elif text in game_titles.values():
-        update_broadcast_list(game_titles_to_url[text], event.source.user_id)
+        game_mod.update_broadcast_list(game_titles_to_url[text], event.source.user_id)
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=f"開始轉播{text}", quick_reply=quick_reply)
@@ -141,7 +137,7 @@ def handel_scoring_play():
     scoring_play_obj = request.get_json()
     game_url = scoring_play_obj.get("game_url_postfix")
     scoring_play = scoring_play_obj.get("scoring_play")
-    user_id_list = get_broadcast_list(game_url)
+    user_id_list = game_mod.get_broadcast_list(game_url)
     for play in scoring_play:
         text = "\n\n".join(play.values())
         line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))

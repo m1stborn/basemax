@@ -3,7 +3,7 @@ import logging
 from flask import Flask
 
 
-from line_controller.handler import line_blueprint
+from line.handler import line_blueprint
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)

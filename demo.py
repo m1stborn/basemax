@@ -4,7 +4,7 @@ import requests
 import pprint
 from argparse import ArgumentParser
 
-from mdoel.data_controller import (
+from models.game_mod import (
     update_one_game_state,
     update_one_game_data,
     update_broadcast_list,
