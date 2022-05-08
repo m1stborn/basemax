@@ -17,7 +17,7 @@ from selenium.webdriver.chrome.webdriver import WebDriver
 
 from models import game_mod
 from schemas.game import Game, GameState, Play
-
+from utils import error_handler
 time.sleep(5)
 
 logging.basicConfig(
@@ -56,6 +56,7 @@ def get_driver() -> WebDriver:
     return driver
 
 
+@error_handler(Exception, logger=logger)
 def crawl_today_games_info() -> Dict[str, Game]:
     driver = get_driver()
     driver.get(SCHEDULE_URL)
@@ -99,6 +100,7 @@ def crawl_today_games_info() -> Dict[str, Game]:
     return {url: Game(**game) for url, game in game_infos.items()}
 
 
+@error_handler(Exception, logger=logger)
 def crawl_score(game_info: Dict) -> Dict:
     driver = get_driver()
     driver.get(game_info['game_live_url'])
@@ -121,6 +123,7 @@ def crawl_score(game_info: Dict) -> Dict:
     }
 
 
+@error_handler(Exception, logger=logger)
 def crawl_game_state(game_url: str) -> Optional[GameState]:
     driver = get_driver()
     driver.get(game_url)
@@ -163,6 +166,7 @@ def crawl_game_state(game_url: str) -> Optional[GameState]:
     return None
 
 
+@error_handler(Exception, logger=logger)
 def crawl_game_score_plays(game: Game) -> List[Play]:
     driver = get_driver()
     driver.get(game.game_live_url)
@@ -192,6 +196,7 @@ def crawl_game_score_plays(game: Game) -> List[Play]:
     return game_play
 
 
+@error_handler(Exception, logger=logger)
 def check_game_start(game_url: str) -> bool:
     driver = get_driver()
     driver.get(game_url)
@@ -202,6 +207,7 @@ def check_game_start(game_url: str) -> bool:
     return not_start is None
 
 
+@error_handler(Exception, logger=logger)
 def check_game_end(game_index_url: str) -> bool:
     driver = get_driver()
     driver.get(game_index_url)
@@ -236,6 +242,7 @@ def game_tracker(game: Game, args):
 
             # 2. Get game state
             game_state = crawl_game_state(game.game_url)
+            logger.info(f"Game state: {game_state}")
             if game_state is not None and not args.local:
                 game_mod.update_one_game_state(game.game_url_postfix, game_state)
 
@@ -306,7 +313,8 @@ def main(args):
         game_mod.init_data(games)
         game_mod.update_games_data(games)
 
-    # 2. Tracking today's games
+    # 2. Tracking today's games: only track the game that are not postponed
+    games = {k: game for k, game in games.items() if "延賽" not in game.game_time}
     process_list = []
     for i, (k, game) in enumerate(games.items()):
         process_list.append(mp.Process(target=game_tracker, args=(game, args,)))
@@ -319,10 +327,21 @@ def main(args):
 def parse_args() -> Namespace:
     parser = ArgumentParser()
     parser.add_argument("--local", action="store_true")
+    parser.add_argument("--time", action="store_true")
+
     args = parser.parse_args()
     return args
 
 
 if __name__ == "__main__":
     arg = parse_args()
-    main(arg)
+
+    if arg.time:
+        import time
+        t0 = time.time()
+        main(arg)
+        t1 = time.time()
+        total = t1 - t0
+        logger.info(f"Total Time: {total} sec")
+    else:
+        main(arg)
