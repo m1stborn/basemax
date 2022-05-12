@@ -20,6 +20,9 @@ from line.flex import (
     today_game,
     current_score,
 )
+from line.standing_flex import (
+    standing_content,
+)
 from models import game_mod
 
 logger = logging.getLogger(__name__)
@@ -62,6 +65,7 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="今日賽事", text="今日賽事")),
         QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
+        QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
     ]
 )
 
@@ -117,6 +121,8 @@ def handle_message(event):
                 messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
             )
             return
+    elif text == "球隊戰績":
+        contents = standing_content()
     else:
         line_bot_api.reply_message(
             event.reply_token,

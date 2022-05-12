@@ -7,6 +7,7 @@ from typing import Dict, List
 import redis
 
 from schemas.game import Game, GameState
+from schemas.standing import Team
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +51,23 @@ def get_game_states() -> Dict[str, GameState]:
     game_state = {url: GameState(**game)
                   for url, game in game_state_json.items() if game != {}}
     return game_state
+
+
+def get_standings() -> (str, List[Team]):
+    standings_json = json.loads(r.get('standings').decode('utf-8'))
+
+    title = standings_json["title"]
+    teams = [Team(**team) for team in standings_json["teams"]]
+
+    return title, teams
+
+
+def update_standings(title: str, teams: List[Team]):
+    dump = {
+        "title": title,
+        "teams": teams,
+    }
+    r.set('standings', json.dumps(dump, default=vars, ensure_ascii=False))
 
 
 def update_broadcast_list(game_uid: str, user_id: str):
