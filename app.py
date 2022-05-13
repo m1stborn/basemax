@@ -3,11 +3,13 @@ import logging
 from flask import Flask
 
 
-from line.handler import line_blueprint
+from line.line_handler import line_blueprint
+from line.liff_handler import liff_blueprint
 
 app = Flask(__name__)
 app.logger.setLevel(logging.INFO)
 app.register_blueprint(line_blueprint)
+app.register_blueprint(liff_blueprint)
 
 ON_HEROKU = os.environ.get('ON_HEROKU', None)
 if ON_HEROKU:

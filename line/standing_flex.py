@@ -1,10 +1,22 @@
+import os
+import json
+from pathlib import Path
+
 from typing import Dict, List
 
 from schemas.standing import Team
 from models import game_mod
 from line.footer_flex import footer_flex
 
-BASE_URL = "https://www.cpbl.com.tw"
+ON_HEROKU = os.environ.get('ON_HEROKU', None)
+if ON_HEROKU:
+    LIFF_ID = os.getenv('LIFF_SHARE_ID')
+else:
+    config = json.loads(Path('./config.json').read_text())
+    LIFF_ID = config["LIFF_SHARE_ID"]
+
+CPBL_URL = "https://www.cpbl.com.tw"
+SHARE_STANDING_URL = f"https://liff.line.me/{LIFF_ID}/standing"
 
 team_name_map = {
     '樂天桃猿': '樂天桃猿',
@@ -227,11 +239,14 @@ def standing_flex(title: str, teams: List[Team]) -> Dict:
                 }
             ]
         },
-        "footer": footer_flex(BASE_URL, BASE_URL)
+        # "footer": footer_flex(BASE_URL, BASE_URL) if footer else None,
     }
 
 
-def standing_content():
+def standing_content(footer: bool = True):
     title, teams = game_mod.get_standings()
-    return standing_flex(title, teams)
+    flex = standing_flex(title, teams)
+    if footer:
+        flex["footer"] = footer_flex(CPBL_URL, SHARE_STANDING_URL)
+    return flex
 
