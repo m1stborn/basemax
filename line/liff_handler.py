@@ -19,12 +19,12 @@ else:
 liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 
 
-# @liff_blueprint.route("/liff.state", methods=['get'])
-# def liff_state_handler():
-#     return None, LIFF_ID
+@liff_blueprint.route("/liff.state", methods=['get'])
+def liff_state_handler():
+    return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
 
 
-@liff_blueprint.route("/standing", methods=['get'])
+@liff_blueprint.route("/liff/share/standing", methods=['get'])
 def liff_handler():
     alt = "分享CPBL戰績排行"
     contents = standing_content(footer=False)
