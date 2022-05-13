@@ -19,7 +19,7 @@ else:
 liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 
 
-@liff_blueprint.route("/liff.state", methods=['get'])
+@liff_blueprint.route("/liff/share/liff.state", methods=['get'])
 def liff_state_handler():
     return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
 
