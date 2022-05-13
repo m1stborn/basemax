@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from typing import Dict
 
 from flask import request, Blueprint, Response, render_template
 
@@ -23,7 +24,8 @@ liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 def liff_page():
     alt = "分享CPBL戰績排行"
     contents = standing_content(footer=False)
-    flex = flex_message_wrapper(alt, contents)
+    # flex = flex_message_wrapper(alt, contents)
+    flex = flex_json(alt, contents)
 
     if request.args.get("life.state"):
         return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
@@ -50,3 +52,15 @@ def liff_page():
 #     # return msg, LIFF_ID
 #     return Response(render_template('share_message.html', flex=flex, liff_id=LIFF_ID))
 
+
+def flex_json(alt: str, content: Dict):
+    return {
+        "type": "flex",
+        "altText": alt,
+        "contents": {
+            **{
+                "type": "carousel",
+                "contents": [content]
+            }
+        }
+    }
