@@ -28,6 +28,8 @@ def liff_page():
 
     if request.args.get("life.state"):
         return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
+
+    return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
     # else:
     #     return Response(render_template('share_message.html', flex=flex, liff_id=LIFF_ID))
 
