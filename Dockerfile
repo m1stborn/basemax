@@ -12,4 +12,5 @@ RUN pip install --no-cache-dir -r crawler_requirements.txt
 
 COPY . /app
 
-CMD [ "python", "selenium_crawler.py"]
+#CMD [ "python", "selenium_crawler.py"]
+CMD [ "python", "crawler_one.py"]

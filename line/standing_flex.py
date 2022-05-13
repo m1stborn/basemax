@@ -2,6 +2,9 @@ from typing import Dict, List
 
 from schemas.standing import Team
 from models import game_mod
+from line.footer_flex import footer_flex
+
+BASE_URL = "https://www.cpbl.com.tw"
 
 team_name_map = {
     '樂天桃猿': '樂天桃猿',
@@ -215,11 +218,16 @@ def standing_flex(title: str, teams: List[Team]) -> Dict:
                             "type": "separator",
                             "color": "#9FA8DA"
                         },
-                        *[team_row_flex(team) for team in teams]
+                        *[team_row_flex(team) for team in teams],
+                        {
+                            "type": "separator",
+                            "color": "#9FA8DA"
+                        }
                     ]
                 }
             ]
-        }
+        },
+        "footer": footer_flex(BASE_URL, BASE_URL)
     }
 
 

@@ -17,7 +17,7 @@ image_url = {
 }
 
 
-def flex_message_type_condition(alt: str, contents: list or dict, **kwargs):
+def flex_message_wrapper(alt: str, contents: list or dict, **kwargs):
     if type(contents) == list:
         output_flex_message = {
             "type": "carousel",
@@ -32,7 +32,7 @@ def flex_message_type_condition(alt: str, contents: list or dict, **kwargs):
     )
 
 
-def game_flex(game: Game):
+def match_flex(game: Game):
     current_scores = game.current_score if game.current_score is not None else "0:0"
     team_away_image = image_url[game.team_away]
     team_home_image = image_url[game.team_home]
@@ -292,13 +292,13 @@ def game_state_flex(game: Game, game_state: GameState):
     }
 
 
-def today_game():
+def get_match_contents():
     games = get_games_info()
-    contents = [game_flex(game) for url, game in games.items()]
+    contents = [match_flex(game) for url, game in games.items()]
     return contents
 
 
-def current_score():
+def get_scoreboard_contents():
     game = get_games_info()
     game_states = get_game_states()
 

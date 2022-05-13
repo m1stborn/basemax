@@ -15,10 +15,10 @@ from linebot.models import (
     QuickReply,
 )
 
-from line.flex import (
-    flex_message_type_condition,
-    today_game,
-    current_score,
+from line.game_flex import (
+    flex_message_wrapper,
+    get_match_contents,
+    get_scoreboard_contents,
 )
 from line.standing_flex import (
     standing_content,
@@ -84,7 +84,7 @@ def handle_message(event):
 
     if text == "今日賽事":
         alt = "今日賽事"
-        contents = today_game()
+        contents = get_match_contents()
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
@@ -114,7 +114,7 @@ def handle_message(event):
         return
 
     elif text == "即時比數":
-        contents = current_score()
+        contents = get_scoreboard_contents()
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
@@ -130,7 +130,7 @@ def handle_message(event):
         )
         return
 
-    flex = flex_message_type_condition(alt, contents, quick_reply=quick_reply)
+    flex = flex_message_wrapper(alt, contents, quick_reply=quick_reply)
 
     line_bot_api.reply_message(
         event.reply_token,
