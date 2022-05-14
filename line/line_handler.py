@@ -30,12 +30,12 @@ logger = logging.getLogger(__name__)
 
 ON_HEROKU = os.environ.get('ON_HEROKU', None)
 if ON_HEROKU:
-    LINE_CHANNEL_SECRET = os.environ.get('channel_secret', None)
-    LINE_ACCESS_TOKEN = os.environ.get('channel_access_token', None)
+    LINE_CHANNEL_SECRET = os.environ.get('CHANNEL_SECRET', None)
+    LINE_ACCESS_TOKEN = os.environ.get('CHANNEL_ACCESS_TOKEN', None)
 else:
     config = json.loads(Path('./config.json').read_text())
-    LINE_CHANNEL_SECRET = config["channel_secret"]
-    LINE_ACCESS_TOKEN = config["channel_access_token"]
+    LINE_CHANNEL_SECRET = config["CHANNEL_SECRET"]
+    LINE_ACCESS_TOKEN = config["CHANNEL_ACCESS_TOKEN"]
 
 line_blueprint = Blueprint('line', __name__, )
 
