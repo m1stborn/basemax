@@ -12,13 +12,15 @@ def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
 
 class Setting(BaseSettings):
     ON_HEROKU: str
-    HEROKU_BASE: str
-    LIFF_SHARE_ID: str
+    PORT: int
     REDIS_URL: str
+    REDIS_TLS_URL: Optional[str]
+
+    API_BASE: str
+
     CHANNEL_ACCESS_TOKEN: str
     CHANNEL_SECRET: str
-    PORT: int
-    REDIS_TLS_URL: Optional[str]
+    LIFF_SHARE_ID: str
 
     class Config:
 
