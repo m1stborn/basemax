@@ -1,21 +1,14 @@
-import json
-import os
-from pathlib import Path
 from typing import Dict
 
-ON_HEROKU = os.environ.get('ON_HEROKU', None)
-if ON_HEROKU:
-    LIFF_ID = os.getenv('LIFF_SHARE_ID')
-else:
-    config = json.loads(Path('./config.json').read_text())
-    LIFF_ID = config["LIFF_SHARE_ID"]
+from config import Setting, CPBLSetting
 
-CPBL_URL = "https://www.cpbl.com.tw"
-SHARE_URL = f"https://liff.line.me/{LIFF_ID}"
-# SHARE_STANDING_URL = f"https://liff.line.me/{LIFF_ID}/standing"
+settings = Setting()
+cpbl = CPBLSetting()
+
+SHARE_URL = f"https://liff.line.me/{settings.LIFF_SHARE_ID}"
 
 
-def footer_flex(main_link: str = CPBL_URL,
+def footer_flex(main_link: str = cpbl.CPBL_BASE_URl,
                 # share_link: str = SHARE_STANDING_URL,
                 post_fix: str = "/standing") -> Dict:
     return {

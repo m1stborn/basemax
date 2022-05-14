@@ -37,7 +37,7 @@ class Setting(BaseSettings):
             )
 
 
-class CrawlerSetting(BaseModel):
+class CPBLSetting(BaseModel):
     EMPTY_LINK: str = "javascript:;"
     CPBL_BASE_URl: str = "https://www.cpbl.com.tw"
     CPBL_SCHEDULE_URL: str = "https://www.cpbl.com.tw/schedule"
@@ -45,7 +45,7 @@ class CrawlerSetting(BaseModel):
 
 
 if __name__ == '__main__':
-    config = CrawlerSetting()
+    config = CPBLSetting()
     dev_config = Setting()
     print(dev_config)
     print(config.CPBL_BASE_URl)

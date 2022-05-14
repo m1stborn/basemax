@@ -1,7 +1,4 @@
-import os
-import json
 import logging
-from pathlib import Path
 
 from flask import Blueprint, request, abort
 from linebot import LineBotApi, WebhookHandler
@@ -16,6 +13,7 @@ from linebot.models import (
     QuickReply,
 )
 
+from config import Setting
 from line.game_flex import (
     flex_message_wrapper,
     match_contents,
@@ -26,21 +24,13 @@ from line.standing_flex import (
 )
 from models import game_mod
 
+settings = Setting()
 logger = logging.getLogger(__name__)
-
-ON_HEROKU = os.environ.get('ON_HEROKU', None)
-if ON_HEROKU:
-    LINE_CHANNEL_SECRET = os.environ.get('CHANNEL_SECRET', None)
-    LINE_ACCESS_TOKEN = os.environ.get('CHANNEL_ACCESS_TOKEN', None)
-else:
-    config = json.loads(Path('./config.json').read_text())
-    LINE_CHANNEL_SECRET = config["CHANNEL_SECRET"]
-    LINE_ACCESS_TOKEN = config["CHANNEL_ACCESS_TOKEN"]
 
 line_blueprint = Blueprint('line', __name__, )
 
-line_bot_api = LineBotApi(LINE_ACCESS_TOKEN)
-handler = WebhookHandler(LINE_CHANNEL_SECRET)
+line_bot_api = LineBotApi(settings.CHANNEL_SECRET)
+handler = WebhookHandler(settings.CHANNEL_ACCESS_TOKEN)
 
 
 @line_blueprint.route("/line", methods=['POST'])
