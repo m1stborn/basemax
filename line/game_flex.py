@@ -2,6 +2,7 @@ from linebot.models import (
     FlexSendMessage,
 )
 
+from line.footer_flex import footer_flex
 from models.game_mod import (
     get_games_info,
     get_game_states,
@@ -292,16 +293,25 @@ def game_state_flex(game: Game, game_state: GameState):
     }
 
 
-def get_match_contents():
+def match_contents(footer: bool = True):
     games = get_games_info()
     contents = [match_flex(game) for url, game in games.items()]
+
+    if footer:
+        for flex in contents:
+            flex["footer"] = footer_flex(post_fix="/match")
+
     return contents
 
 
-def get_scoreboard_contents():
+def scoreboard_contents(footer: bool = True):
     game = get_games_info()
     game_states = get_game_states()
 
     contents = [game_state_flex(game[url], state)
                 for url, state in game_states.items() if state != {}]
+    if footer:
+        for flex in contents:
+            flex["footer"] = footer_flex(post_fix="/score")
+
     return contents

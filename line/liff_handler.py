@@ -9,6 +9,10 @@ from flask import request, Blueprint, Response, render_template, abort
 from line.standing_flex import (
     standing_content,
 )
+from line.game_flex import (
+    scoreboard_contents,
+    match_contents,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,12 +34,28 @@ def liff_page():
     abort(404)
 
 
-@liff_blueprint.route("/liff/share/standing", methods=['GET'])
-def liff_share_standing():
+@liff_blueprint.route("/liff/share/<string:action>", methods=['GET'])
+def liff_share_standing(action):
+
+    # TODO: add me flex for default
     alt = "分享CPBL戰績排行"
-    # alt = "CPBL球隊戰績"
     contents = standing_content(footer=False)
     flex = flex_json(alt, contents)
+
+    if action == "standing":
+        alt = "分享CPBL戰績排行"
+        contents = standing_content(footer=False)
+        flex = flex_json(alt, contents)
+
+    elif action == "match":
+        alt = "分享CPBL今日賽事"
+        contents = match_contents(footer=False)
+        flex = flex_json(alt, contents)
+
+    elif action == "score":
+        alt = "分享CPBL即時比數"
+        contents = scoreboard_contents(footer=False)
+        flex = flex_json(alt, contents)
 
     return Response(render_template('share_message.html', flex=flex, liff_id=LIFF_ID))
 

@@ -18,8 +18,8 @@ from linebot.models import (
 
 from line.game_flex import (
     flex_message_wrapper,
-    get_match_contents,
-    get_scoreboard_contents,
+    match_contents,
+    scoreboard_contents,
 )
 from line.standing_flex import (
     standing_content,
@@ -85,7 +85,7 @@ def handle_text_message(event):
 
     if text == "今日賽事":
         alt = "今日賽事"
-        contents = get_match_contents()
+        contents = match_contents()
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
@@ -115,7 +115,7 @@ def handle_text_message(event):
         return
 
     elif text == "即時比數":
-        contents = get_scoreboard_contents()
+        contents = scoreboard_contents()
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
