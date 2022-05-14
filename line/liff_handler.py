@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from typing import Dict
 
-from flask import request, Blueprint, Response, render_template
+from flask import request, Blueprint, Response, render_template, abort
 
 from line.game_flex import flex_message_wrapper
 from line.standing_flex import (
@@ -22,17 +22,11 @@ liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 
 @liff_blueprint.route("/liff/share", methods=['GET'])
 def liff_page():
-    # alt = "分享CPBL戰績排行"
-    # contents = standing_content(footer=False)
-    # flex = flex_json(alt, contents)
-
     if request.args.get("life.state"):
         return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
 
-    return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
-    # else:
-    #     return Response(render_template('share_message.html', flex=flex, liff_id=LIFF_ID))
-
+    # return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
+    abort(404)
 
 # @liff_blueprint.route("/liff/share/liff.state", methods=['GET'])
 # def liff_state_handler():
@@ -40,7 +34,7 @@ def liff_page():
 
 
 @liff_blueprint.route("/liff/share/standing", methods=['GET'])
-def liff_handler():
+def liff_share_standing():
     alt = "分享CPBL戰績排行"
     # alt = "CPBL球隊戰績"
     contents = standing_content(footer=False)
