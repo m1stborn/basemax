@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from pathlib import Path
 from typing import Dict
@@ -9,6 +10,8 @@ from line.game_flex import flex_message_wrapper
 from line.standing_flex import (
     standing_content,
 )
+
+logger = logging.getLogger(__name__)
 
 ON_HEROKU = os.environ.get('ON_HEROKU', None)
 if ON_HEROKU:
@@ -22,7 +25,7 @@ liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 
 @liff_blueprint.route("/liff/share", methods=['GET'])
 def liff_page():
-    print(request.args)
+    logger.info(f"Query string: {request.args}")
     # if request.args.get("life.state"):
     #     return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
     return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
