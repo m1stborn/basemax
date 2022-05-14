@@ -61,7 +61,7 @@ def liff_share_standing(action):
 
 
 def flex_json(alt: str, content: Union[Dict, List[Dict]]):
-    if type(content) == Dict:
+    if isinstance(content, dict):
         content = [content]
     return {
         "type": "flex",
