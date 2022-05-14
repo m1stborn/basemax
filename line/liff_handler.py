@@ -25,6 +25,7 @@ liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 
 @liff_blueprint.route("/liff/share", methods=['GET'])
 def liff_page():
+    print(f"Query string: {request.args}")
     logger.info(f"Query string: {request.args}")
     # if request.args.get("life.state"):
     #     return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
