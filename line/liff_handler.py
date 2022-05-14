@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Union
 
 from flask import request, Blueprint, Response, render_template, abort
 
@@ -60,14 +60,16 @@ def liff_share_standing(action):
     return Response(render_template('share_message.html', flex=flex, liff_id=LIFF_ID))
 
 
-def flex_json(alt: str, content: Dict):
+def flex_json(alt: str, content: Union[Dict, List[Dict]]):
+    if type(content) == Dict:
+        content = [content]
     return {
         "type": "flex",
         "altText": alt,
         "contents": {
             **{
                 "type": "carousel",
-                "contents": [content]
+                "contents": content
             }
         }
     }
