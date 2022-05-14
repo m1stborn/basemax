@@ -22,11 +22,11 @@ liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 
 @liff_blueprint.route("/liff/share", methods=['GET'])
 def liff_page():
-    if request.args.get("life.state"):
-        return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
+    # if request.args.get("life.state"):
+    #     return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
 
-    # return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
-    abort(404)
+    return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
+    # abort(404)
 
 # @liff_blueprint.route("/liff/share/liff.state", methods=['GET'])
 # def liff_state_handler():
