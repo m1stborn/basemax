@@ -42,10 +42,3 @@ class CPBLSetting(BaseModel):
     CPBL_BASE_URl: str = "https://www.cpbl.com.tw"
     CPBL_SCHEDULE_URL: str = "https://www.cpbl.com.tw/schedule"
     CPBL_STANDING_URL: str = "https://www.cpbl.com.tw/standings/season"
-
-
-if __name__ == '__main__':
-    config = CPBLSetting()
-    dev_config = Setting()
-    print(dev_config)
-    print(config.CPBL_BASE_URl)

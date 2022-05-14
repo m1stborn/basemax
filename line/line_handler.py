@@ -29,8 +29,8 @@ logger = logging.getLogger(__name__)
 
 line_blueprint = Blueprint('line', __name__, )
 
-line_bot_api = LineBotApi(settings.CHANNEL_SECRET)
-handler = WebhookHandler(settings.CHANNEL_ACCESS_TOKEN)
+line_bot_api = LineBotApi(settings.CHANNEL_ACCESS_TOKEN)
+handler = WebhookHandler(settings.CHANNEL_SECRET)
 
 
 @line_blueprint.route("/line", methods=['POST'])
