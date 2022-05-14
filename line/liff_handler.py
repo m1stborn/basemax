@@ -6,7 +6,6 @@ from typing import Dict
 
 from flask import request, Blueprint, Response, render_template, abort
 
-from line.game_flex import flex_message_wrapper
 from line.standing_flex import (
     standing_content,
 )
@@ -25,11 +24,10 @@ liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
 
 @liff_blueprint.route("/liff/share", methods=['GET'])
 def liff_page():
-    print(f"Query string: {request.args}")
-    logger.info(f"Query string: {request.args}")
-    # if request.args.get("life.state"):
-    #     return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
-    return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
+    if request.args.get("liff.state"):
+        return Response(render_template('liff_redirect.html', liff_id=LIFF_ID))
+
+    abort(404)
 
 
 @liff_blueprint.route("/liff/share/standing", methods=['GET'])

@@ -9,6 +9,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
     MessageEvent,
     TextMessage,
+    StickerMessage,
     TextSendMessage,
     QuickReplyButton,
     MessageAction,
@@ -71,7 +72,7 @@ default_quick_reply = QuickReply(
 
 
 @handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
+def handle_text_message(event):
     text = event.message.text
 
     game_titles = game_mod.get_game_title()
@@ -138,6 +139,14 @@ def handle_message(event):
     )
 
 
+@handler.add(MessageEvent, message=StickerMessage)
+def handle_sticker_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        messages=TextSendMessage(text=f"需要我做什麼呢?", quick_reply=default_quick_reply)
+    )
+
+
 @line_blueprint.route("/game/scoring_play", methods=['POST'])
 def handel_scoring_play():
     scoring_play_obj = request.get_json()
@@ -149,3 +158,4 @@ def handel_scoring_play():
         line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))
 
     return 'OK'
+
