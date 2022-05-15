@@ -2,7 +2,6 @@
 
 # CPBL Line bot - 中華職棒聊天機器人
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python Version](https://img.shields.io/badge/Python-%3E%3D%203.5-blue.svg)](https://badge.fury.io/py/lotify)
 
 <a href="https://lin.ee/sxU8wpe"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>  
@@ -98,7 +97,3 @@ You can also run crawler locally
     ```
     python selenium_crawler.py --local
     ```
-
-# License
-
-MIT License

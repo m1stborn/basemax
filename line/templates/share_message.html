@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta
@@ -29,7 +29,7 @@
                         liff.closeWindow();
                     } else {
                         const [majorVer, minorVer] = (liff.getLineVersion() || "").split('.');
-                        if (parseInt(majorVer) == 10 && parseInt(minorVer) < 11) {
+                        if (parseInt(majorVer) === 10 && parseInt(minorVer) < 11) {
                             // LINE 10.3.0 - 10.10.0
                             // Old LINE will access here regardless of user's action
                             console.log('TargetPicker was opened at least. Whether succeeded to send message is unclear')
