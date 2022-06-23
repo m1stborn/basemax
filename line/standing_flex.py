@@ -13,12 +13,13 @@ team_name_map = {
     '富邦悍將': '富邦悍將'
 }
 
-team_logo_map = {
-    '樂天桃猿': "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_monkeys.png",
-    '中信兄弟': "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_brothers.png",
-    '味全龍': "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_dragon.png",
-    '統一7-ELEVEn獅': "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_lions.png",
-    '富邦悍將': "https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_fubon.png"
+
+logo_small_url = {
+    '樂天桃猿': "https://www.dropbox.com/s/fyvn64j1c40xqre/logo_monkeys.png?dl=1",
+    '中信兄弟': "https://www.dropbox.com/s/6x8s615dkw69dbj/logo_brothers.png?dl=1",
+    '味全龍': "https://www.dropbox.com/s/zths04obxcgmwnz/logo_dragon.png?dl=1",
+    '統一7-ELEVEn獅': "https://www.dropbox.com/s/1kh4sjle1gfoxpv/logo_lions.png?dl=1",
+    '富邦悍將': "https://www.dropbox.com/s/7m82iev26piqit0/logo_fubon.png?dl=1"
 }
 
 
@@ -94,7 +95,7 @@ def team_row_flex(team: Team) -> Dict:
             {
                 "type": "image",
                 "gravity": "center",
-                "url": team_logo_map[team.team],
+                "url": logo_small_url[team.team],
                 "flex": 2,
                 "aspectMode": "fit",
                 "align": "center"
