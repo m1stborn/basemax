@@ -9,7 +9,6 @@ from config import Setting
 from models import game_cache
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 settings = Setting()
 
 line_notify_blueprint = Blueprint('line_notify', __name__, )
@@ -35,7 +34,6 @@ def handle_line_notify():
 def handle_confirm():
     line_id = request.args.get("state")
     token = get_access_token(code=request.args.get("code"))
-    print(f"New Line Notify user (print): {line_id}, {token}")
     logger.info(f"New Line Notify user: {line_id}, {token}")
 
     # TODO: successful template
