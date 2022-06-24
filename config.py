@@ -21,7 +21,7 @@ class Setting(BaseSettings):
     REDIS_TLS_URL: Optional[str]
 
     # Postgresql
-    DB_URI: str
+    DATABASE_URL: str
 
     # Line
     CHANNEL_ACCESS_TOKEN: str
