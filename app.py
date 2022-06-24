@@ -18,6 +18,7 @@ app.register_blueprint(line_notify_blueprint)
 
 if __name__ == "__main__":
     if settings.ON_HEROKU:
+        app.logger.info("Start heroku server")
         app.run(host='0.0.0.0', debug=True, port=settings.PORT)
     else:
         app.jinja_env.auto_reload = True
