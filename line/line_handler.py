@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlencode
 
 from flask import Blueprint, request, abort
 from linebot import LineBotApi, WebhookHandler
@@ -22,6 +23,7 @@ from line.game_flex import (
 from line.standing_flex import (
     standing_content,
 )
+from line.line_notify_handler import get_auth_link
 from models import game_cache
 
 settings = Setting()
@@ -57,6 +59,7 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
         QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
+        QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
     ]
 )
 
@@ -112,8 +115,22 @@ def handle_text_message(event):
                 messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
             )
             return
+
     elif text == "球隊戰績":
         contents = standing_content()
+
+    elif text == "連結Notify":
+        query_string = {
+            'state': event.source.user_id
+        }
+        url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
+        reply_text = f"請至以下網址連動LINE NOTIFY與CPBLbot:{url}"
+
+        line_bot_api.reply_message(
+            event.reply_token,
+            messages=TextSendMessage(text=reply_text, quick_reply=quick_reply)
+        )
+        return
 
     else:
         line_bot_api.reply_message(
@@ -149,4 +166,3 @@ def handle_scoring_play():
         line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))
 
     return 'OK'
-

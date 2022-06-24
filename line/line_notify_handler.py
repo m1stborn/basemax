@@ -9,6 +9,7 @@ from config import Setting
 from models import game_cache
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 settings = Setting()
 
 line_notify_blueprint = Blueprint('line_notify', __name__, )
@@ -24,16 +25,19 @@ def handle_index():
 
 @line_notify_blueprint.route("/line/notify")
 def handle_line_notify():
-    link = get_auth_link(state=uuid.uuid4())
+    user_id = request.args.get("user_id") or uuid.uuid4()
+    link = get_auth_link(user_id)
     logger.info(f"handle_line_notify-link: {link}")
     return render_template("line_notify_index.html", auth_url=link)
 
 
 @line_notify_blueprint.route("/line/notify/confirm")
 def handle_confirm():
+    user_id = request.args.get("state")
     token = get_access_token(code=request.args.get("code"))
-    print(f"New Line Notify user (print): {token}")
-    logger.info(f"New Line Notify user: {token}")
+    print(f"New Line Notify user (print): {user_id}, {token}")
+    logger.info(f"New Line Notify user: {user_id}, {token}")
+
     # TODO: successful template
     return "Connect to Line Notify Successful!"
 
@@ -47,17 +51,18 @@ def send():
     for play in scoring_play:
         text = "\n\n".join(play.values())
         # line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))
+
         logger.info(f"New scoring play: {text}")
         # send_notify(text, "access_token")
 
 
-def get_auth_link(state):
+def get_auth_link(user_id):
     query_string = {
         'scope': 'notify',
         'response_type': 'code',
         'client_id': settings.LINE_NOTIFY_CLIENT_ID,
         'redirect_uri': REDIRECT_URI,
-        'state': state
+        'state': user_id
     }
 
     return '{url}/oauth/authorize?{query_string}'.format(
