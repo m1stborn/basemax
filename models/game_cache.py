@@ -8,16 +8,19 @@ import redis
 
 from schemas.game import Game, GameState
 from schemas.standing import Team
+from config import Setting
 
 logger = logging.getLogger(__name__)
+setting = Setting()
 
-ON_HEROKU = os.environ.get('ON_HEROKU', None)
-if ON_HEROKU:
-    REDIS_URL = os.environ.get('REDIS_URL', None)
-else:
-    config = json.loads(Path('./config.json').read_text())
-    REDIS_URL = config["REDIS_URL"]
+# ON_HEROKU = os.environ.get('ON_HEROKU', None)
+# if ON_HEROKU:
+#     REDIS_URL = os.environ.get('REDIS_URL', None)
+# else:
+#     config = json.loads(Path('./config.json').read_text())
+#     REDIS_URL = config["REDIS_URL"]
 
+REDIS_URL = setting.REDIS_URL
 r = redis.from_url(REDIS_URL)
 
 

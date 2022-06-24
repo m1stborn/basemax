@@ -11,16 +11,26 @@ def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
 
 
 class Setting(BaseSettings):
-    ON_HEROKU: str
+    # Heroku
+    ON_HEROKU: bool
     PORT: int
+    API_BASE: str
+
+    # Redis
     REDIS_URL: str
     REDIS_TLS_URL: Optional[str]
 
-    API_BASE: str
+    # Postgresql
+    DB_URI: str
 
+    # Line
     CHANNEL_ACCESS_TOKEN: str
     CHANNEL_SECRET: str
     LIFF_SHARE_ID: str
+
+    # Line notify
+    LINE_NOTIFY_CLIENT_ID: str
+    LINE_NOTIFY_CLIENT_SECRET: str
 
     class Config:
 

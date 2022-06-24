@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from schemas.standing import Team
-from models import game_mod
+from models import game_cache
 from line.footer_flex import footer_flex
 
 

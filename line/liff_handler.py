@@ -15,7 +15,7 @@ from line.standing_flex import (
 settings = Setting()
 logger = logging.getLogger(__name__)
 
-liff_blueprint = Blueprint('liff', __name__, template_folder="./templates")
+liff_blueprint = Blueprint('liff', __name__, )
 
 
 @liff_blueprint.route("/liff/share", methods=['GET'])

@@ -3,7 +3,7 @@ from linebot.models import (
 )
 
 from line.footer_flex import footer_flex
-from models.game_mod import (
+from models.game_cache import (
     get_games_info,
     get_game_states,
 )

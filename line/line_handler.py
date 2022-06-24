@@ -22,7 +22,7 @@ from line.game_flex import (
 from line.standing_flex import (
     standing_content,
 )
-from models import game_mod
+from models import game_cache
 
 settings = Setting()
 logger = logging.getLogger(__name__)
@@ -65,7 +65,7 @@ default_quick_reply = QuickReply(
 def handle_text_message(event):
     text = event.message.text
 
-    game_titles = game_mod.get_game_title()
+    game_titles = game_cache.get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
 
     logger.info(f"Message Event = {event}")
@@ -97,7 +97,7 @@ def handle_text_message(event):
         return
 
     elif text in game_titles.values():
-        game_mod.update_broadcast_list(game_titles_to_url[text], event.source.user_id)
+        game_cache.update_broadcast_list(game_titles_to_url[text], event.source.user_id)
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=f"開始轉播{text}", quick_reply=quick_reply)
@@ -114,6 +114,7 @@ def handle_text_message(event):
             return
     elif text == "球隊戰績":
         contents = standing_content()
+
     else:
         line_bot_api.reply_message(
             event.reply_token,
@@ -138,11 +139,11 @@ def handle_sticker_message(event):
 
 
 @line_blueprint.route("/game/scoring_play", methods=['POST'])
-def handel_scoring_play():
+def handle_scoring_play():
     scoring_play_obj = request.get_json()
     game_url = scoring_play_obj.get("game_url_postfix")
     scoring_play = scoring_play_obj.get("scoring_play")
-    user_id_list = game_mod.get_broadcast_list(game_url)
+    user_id_list = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
         text = "\n\n".join(play.values())
         line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))
