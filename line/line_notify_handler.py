@@ -32,6 +32,7 @@ def handle_line_notify():
 @line_notify_blueprint.route("/line/notify/confirm")
 def handle_confirm():
     token = get_access_token(code=request.args.get("code"))
+    print(f"New Line Notify user (print): {token}")
     logger.info(f"New Line Notify user: {token}")
     # TODO: successful template
     return "Connect to Line Notify Successful!"
