@@ -25,18 +25,18 @@ def handle_index():
 
 @line_notify_blueprint.route("/line/notify")
 def handle_line_notify():
-    user_id = request.args.get("user_id") or uuid.uuid4()
-    link = get_auth_link(user_id)
+    line_id = request.args.get("state") or uuid.uuid4()
+    link = get_auth_link(line_id)
     logger.info(f"handle_line_notify-link: {link}")
     return render_template("line_notify_index.html", auth_url=link)
 
 
 @line_notify_blueprint.route("/line/notify/confirm")
 def handle_confirm():
-    user_id = request.args.get("state")
+    line_id = request.args.get("state")
     token = get_access_token(code=request.args.get("code"))
-    print(f"New Line Notify user (print): {user_id}, {token}")
-    logger.info(f"New Line Notify user: {user_id}, {token}")
+    print(f"New Line Notify user (print): {line_id}, {token}")
+    logger.info(f"New Line Notify user: {line_id}, {token}")
 
     # TODO: successful template
     return "Connect to Line Notify Successful!"

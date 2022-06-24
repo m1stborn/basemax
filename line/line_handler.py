@@ -120,11 +120,12 @@ def handle_text_message(event):
         contents = standing_content()
 
     elif text == "連結Notify":
+        # TODO: get line_id by func, should support group_id in future
         query_string = {
             'state': event.source.user_id
         }
         url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
-        reply_text = f"請至以下網址連動LINE NOTIFY與CPBLbot:{url}"
+        reply_text = f"請至以下網址連動LINE NOTIFY與CPBLbot:\n{url}"
 
         line_bot_api.reply_message(
             event.reply_token,
