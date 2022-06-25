@@ -13,6 +13,7 @@ from linebot.models import (
     MessageAction,
     QuickReply,
 )
+from werkzeug.local import LocalProxy
 
 from config import Setting
 from line.game_flex import (
@@ -29,6 +30,8 @@ from models import game_cache
 settings = Setting()
 # logger = logging.getLogger(__name__)
 # logger = current_app.logger
+logger = LocalProxy(lambda: current_app.logger)
+
 
 line_blueprint = Blueprint('line', __name__, )
 
@@ -48,7 +51,7 @@ def callback():
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        current_app.logger.error("Invalid signature. Please check your channel access token/channel secret.")
+        logger.error("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
 
     return 'OK'
@@ -72,7 +75,7 @@ def handle_text_message(event):
     game_titles = game_cache.get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
 
-    current_app.logger.info(f"Message Event = {event}")
+    logger.info(f"Message Event = {event}")
     alt = "觀看更多"
 
     quick_reply = default_quick_reply
