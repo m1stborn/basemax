@@ -28,7 +28,7 @@ from models import game_cache
 
 settings = Setting()
 # logger = logging.getLogger(__name__)
-logger = current_app.logger
+# logger = current_app.logger
 
 line_blueprint = Blueprint('line', __name__, )
 
@@ -48,7 +48,7 @@ def callback():
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
-        logger.error("Invalid signature. Please check your channel access token/channel secret.")
+        current_app.logger.error("Invalid signature. Please check your channel access token/channel secret.")
         abort(400)
 
     return 'OK'
@@ -72,7 +72,7 @@ def handle_text_message(event):
     game_titles = game_cache.get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
 
-    logger.info(f"Message Event = {event}")
+    current_app.logger.info(f"Message Event = {event}")
     alt = "觀看更多"
 
     quick_reply = default_quick_reply
