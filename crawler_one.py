@@ -3,24 +3,25 @@ import logging
 import os
 import re
 import time
-from multiprocessing import Process, Lock
 from argparse import Namespace, ArgumentParser
 from datetime import date
-from pathlib import Path
+from multiprocessing import Process, Lock
+from random import randint
 from typing import Dict
 from typing import List, Optional
-from random import randint
 
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 
-from line.standing_flex import standing_content
-from models import game_mod
-from schemas.game import Game, GameState, Play
-from schemas.standing import Team, Standing
-from utils import error_handler
 from config import Setting, CPBLSetting
+from models import game_cache
+from schemas.game import Game, GameState, Play
+from schemas.standing import Team
+from utils import error_handler
+
+settings = Setting()
+cpbl = CPBLSetting()
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -50,17 +51,6 @@ else:
     options.add_argument("--log-level=3")
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
     browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
-
-
-# config = json.loads(Path('./config.json').read_text())
-# REDIS_URL = config["REDIS_URL"]
-# HEROKU_BASE = config["HEROKU_BASE"]
-# EMPTY_LINK = 'javascript:;'
-# BASE_URL = "https://www.cpbl.com.tw"
-# SCHEDULE_URL = "https://www.cpbl.com.tw/schedule"
-# STANDING_URL = "https://www.cpbl.com.tw/standings/season"
-settings = Setting()
-cpbl = CPBLSetting()
 
 
 def get_page(url: str, wait: int = 0) -> str:
@@ -98,16 +88,16 @@ def crawl_today_games_info(wait: int = 0.5) -> Dict[str, Game]:
     place = [game.find('div', class_="place").get_text() for game in games_soup]
 
     result = day_soup.parent.findAll('a') if day_soup is not None else []
-    game_url_postfix = [game['href'] for game in result if game['href'] != EMPTY_LINK]
+    game_url_postfix = [game['href'] for game in result if game['href'] != cpbl.EMPTY_LINK]
 
     game_infos = {
         game_url_postfix[i]: {
             "team_home": team_home[i],
             "team_away": team_away[i],
             "game_url_postfix": game_url_postfix[i],
-            "game_url": BASE_URL + game_url_postfix[i],
-            "game_live_url": BASE_URL + game_url_postfix[i].replace('/box', '/box/live'),
-            "game_index_url": BASE_URL + game_url_postfix[i].replace('/box', '/box/index'),
+            "game_url": cpbl.CPBL_BASE_URl + game_url_postfix[i],
+            "game_live_url": cpbl.CPBL_BASE_URl + game_url_postfix[i].replace('/box', '/box/live'),
+            "game_index_url": cpbl.CPBL_BASE_URl + game_url_postfix[i].replace('/box', '/box/index'),
             "baseball_field": place[i],
             "game_time": date.today().strftime("%B %d, %Y ") + game_time[i],
         } for i in range(len(game_url_postfix))}
@@ -141,7 +131,6 @@ def crawl_game_state(game_url: str, wait: int = 0.5) -> Optional[GameState]:
         ball = sum([len(s["class"]) == 2 for s in ball])
 
         out = sbo.find("div", class_="out").findAll("span")
-        print(out)
         out = sum([len(s["class"]) == 2 for s in out])
         return GameState(
             inning=inning,
@@ -185,7 +174,7 @@ def crawl_game_score_plays(game: Game, wait: int = 0.5) -> List[Play]:
 
 @error_handler(Exception, logger=logger)
 def crawl_standings(wait: int = 0.5) -> (str, List[Team]):
-    page = get_page(STANDING_URL, wait)
+    page = get_page(cpbl.CPBL_STANDING_URL, wait)
     soup = BeautifulSoup(page, "html.parser")
 
     title = soup.find("div", class_="DistTitle")
@@ -232,7 +221,8 @@ def stream_scoring_play(game: Game, plays: List[Play]):
         "game_url_postfix": game.game_url_postfix,
         "scoring_play": json.loads(json.dumps(plays, default=vars))
     }
-    response = requests.post(settings.API_BASE + "/game/scoring_play", json=payload)
+    # response = requests.post(settings.API_BASE + "/game/scoring_play", json=payload)
+    response = requests.post(settings.API_BASE + "/line/notify/scoring_play", json=payload)
 
     if response.status_code == 400:
         logger.error(f"Status code 400: payload = {payload}")
@@ -251,7 +241,7 @@ def game_tracker(game: Game, args):
             # 2. Get game state
             game_state = crawl_game_state(game.game_url)
             if game_state is not None and not args.local:
-                game_mod.update_one_game_state(game.game_url_postfix, game_state)
+                game_cache.update_one_game_state(game.game_url_postfix, game_state)
                 logger.info(f"Game state: {game_state}")
 
             # 3. Get Scoring plays
@@ -269,7 +259,7 @@ def game_tracker(game: Game, args):
 
                 if not args.local:
                     stream_scoring_play(game, new_scoring_plays)
-                    game_mod.update_one_game_data(updated_game)
+                    game_cache.update_one_game_data(updated_game)
 
             # 4. Check game end
             if check_game_end(game.game_live_url):
@@ -290,8 +280,8 @@ def main(args):
     logger.info(f"Today's games: {games}")
 
     if not args.local:
-        game_mod.init_data(games)
-        game_mod.update_games_data(games)
+        game_cache.init_data(games)
+        game_cache.update_games_data(games)
 
     # 2. Tracking today's games: only track the game that are not postponed
     games = {k: game for k, game in games.items() if "延賽" not in game.game_time}
@@ -305,7 +295,7 @@ def main(args):
 
     # 3. Update standing
     title, teams = crawl_standings()
-    game_mod.update_standings(title, teams)
+    game_cache.update_standings(title, teams)
 
 
 def parse_args() -> Namespace:

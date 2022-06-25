@@ -25,7 +25,7 @@ from line.standing_flex import (
     standing_content,
 )
 from line.line_notify_handler import get_auth_link
-from models import game_cache
+from models import game_cache, line_user
 
 settings = Setting()
 logger = LocalProxy(lambda: current_app.logger)
@@ -102,7 +102,12 @@ def handle_text_message(event):
         return
 
     elif text in game_titles.values():
-        game_cache.update_broadcast_list(game_titles_to_url[text], event.source.user_id)
+        # game_cache.update_broadcast_list(game_titles_to_url[text], event.source.user_id)
+
+        # Now the broadcast_list caching to notify token, not user_id anymore.
+        user = line_user.get_user_by_id(event.source.user_id)
+        logger.info(f"Get user: {user}")
+        game_cache.update_broadcast_list(game_titles_to_url[text], user.line_notify_access_token)
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=f"開始轉播{text}", quick_reply=quick_reply)
