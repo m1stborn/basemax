@@ -95,6 +95,14 @@ def handle_text_message(event):
                 for i, (url, title) in enumerate(game_titles.items())
             ]
         )
+
+        if line_user.check_notify_connect(event.source.user_id):
+            reply_text = get_notify_connect_reply(event.source.user_id)
+            line_bot_api.reply_message(
+                event.reply_token,
+                messages=TextSendMessage(text=reply_text)
+            )
+
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=f"想要轉播的比賽?", quick_reply=quick_reply),
@@ -102,7 +110,8 @@ def handle_text_message(event):
         return
 
     elif text in game_titles.values():
-        # game_cache.update_broadcast_list(game_titles_to_url[text], event.source.user_id)
+        user = line_user.get_user_by_id(event.source.user_id)
+        game_cache.update_broadcast_list(game_titles_to_url[text], user.line_notify_access_token)
 
         # Now the broadcast_list caching to notify token, not user_id anymore.
         user = line_user.get_user_by_id(event.source.user_id)
@@ -128,12 +137,7 @@ def handle_text_message(event):
 
     elif text == "連結Notify":
         # TODO: get line_id by func, should support group_id in future
-        query_string = {
-            'state': event.source.user_id
-        }
-        url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
-        reply_text = f"請至以下網址連動LINE NOTIFY與CPBLbot:\n{url}"
-
+        reply_text = get_notify_connect_reply(event.source.user_id)
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=reply_text, quick_reply=quick_reply)
@@ -174,3 +178,13 @@ def handle_scoring_play():
         line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))
 
     return 'OK'
+
+
+def get_notify_connect_reply(line_id: str) -> str:
+    query_string = {
+        'state': line_id
+    }
+    url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
+    reply_text = f"第一次使用文字轉播請至以下網址連動LINE NOTIFY與CPBLbot:\n{url}\n" \
+                 f"連結成功後即可在Line Notify頻道中接收文字轉播!"
+    return reply_text

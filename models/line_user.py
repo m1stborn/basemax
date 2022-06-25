@@ -48,6 +48,15 @@ def get_user_by_id(line_id: str) -> LineUser:
     return user
 
 
+def check_notify_connect(line_id: str) -> bool:
+    user = get_user_by_id(line_id)
+    if user is None:
+        return False
+    elif user.line_notify_access_token is None:
+        return False
+    return True
+
+
 def insert_line_user(line_id: str, access_token: str):
     session = create_session()
     user = LineUser(line_user_id=line_id,

@@ -10,8 +10,8 @@ from line.line_notify_handler import line_notify_blueprint
 settings = Setting()
 
 app = Flask(__name__,
-            static_folder="line/templates/static",
-            template_folder="line/templates")
+            static_folder="./line/templates/static",
+            template_folder="./line/templates")
 
 app.logger.setLevel(logging.INFO)
 app.register_blueprint(line_blueprint)
