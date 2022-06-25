@@ -28,8 +28,6 @@ from line.line_notify_handler import get_auth_link
 from models import game_cache
 
 settings = Setting()
-# logger = logging.getLogger(__name__)
-# logger = current_app.logger
 logger = LocalProxy(lambda: current_app.logger)
 
 

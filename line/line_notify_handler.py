@@ -3,13 +3,15 @@ import uuid
 from urllib.parse import urlencode
 
 import requests
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, current_app
+from werkzeug.local import LocalProxy
 
 from config import Setting
 from models import game_cache
 
-logger = logging.getLogger(__name__)
 settings = Setting()
+logger = LocalProxy(lambda: current_app.logger)
+
 
 line_notify_blueprint = Blueprint('line_notify', __name__, )
 
