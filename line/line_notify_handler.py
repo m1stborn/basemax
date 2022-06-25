@@ -3,7 +3,7 @@ import uuid
 from urllib.parse import urlencode
 
 import requests
-from flask import Blueprint, request, render_template, current_app
+from flask import Blueprint, request, render_template, current_app, jsonify
 from werkzeug.local import LocalProxy
 
 from config import Setting
@@ -57,6 +57,9 @@ def handle_notify_scoring_play():
 
         for token in access_tokens:
             send_notify(text, token)
+
+    resp = jsonify(success=True)
+    return resp
 
 
 def get_auth_link(user_id):
