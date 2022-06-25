@@ -14,8 +14,8 @@ app = Flask(__name__,
             static_folder="line/templates/static",
             template_folder="line/templates")
 
-app.wsgi_app = WhiteNoise(app.wsgi_app)
-app.wsgi_app.add_files("line/templates/static")
+# app.wsgi_app = WhiteNoise(app.wsgi_app, root="line/templates/static")
+# app.wsgi_app.add_files("line/templates/static")
 
 app.logger.setLevel(logging.INFO)
 app.register_blueprint(line_blueprint)
