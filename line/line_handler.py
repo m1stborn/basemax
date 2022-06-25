@@ -102,7 +102,7 @@ def handle_text_message(event):
 
             # line_bot_api.reply_message(
             #     event.reply_token,
-            #     messages=TextSendMessage(text=append_text)
+            #     messages=TextSendMessage(text=append_text, quick_reply=quick_reply)
             # )
             # return
 

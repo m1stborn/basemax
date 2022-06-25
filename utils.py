@@ -81,6 +81,7 @@ def error_handler(exception_to_check, tries=5, delay=1, backoff=2, driver_delay=
 
     return deco_retry
 
+
 # Use case example
 @error_handler(Exception, tries=4)
 def test_fail(text):
