@@ -95,17 +95,20 @@ def handle_text_message(event):
                 for i, (url, title) in enumerate(game_titles.items())
             ]
         )
+        reply_text = "想要轉播的比賽?"
+        if not line_user.check_notify_connect(event.source.user_id):
+            append_text = get_notify_connect_reply(event.source.user_id)
+            reply_text = f"{append_text}\n{reply_text}"
 
-        if line_user.check_notify_connect(event.source.user_id):
-            reply_text = get_notify_connect_reply(event.source.user_id)
-            line_bot_api.reply_message(
-                event.reply_token,
-                messages=TextSendMessage(text=reply_text)
-            )
+            # line_bot_api.reply_message(
+            #     event.reply_token,
+            #     messages=TextSendMessage(text=append_text)
+            # )
+            # return
 
         line_bot_api.reply_message(
             event.reply_token,
-            messages=TextSendMessage(text=f"想要轉播的比賽?", quick_reply=quick_reply),
+            messages=TextSendMessage(text=reply_text, quick_reply=quick_reply),
         )
         return
 
