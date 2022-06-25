@@ -6,7 +6,7 @@ from config import Setting
 
 config = Setting()
 
-engine = create_engine(config.DATABASE_URL.replace("://", "ql://", 1))
+engine = create_engine(config.DATABASE_URL.replace("postgres://", "postgresql://", 1))
 Base = declarative_base()
 
 
