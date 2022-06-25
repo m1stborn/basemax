@@ -232,7 +232,7 @@ def standing_flex(title: str, teams: List[Team]) -> Dict:
 
 
 def standing_content(footer: bool = True):
-    title, teams = game_mod.get_standings()
+    title, teams = game_cache.get_standings()
     flex = standing_flex(title, teams)
     if footer:
         flex["footer"] = footer_flex()
