@@ -6,16 +6,12 @@ from config import Setting
 from line.liff_handler import liff_blueprint
 from line.line_handler import line_blueprint
 from line.line_notify_handler import line_notify_blueprint
-from whitenoise import WhiteNoise
 
 settings = Setting()
 
 app = Flask(__name__,
             static_folder="line/templates/static",
             template_folder="line/templates")
-
-# app.wsgi_app = WhiteNoise(app.wsgi_app, root="line/templates/static")
-# app.wsgi_app.add_files("line/templates/static")
 
 app.logger.setLevel(logging.INFO)
 app.register_blueprint(line_blueprint)
