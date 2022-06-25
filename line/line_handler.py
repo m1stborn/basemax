@@ -1,7 +1,7 @@
 import logging
 from urllib.parse import urlencode
 
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, current_app
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
@@ -27,7 +27,8 @@ from line.line_notify_handler import get_auth_link
 from models import game_cache
 
 settings = Setting()
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
+logger = current_app.logger
 
 line_blueprint = Blueprint('line', __name__, )
 
