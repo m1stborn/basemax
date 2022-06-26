@@ -69,8 +69,9 @@ def handle_notify_scoring_play():
     access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
         text = f"{game_title}\n" \
-               f"{play['inning']} {play['score'].split(' ')[2]} \n" \
-               f"{play['play']}"
+               f"{play['inning']}\n" \
+               f"{play['scoring']}\n" \
+               f"{play['play']}\n"
         logger.info(f"New scoring play: {text}")
 
         for token in access_tokens:
