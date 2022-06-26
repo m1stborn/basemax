@@ -2,8 +2,9 @@ import logging
 import uuid
 from urllib.parse import urlencode
 
+import jwt
 import requests
-from flask import Blueprint, request, render_template, current_app, jsonify
+from flask import Blueprint, request, render_template, current_app, jsonify, abort
 from werkzeug.local import LocalProxy
 
 from config import Setting
@@ -47,6 +48,14 @@ def handle_confirm():
 
 @line_notify_blueprint.route("/line/notify/scoring_play", methods=["POST"])
 def handle_notify_scoring_play():
+    # Verified:
+    bearer = request.headers.get('Authorization')
+    jwt_token = bearer.split()[1]
+    try:
+        _ = jwt.decode(jwt_token, settings.CPBLBOT_SECRET_KEY, algorithms=['HS256'])
+    except jwt.exceptions.InvalidSignatureError as e:
+        return abort(400)
+
     scoring_play_obj = request.get_json()
     game_title = scoring_play_obj.get("game_title")
     game_url = scoring_play_obj.get("game_url_postfix")
