@@ -15,6 +15,8 @@ class Setting(BaseSettings):
     ON_HEROKU: bool
     PORT: int
     API_BASE: str
+    CPBLBOT_SECRET_KEY: str
+    TOKEN: Optional[str]
 
     # Redis
     REDIS_URL: str
