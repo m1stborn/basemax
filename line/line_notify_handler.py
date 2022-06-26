@@ -62,16 +62,15 @@ def handle_notify_scoring_play():
         return abort(400)
 
     scoring_play_obj = request.get_json()
-    game_title = scoring_play_obj.get("game_title")
     game_url = scoring_play_obj.get("game_url_postfix")
     scoring_play = scoring_play_obj.get("scoring_play")
 
     access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
-        text = f"{game_title}\n" \
+        text = f"{play['score']}\n" \
                f"{play['inning']}\n" \
-               f"{play['score']}\n" \
-               f"{play['play']}\n"
+               f"{play['play']}\n\n" \
+               f"{play['score']}\n"
         logger.info(f"New scoring play: {text}")
 
         for token in access_tokens:
