@@ -3,6 +3,11 @@ import uuid
 from urllib.parse import urlencode
 
 import jwt
+from jwt.exceptions import (
+    InvalidSignatureError,
+    InvalidTokenError,
+    DecodeError,
+)
 import requests
 from flask import Blueprint, request, render_template, current_app, jsonify, abort
 from werkzeug.local import LocalProxy
@@ -53,7 +58,7 @@ def handle_notify_scoring_play():
     jwt_token = bearer.split()[1]
     try:
         _ = jwt.decode(jwt_token, settings.CPBLBOT_SECRET_KEY, algorithms=['HS256'])
-    except jwt.exceptions.InvalidSignatureError as e:
+    except (InvalidSignatureError, InvalidTokenError, DecodeError) as e:
         return abort(400)
 
     scoring_play_obj = request.get_json()
