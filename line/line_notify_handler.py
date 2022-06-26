@@ -53,7 +53,7 @@ def handle_confirm():
 
 @line_notify_blueprint.route("/line/notify/scoring_play", methods=["POST"])
 def handle_notify_scoring_play():
-    # Verified:
+    # Verification:
     bearer = request.headers.get('Authorization')
     jwt_token = bearer.split()[1]
     try:
@@ -68,7 +68,9 @@ def handle_notify_scoring_play():
 
     access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
-        text = f"{game_title}\n" + "\n\n".join(play.values())
+        text = f"{game_title}\n" \
+               f"{scoring_play['inning']} {scoring_play['score']} \n" \
+               f"{scoring_play['play']}"
         logger.info(f"New scoring play: {text}")
 
         for token in access_tokens:
