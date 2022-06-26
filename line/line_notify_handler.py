@@ -70,7 +70,7 @@ def handle_notify_scoring_play():
     for play in scoring_play:
         text = f"{game_title}\n" \
                f"{play['inning']}\n" \
-               f"{play['scoring']}\n" \
+               f"{play['score']}\n" \
                f"{play['play']}\n"
         logger.info(f"New scoring play: {text}")
 
