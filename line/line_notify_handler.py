@@ -70,7 +70,7 @@ def handle_notify_scoring_play():
         text = f"{play['score']}\n" \
                f"{play['inning']}\n" \
                f"{play['play']}\n\n" \
-               f"{play['score']}\n"
+               f"{play['score']}"
         logger.info(f"New scoring play: {text}")
 
         for token in access_tokens:

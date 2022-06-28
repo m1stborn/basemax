@@ -10,11 +10,11 @@ from models.game_cache import (
 from schemas.game import Game, GameState
 
 logo_large_url = {
-    " 中信兄弟 ": "https://www.dropbox.com/s/ey3sjbds59umt9p/logo_brothers_large.png?dl=1",
-    " 味全龍 ": "https://www.dropbox.com/s/rqgyx6zaaf4sj8h/logo_dragon_large.png?dl=1",
-    " 富邦悍將 ": "https://www.dropbox.com/s/94aq394s7w3b5wu/logo_fubon_large.png?dl=1",
-    " 統一7-ELEVEn獅 ": "https://www.dropbox.com/s/9ckrf50o8m3hj71/logo_lions_large.png?dl=1",
-    " 樂天桃猿 ": "https://www.dropbox.com/s/e0qbbbdb1ul5dm2/logo_monkeys_large.png?dl=1"
+    "中信兄弟": "https://www.dropbox.com/s/ey3sjbds59umt9p/logo_brothers_large.png?dl=1",
+    "味全龍": "https://www.dropbox.com/s/rqgyx6zaaf4sj8h/logo_dragon_large.png?dl=1",
+    "富邦悍將": "https://www.dropbox.com/s/94aq394s7w3b5wu/logo_fubon_large.png?dl=1",
+    "統一7-ELEVEn獅": "https://www.dropbox.com/s/9ckrf50o8m3hj71/logo_lions_large.png?dl=1",
+    "樂天桃猿": "https://www.dropbox.com/s/e0qbbbdb1ul5dm2/logo_monkeys_large.png?dl=1"
 }
 
 base_wrap_image = {
