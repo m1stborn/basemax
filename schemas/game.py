@@ -1,6 +1,8 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
+from schemas.player import Batter, Pitcher
+
 
 class Play(BaseModel):
     inning: str
@@ -31,11 +33,22 @@ class GameState(BaseModel):
     out: int
 
 
+class GameBox(BaseModel):
+    game_url_postfix: str = ""
+    game_title: str = ""
+    away_bat_box: Optional[List[Batter]]
+    away_pitch_box: Optional[List[Pitcher]]
+    home_bat_box: Optional[List[Batter]]
+    home_pitch_box: Optional[List[Pitcher]]
+
+
 # class Games(BaseModel):
 #     def __getitem__(self, index):
 #         Ga
 
+
 if __name__ == "__main__":
+    box = GameBox()
     test_game_info = {
         "team_home": " 味全龍 ",
         "team_away": " 統一7-ELEVEn獅 ",
