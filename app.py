@@ -9,7 +9,10 @@ from line.line_notify_handler import line_notify_blueprint
 
 settings = Setting()
 
-app = Flask(__name__, static_folder="./line/templates/static", template_folder="./line/templates")
+app = Flask(__name__,
+            static_folder="./line/templates/static",
+            template_folder="./line/templates")
+
 app.logger.setLevel(logging.INFO)
 app.register_blueprint(line_blueprint)
 app.register_blueprint(liff_blueprint)
@@ -18,7 +21,8 @@ app.register_blueprint(line_notify_blueprint)
 
 if __name__ == "__main__":
     if settings.ON_HEROKU:
-        app.run(host='0.0.0.0', debug=False, port=settings.PORT)
+        app.logger.info("Start heroku server")
+        app.run(host='0.0.0.0', debug=True, port=settings.PORT)
     else:
         app.jinja_env.auto_reload = True
         app.config['TEMPLATES_AUTO_RELOAD'] = True

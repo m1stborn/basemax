@@ -1,6 +1,7 @@
 import logging
+from urllib.parse import urlencode
 
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, current_app
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
@@ -12,6 +13,7 @@ from linebot.models import (
     MessageAction,
     QuickReply,
 )
+from werkzeug.local import LocalProxy
 
 from config import Setting
 from line.game_flex import (
@@ -22,10 +24,12 @@ from line.game_flex import (
 from line.standing_flex import (
     standing_content,
 )
-from models import game_cache
+from line.line_notify_handler import get_auth_link
+from models import game_cache, line_user
 
 settings = Setting()
-logger = logging.getLogger(__name__)
+logger = LocalProxy(lambda: current_app.logger)
+
 
 line_blueprint = Blueprint('line', __name__, )
 
@@ -57,6 +61,7 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
         QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
+        QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
     ]
 )
 
@@ -90,14 +95,31 @@ def handle_text_message(event):
                 for i, (url, title) in enumerate(game_titles.items())
             ]
         )
+        reply_text = "想要轉播的比賽?"
+        if not line_user.check_notify_connect(event.source.user_id):
+            append_text = get_notify_connect_reply(event.source.user_id)
+            reply_text = f"{append_text}\n{reply_text}"
+
+            # line_bot_api.reply_message(
+            #     event.reply_token,
+            #     messages=TextSendMessage(text=append_text, quick_reply=quick_reply)
+            # )
+            # return
+
         line_bot_api.reply_message(
             event.reply_token,
-            messages=TextSendMessage(text=f"想要轉播的比賽?", quick_reply=quick_reply),
+            messages=TextSendMessage(text=reply_text, quick_reply=quick_reply),
         )
         return
 
     elif text in game_titles.values():
-        game_cache.update_broadcast_list(game_titles_to_url[text], event.source.user_id)
+        user = line_user.get_user_by_id(event.source.user_id)
+        game_cache.update_broadcast_list(game_titles_to_url[text], user.line_notify_access_token)
+
+        # Now the broadcast_list caching to notify token, not user_id anymore.
+        user = line_user.get_user_by_id(event.source.user_id)
+        logger.info(f"Get user: {user}")
+        game_cache.update_broadcast_list(game_titles_to_url[text], user.line_notify_access_token)
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=f"開始轉播{text}", quick_reply=quick_reply)
@@ -112,8 +134,18 @@ def handle_text_message(event):
                 messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
             )
             return
+
     elif text == "球隊戰績":
         contents = standing_content()
+
+    elif text == "連結Notify":
+        # TODO: get line_id by func, should support group_id in future
+        reply_text = get_notify_connect_reply(event.source.user_id)
+        line_bot_api.reply_message(
+            event.reply_token,
+            messages=TextSendMessage(text=reply_text, quick_reply=quick_reply)
+        )
+        return
 
     else:
         line_bot_api.reply_message(
@@ -150,3 +182,12 @@ def handle_scoring_play():
 
     return 'OK'
 
+
+def get_notify_connect_reply(line_id: str) -> str:
+    query_string = {
+        'state': line_id
+    }
+    url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
+    reply_text = f"第一次使用文字轉播請至以下網址連動LINE NOTIFY與CPBLbot:\n{url}\n" \
+                 f"連結成功後即可在Line Notify頻道中接收文字轉播!"
+    return reply_text

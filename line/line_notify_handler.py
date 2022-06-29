@@ -2,19 +2,28 @@ import logging
 import uuid
 from urllib.parse import urlencode
 
+import jwt
+from jwt.exceptions import (
+    InvalidSignatureError,
+    InvalidTokenError,
+    DecodeError,
+)
 import requests
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, current_app, jsonify, abort
+from werkzeug.local import LocalProxy
 
 from config import Setting
-from models import game_cache
+from models import game_cache, line_user
 
-logger = logging.getLogger(__name__)
 settings = Setting()
+logger = LocalProxy(lambda: current_app.logger)
+
 
 line_notify_blueprint = Blueprint('line_notify', __name__, )
 
 REDIRECT_URI = f"{settings.API_BASE}/line/notify/confirm"
 NOTIFY_BOT_URL = "https://notify-bot.line.me"
+NOTIFY_API_URL = "https://notify-api.line.me/api/notify"
 
 
 @line_notify_blueprint.route("/")
@@ -24,37 +33,60 @@ def handle_index():
 
 @line_notify_blueprint.route("/line/notify")
 def handle_line_notify():
-    link = get_auth_link(state=uuid.uuid4())
+    line_id = request.args.get("state") or uuid.uuid4()
+    link = get_auth_link(line_id)
     logger.info(f"handle_line_notify-link: {link}")
     return render_template("line_notify_index.html", auth_url=link)
 
 
 @line_notify_blueprint.route("/line/notify/confirm")
 def handle_confirm():
+    line_id = request.args.get("state")
     token = get_access_token(code=request.args.get("code"))
-    logger.info(f"New Line Notify user: {token}")
+
+    logger.info(f"New Line Notify user: {line_id}, {token}")
+    line_user.insert_line_user(line_id, token)
+
+    # TODO: successful template
+    return "Connect to Line Notify Successful!"
 
 
 @line_notify_blueprint.route("/line/notify/scoring_play", methods=["POST"])
-def send():
+def handle_notify_scoring_play():
+    # Verification:
+    bearer = request.headers.get('Authorization')
+    jwt_token = bearer.split()[1]
+    try:
+        _ = jwt.decode(jwt_token, settings.CPBLBOT_SECRET_KEY, algorithms=['HS256'])
+    except (InvalidSignatureError, InvalidTokenError, DecodeError) as e:
+        return abort(400)
+
     scoring_play_obj = request.get_json()
     game_url = scoring_play_obj.get("game_url_postfix")
     scoring_play = scoring_play_obj.get("scoring_play")
-    user_id_list = game_cache.get_broadcast_list(game_url)
+
+    access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
-        text = "\n\n".join(play.values())
-        # line_bot_api.multicast(user_id_list, TextSendMessage(text=text, quick_reply=default_quick_reply))
+        text = f"{play['score']}\n" \
+               f"{play['inning']}\n" \
+               f"{play['play']}\n\n" \
+               f"{play['score']}"
         logger.info(f"New scoring play: {text}")
-        # send_notify(text, "access_token")
+
+        for token in access_tokens:
+            send_notify(text, token)
+
+    resp = jsonify(success=True)
+    return resp
 
 
-def get_auth_link(state):
+def get_auth_link(user_id):
     query_string = {
         'scope': 'notify',
         'response_type': 'code',
         'client_id': settings.LINE_NOTIFY_CLIENT_ID,
         'redirect_uri': REDIRECT_URI,
-        'state': state
+        'state': user_id
     }
 
     return '{url}/oauth/authorize?{query_string}'.format(
@@ -99,10 +131,11 @@ def send_notify(message: str, access_token: str, notification_disabled: bool = F
         params.update({'notificationDisabled': notification_disabled})
 
     response = requests.post(
-        url=f'{NOTIFY_BOT_URL}/api/notify',
+        url=NOTIFY_API_URL,
         data=params,
         headers={
             'Authorization': 'Bearer {token}'.format(token=access_token)
         })
     if response.status_code == 400:
         logger.error(f"Status code 400: send_notify")
+    logger.info(f"response: {response}")

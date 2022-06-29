@@ -1,7 +1,15 @@
 import logging
 from typing import Dict, List, Union
 
-from flask import request, Blueprint, Response, render_template, abort
+from flask import (
+    request,
+    Blueprint,
+    Response,
+    render_template,
+    abort,
+    current_app
+)
+from werkzeug.local import LocalProxy
 
 from config import Setting
 from line.game_flex import (
@@ -13,7 +21,7 @@ from line.standing_flex import (
 )
 
 settings = Setting()
-logger = logging.getLogger(__name__)
+logger = LocalProxy(lambda: current_app.logger)
 
 liff_blueprint = Blueprint('liff', __name__, )
 
