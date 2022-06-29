@@ -7,16 +7,21 @@ from argparse import Namespace, ArgumentParser
 from datetime import date
 from multiprocessing import Process, Lock
 from random import randint
-from typing import Dict
+from typing import Dict, Union
 from typing import List, Optional
 
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.action_chains import ActionChains
 
 from config import Setting, CPBLSetting
 from models import game_cache
-from schemas.game import Game, GameState, Play
+from schemas.game import Game, GameState, Play, GameBox
+from schemas.player import Batter, Pitcher
 from schemas.standing import Team
 from utils import error_handler
 
@@ -66,11 +71,11 @@ def get_page(url: str, wait: int = 0) -> str:
 
 
 @error_handler(Exception, logger=logger)
-def crawl_today_games_info(wait: int = 0.5) -> Dict[str, Game]:
+def crawl_today_games_info(wait: int = 0.5, days: int = None) -> Dict[str, Game]:
     page = get_page(cpbl.CPBL_SCHEDULE_URL, wait)
     soup = BeautifulSoup(page, "html.parser")
 
-    today = str(date.today().day)
+    today = int(date.today().day) if days is None else days
 
     exclude_day = [25, 26, 27, 28, 29, 30]
     day_soup = soup.findAll('div', class_='date', attrs={'data-date': today})[0 if today not in exclude_day else -1]
@@ -92,13 +97,13 @@ def crawl_today_games_info(wait: int = 0.5) -> Dict[str, Game]:
 
     game_infos = {
         game_url_postfix[i]: {
-            "team_home": team_home[i],
-            "team_away": team_away[i],
+            "team_home": team_home[i].strip(),
+            "team_away": team_away[i].strip(),
             "game_url_postfix": game_url_postfix[i],
             "game_url": cpbl.CPBL_BASE_URl + game_url_postfix[i],
             "game_live_url": cpbl.CPBL_BASE_URl + game_url_postfix[i].replace('/box', '/box/live'),
             "game_index_url": cpbl.CPBL_BASE_URl + game_url_postfix[i].replace('/box', '/box/index'),
-            "baseball_field": place[i],
+            "baseball_field": place[i].strip(),
             "game_time": date.today().strftime("%B %d, %Y ") + game_time[i],
         } for i in range(len(game_url_postfix))}
 
@@ -145,6 +150,15 @@ def crawl_game_state(game_url: str, wait: int = 0.5) -> Optional[GameState]:
     return None
 
 
+team_name_map = {
+    '樂天桃猿': '樂天桃猿',
+    '中信兄弟': '中信兄弟',
+    '味全龍': '味全龍',
+    '統一7-ELEVEn獅': '統一獅',
+    '富邦悍將': '富邦悍將'
+}
+
+
 @error_handler(Exception, logger=logger)
 def crawl_game_score_plays(game: Game, wait: int = 0.5) -> List[Play]:
     page = get_page(game.game_live_url, wait)
@@ -159,17 +173,85 @@ def crawl_game_score_plays(game: Game, wait: int = 0.5) -> List[Play]:
         plays = scoring.findAll("div", class_="item play")
         for play in plays:
             play_desc = play.find("div", class_="desc").get_text()
-            play_desc_clean = re.sub('\\s{2,}', ' ', play_desc)
+            play_desc_clean = re.sub('\\s{2,}', ' ', play_desc).strip()
             score = play.find("div", class_="vs_box").get_text()
 
-            score = score.replace("富邦悍將", game.team_home)
-            score = score.replace("Rakuten Monkeys", game.team_away)
-
+            # score = score.replace("富邦悍將", game.team_home)
+            # score = score.replace("Rakuten Monkeys", game.team_away)
+            score = score.replace("富邦悍將", "")
+            score = score.replace("Rakuten Monkeys", "")
+            score = score.strip()
+            score = f"{team_name_map[game.team_away]} {score} {team_name_map[game.team_home]}"
             game_play.append(
                 Play(inning=inning, play=play_desc_clean, score=score)
             )
 
     return game_play
+
+
+@error_handler(Exception, logger=logger)
+def crawl_box_score_tables(game: Game, wait: int = 0.5, rt_list: bool = False) -> Union[GameBox, List]:
+    # with browser_lock:
+    #     browser.get(game.game_url)
+    #     time.sleep(wait)
+    #     box = browser.find_element(By.CLASS_NAME, value="GameBoxDetail")
+    #     tabs = box.find_element(By.CLASS_NAME, value="tabs")
+    #     lis = tabs.find_elements(By.TAG_NAME, value="li")
+    #     span = lis[-1].find_element(By.TAG_NAME, value="a")
+    #     span.click()
+    #
+    #     # ActionChains(browser).move_to_element(span).double_click()
+    #
+    #     # browser.execute_script('arguments[0].click()', span)
+    #
+    #     # element = WebDriverWait(browser, 10).until(EC.element_to_be_clickable(span))
+    #     # element.click()
+    #     time.sleep(1)
+    #     # page = browser.execute_script("return document.body.innerHTML;")
+    #     # page = browser.find_element(By.TAG_NAME, "body")
+    #     # print(page.text)
+    #     # page = page.get_attribute('outerHTML')
+
+    #     page = browser.page_source
+
+    page = get_page(game.game_url, wait)
+    soup = BeautifulSoup(page, "html.parser")
+
+    # title = soup.find("div", class_="DistTitle")
+    # title = title.find("h3").get_text()
+
+    hit_record_tables = soup.findAll("div", class_="RecordTable")
+    tables = []
+    for hit_record_table in hit_record_tables:
+        hit_record_table = hit_record_table.find("tbody")
+
+        data = []
+        rows = hit_record_table.find_all('tr')
+        for row in rows[1:]:  # Skip first header row
+            cols = row.find_all('td')
+            cols = [ele.text.strip().replace("\n", "").replace(" ", "") or "empty" for ele in cols]
+            data.append([ele for ele in cols if ele])
+        tables.append(data)
+
+    if rt_list:
+        return tables
+
+    # Validation
+    if len(tables) == 0:
+        return GameBox()
+
+    away_bat_box = [Batter.from_list(b) for b in tables[1]]
+    home_bat_box = [Batter.from_list(b) for b in tables[4]]
+    away_pitch_box = [Pitcher.from_list(b) for b in tables[2]]
+    home_pitch_box = [Pitcher.from_list(b) for b in tables[5]]
+
+    game_title = f"{game.team_away} vs {game.team_home}".strip()
+    return GameBox(game_url_postfix=game.game_url_postfix,
+                   game_title=game_title,
+                   away_bat_box=away_bat_box,
+                   home_bat_box=home_bat_box,
+                   away_pitch_box=away_pitch_box,
+                   home_pitch_box=home_pitch_box)
 
 
 @error_handler(Exception, logger=logger)
@@ -217,12 +299,15 @@ def check_game_end(game_live_url: str, wait: int = 0.5) -> bool:
 
 
 def stream_scoring_play(game: Game, plays: List[Play]):
+    headers = {"Authorization": f"Bearer {settings.TOKEN}"}
     payload = {
+        "game_title": f"{game.team_away}vs{game.team_home}",
         "game_url_postfix": game.game_url_postfix,
         "scoring_play": json.loads(json.dumps(plays, default=vars))
     }
-    # response = requests.post(settings.API_BASE + "/game/scoring_play", json=payload)
-    response = requests.post(settings.API_BASE + "/line/notify/scoring_play", json=payload)
+    response = requests.post(settings.API_BASE + "/line/notify/scoring_play",
+                             json=payload,
+                             headers=headers)
 
     if response.status_code == 400:
         logger.error(f"Status code 400: payload = {payload}")
@@ -238,11 +323,15 @@ def game_tracker(game: Game, args):
                 time.sleep(60)
                 continue
 
-            # 2. Get game state
+            # 2.1 Get game state
             game_state = crawl_game_state(game.game_url)
             if game_state is not None and not args.local:
                 game_cache.update_one_game_state(game.game_url_postfix, game_state)
                 logger.info(f"Game state: {game_state}")
+
+            # 2.2 Get game box
+            game_box = crawl_box_score_tables(game)
+            game_cache.update_game_box(game.game_url_postfix, game_box=game_box)
 
             # 3. Get Scoring plays
             tmp_scoring_plays = crawl_game_score_plays(game)
