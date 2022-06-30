@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Union
 
 from line.footer_flex import footer_flex
 from schemas.game import GameBox
@@ -95,7 +95,7 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
             "contents": [
                 {
                     "type": "text",
-                    "text": "6/28 中信 vs 桃園: 打擊數據",
+                    "text": f"{title}",
                     "weight": "bold",
                     "align": "start",
                     "color": "#082568",
@@ -108,7 +108,7 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                     "size": "xl",
                     "gravity": "center",
                     "margin": "md",
-                    "text": "中信兄弟"
+                    "text": f"{team_name}"
                 },
                 {
                     "type": "separator",
@@ -216,6 +216,8 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
 
 def bat_box_contents(game_uid: str, footer: bool = True) -> List:
     game_box = game_cache.get_game_box(game_uid)
+    if game_box.home_bat_box is None:
+        return []
     home_flex = bat_box_flex(title=game_box.game_title,
                              team_name=game_box.game_title.split("vs")[0],
                              batters=game_box.home_bat_box)
