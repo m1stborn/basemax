@@ -74,7 +74,7 @@ def handle_text_message(event):
 
     game_titles = game_cache.get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
-    hit_box_to_url = {f"{v}打擊box": k for k, v in game_titles.items()}  # keys: <game>打擊box # value: game_uid
+    hit_box_to_url = {f"{v}[打擊box]": k for k, v in game_titles.items()}  # keys: <game>打擊box # value: game_uid
     default_quick_reply.items.extend(
         [QuickReplyButton(action=MessageAction(label=k, text=k))
             for k in hit_box_to_url.keys()]
