@@ -219,10 +219,10 @@ def bat_box_contents(game_uid: str, footer: bool = True) -> List:
     if game_box.home_bat_box is None:
         return []
     home_flex = bat_box_flex(title=game_box.game_title,
-                             team_name=game_box.game_title.split("vs")[0],
+                             team_name=game_box.game_title.split("vs")[1],
                              batters=game_box.home_bat_box)
     away_flex = bat_box_flex(title=game_box.game_title,
-                             team_name=game_box.game_title.split("vs")[1],
+                             team_name=game_box.game_title.split("vs")[0],
                              batters=game_box.away_bat_box)
     contents = [away_flex, home_flex]
     if footer:

@@ -19,7 +19,7 @@ class Batter(BaseModel):
     def from_list(cls, row: List[str]):
         # Hard coding the scraped list
         sub = re.sub(r"[()]", "", row[0])
-        names = re.split(r'(\d*)([\u4e00-\u9fff]+)([\d*a-zA-z(),\s]+)', sub)[1:-1]
+        names = re.split(r'(\d*)([\u4e00-\u9fff．]+)([\d*a-zA-z(),\s]+)', sub)[1:-1]
         if len(names) == 0:  # handle total row
             names = [' ', 'Total', ' ']
         values = names + row[1:5] + [row[9], row[12], row[-1].replace("0", "").replace("empty", " ")]
@@ -48,10 +48,9 @@ class Pitcher(BaseModel):
     def from_list(cls, row: List[str]):
         # Hard coding the scraped list
         sub = re.sub(r"[(),]", "", row[0])
-        names = re.split(r'(\d*)([\u4e00-\u9fff]+)([\d*a-zA-z(),\s]+)?', sub)[1:-1]
+        names = re.split(r'(\d*)([\u4e00-\u9fff．]+)([\d*a-zA-z(),\s]+)?', sub)[1:-1]
         if len(names) == 0:  # handle total row
             names = [' ', 'Total', ' ']
-
         ip = re.split(r"(\d)(\d)?(\d)(/)", row[1])
         ip = f"{ip[0]}" if len(ip) == 1 else f"{ip[1]}{ip[2] if ip[2] else ''}.{ip[3]}"
 
