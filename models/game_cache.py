@@ -25,7 +25,7 @@ def get_games_info() -> Dict[str, Game]:
 short_team_name = {
     "中信兄弟": "中信",
     "味全龍": "味全",
-    "富邦": "富邦",
+    "富邦悍將": "富邦",
     "統一7-ELEVEn獅": "統一",
     "樂天桃猿": "樂天",
 }
