@@ -139,3 +139,6 @@ def send_notify(message: str, access_token: str, notification_disabled: bool = F
     if response.status_code == 400:
         logger.error(f"Status code 400: send_notify")
     logger.info(f"response: {response}")
+
+"INFO in line_notify_handler: handle_line_notify-link: https://notify-bot.line.me/oauth/authorize?scope=notify&response_type=code&client_id=zhYsa4ixdd1dZiPlQUXai3&redirect_uri=https%3A%2F%2Fcpblbot-stage.herokuapp.com%2F%2Fline%2Fnotify%2Fconfirm&state=U20662a9b60796b7b502a28dca827efab"
+"INFO in line_notify_handler: handle_line_notify-link: https://notify-bot.line.me/oauth/authorize?scope=notify&response_type=code&client_id=QTNgYk1WXMiDrESnclR4Nh&redirect_uri=https%3A%2F%2Fcpblbot.herokuapp.com%2Fline%2Fnotify%2Fconfirm&state=U20662a9b60796b7b502a28dca827efab"

@@ -16,6 +16,7 @@ from linebot.models import (
 from werkzeug.local import LocalProxy
 
 from config import Setting
+from line.bat_boxscore_flex import bat_box_contents
 from line.game_flex import (
     flex_message_wrapper,
     match_contents,
@@ -61,6 +62,7 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
         QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
+        # QuickReplyButton(action=MessageAction(label="box", text="box")),
         QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
     ]
 )
@@ -72,12 +74,16 @@ def handle_text_message(event):
 
     game_titles = game_cache.get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
-
-    logger.info(f"Message Event = {event}")
+    hit_box_to_url = {f"{v}打擊box": k for k, v in game_titles.items()}  # keys: <game>打擊box # value: game_uid
+    default_quick_reply.items.append(
+        [QuickReplyButton(action=MessageAction(label=k, text=k))
+            for k in hit_box_to_url.keys()]
+    )
+    logger.info(f"hit_box_qr: {hit_box_to_url}")
+    # logger.info(f"Message Event = {event}")
     alt = "觀看更多"
 
     quick_reply = default_quick_reply
-
     if text == "今日賽事":
         alt = "今日賽事"
         contents = match_contents()
@@ -125,6 +131,31 @@ def handle_text_message(event):
             messages=TextSendMessage(text=f"開始轉播{text}", quick_reply=quick_reply)
         )
         return
+
+    elif text == "box":
+        quick_reply = QuickReply(
+            items=[
+                QuickReplyButton(action=MessageAction(label=box_title, text=f"{box_title} box"))
+                for i, box_title in enumerate(hit_box_to_url.keys())
+            ]
+        )
+        reply_text = "想要查看的box?"
+
+        line_bot_api.reply_message(
+            event.reply_token,
+            messages=TextSendMessage(text=reply_text, quick_reply=quick_reply),
+        )
+        return
+
+    elif text in hit_box_to_url.keys():
+        game_uid = hit_box_to_url[text]
+        contents = bat_box_contents(game_uid)
+        if len(contents) == 0:
+            line_bot_api.reply_message(
+                event.reply_token,
+                messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
+            )
+            return
 
     elif text == "即時比數":
         contents = scoreboard_contents()
