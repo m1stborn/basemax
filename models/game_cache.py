@@ -22,10 +22,20 @@ def get_games_info() -> Dict[str, Game]:
     return games
 
 
+short_team_name = {
+    "中信兄弟": "中信",
+    "味全龍": "味全",
+    "富邦": "富邦",
+    "統一7-ELEVEn獅": "統一",
+    "樂天桃猿": "樂天",
+}
+
+
 def get_game_title() -> Dict[str, str]:
     games_json = json.loads(r.get('games').decode('utf-8'))
     games = {k: Game(**game) for k, game in games_json.items()}
-    game_titles = {url: f"{game.team_away}vs{game.team_home}".strip()
+    # TODO: make short team name Game' s attribute
+    game_titles = {url: f"{short_team_name[game.team_away]}vs{short_team_name[game.team_home]}".strip()
                    for url, game in games.items()}
     return game_titles
 
