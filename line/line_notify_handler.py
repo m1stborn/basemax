@@ -70,10 +70,10 @@ def handle_notify_scoring_play():
     for play in scoring_play:
         title = long_title.replace("vs", f"{play['score']}")
         logger.info(f"Replace: {title}, {play['score']}")
-        text = f"{long_title}\n" \
+        text = f"{title}\n" \
                f"{play['inning']}\n" \
                f"{play['play']}\n\n" \
-               f"{long_title}"
+               f"{title}"
         logger.info(f"New scoring play: {text}")
 
         for token in access_tokens:
