@@ -69,6 +69,7 @@ def handle_notify_scoring_play():
     access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
         long_title.replace("_", f"{play['score']}")
+        print(long_title)
         text = f"{long_title}\n" \
                f"{play['inning']}\n" \
                f"{play['play']}\n\n" \
