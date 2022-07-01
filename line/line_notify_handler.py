@@ -68,7 +68,7 @@ def handle_notify_scoring_play():
     logger.info(f"Ori: {long_title}")
     access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
-        title = long_title.replace("vs", f"{play['score']}")
+        title = long_title.replace("vs", f" {play['score']} ")
         logger.info(f"Replace: {title}, {play['score']}")
         text = f"{title}\n" \
                f"{play['inning']}\n" \
