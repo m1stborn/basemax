@@ -31,7 +31,6 @@ from models import game_cache, line_user
 settings = Setting()
 logger = LocalProxy(lambda: current_app.logger)
 
-
 line_blueprint = Blueprint('line', __name__, )
 
 line_bot_api = LineBotApi(settings.CHANNEL_ACCESS_TOKEN)
@@ -62,7 +61,7 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
         QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
-        # QuickReplyButton(action=MessageAction(label="box", text="box")),
+        QuickReplyButton(action=MessageAction(label="box", text="box")),
         QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
     ]
 )
@@ -74,14 +73,14 @@ def handle_text_message(event):
 
     game_titles = game_cache.get_game_title()
     game_titles_to_url = {v: k for k, v in game_titles.items()}
-    hit_box_to_url = {f"{v}[打擊box]": k for k, v in game_titles.items()}  # keys: <game>打擊box # value: game_uid
-    if len(default_quick_reply.items) == 5:
-        default_quick_reply.items.extend(
-            [QuickReplyButton(action=MessageAction(label=k, text=k))
-                for k in hit_box_to_url.keys()]
-        )
+    hit_box_to_url = {f"{v}[打擊]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
+    # if len(default_quick_reply.items) == 5:
+    #     default_quick_reply.items.extend(
+    #         [QuickReplyButton(action=MessageAction(label=k, text=k))
+    #             for k in hit_box_to_url.keys()]
+    #     )
     logger.info(f"hit_box_qr: {hit_box_to_url}")
-    # logger.info(f"Message Event = {event}")
+    logger.info(f"Message Event = {event}")
     alt = "觀看更多"
 
     quick_reply = default_quick_reply
@@ -135,10 +134,8 @@ def handle_text_message(event):
 
     elif text == "box":
         quick_reply = QuickReply(
-            items=[
-                QuickReplyButton(action=MessageAction(label=box_title, text=f"{box_title} box"))
-                for i, box_title in enumerate(hit_box_to_url.keys())
-            ]
+            items=[QuickReplyButton(action=MessageAction(label=k, text=k))
+                   for k in hit_box_to_url.keys()]
         )
         reply_text = "想要查看的box?"
 
