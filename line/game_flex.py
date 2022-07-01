@@ -139,7 +139,7 @@ def game_state_flex(game: Game, game_state: GameState):
     wrap = "".join([str(int(b)) for b in game_state.base_wrap])
     img_url = base_wrap_image[wrap]
     current_scores = game.current_score if game.current_score is not None or "" else "0:0"
-    print(f"game_state_flex{current_scores}")
+    print(f"game_state_flex{current_scores}12312")
     current_scores = "0:0"
     return {
         "type": "bubble",
