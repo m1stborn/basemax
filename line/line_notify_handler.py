@@ -65,11 +65,11 @@ def handle_notify_scoring_play():
     game_url = scoring_play_obj.get("game_url_postfix")
     scoring_play = scoring_play_obj.get("scoring_play")
     long_title = scoring_play_obj.get("game_title")
-    print(long_title)
+    logger.info(f"Ori: {long_title}")
     access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
-        long_title.replace("_", f"{play['score']}")
-        print(long_title)
+        long_title.replace("vs", f"{play['score']}")
+        logger.info(f"Replace: {long_title}")
         text = f"{long_title}\n" \
                f"{play['inning']}\n" \
                f"{play['play']}\n\n" \
