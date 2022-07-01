@@ -3,11 +3,11 @@ from typing import Dict, List, Union
 
 from line.footer_flex import footer_flex
 from schemas.game import GameBox
-from schemas.player import Batter
+from schemas.player import Batter, Pitcher
 from models import game_cache
 
 
-def batter_row_flex(batter: Batter) -> Dict:
+def pitcher_row_flex(pitcher: Pitcher) -> Dict:
     return {
         "type": "box",
         "layout": "horizontal",
@@ -15,68 +15,77 @@ def batter_row_flex(batter: Batter) -> Dict:
         "contents": [
             {
                 "type": "text",
-                "text": f"{batter.num if batter.num != '' else ' '}{batter.name}",
+                "text": pitcher.name,
                 "flex": 4,
                 "size": "xxs"
             },
             {
                 "type": "text",
-                "text": f"{batter.pos}",
+                "text": pitcher.ip,
+                "flex": 2,
+                "align": "start",
+                "size": "xxs",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": pitcher.pc,
+                "flex": 2,
+                "align": "center",
+                "size": "xxs",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": pitcher.hit,
+                "flex": 2,
+                "align": "center",
+                "size": "xxs",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": pitcher.run,
+                "flex": 2,
+                "align": "center",
+                "size": "xxs",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": pitcher.er,
+                "flex": 2,
+                "align": "center",
+                "size": "xxs",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": pitcher.bb,
+                "flex": 2,
+                "align": "center",
+                "size": "xxs",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": pitcher.k,
+                "flex": 2,
+                "align": "center",
+                "size": "xxs",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": pitcher.era,
                 "flex": 3,
-                "size": "xxs",
-                "color": "#DCDFE5"
-            },
-            {
-                "type": "text",
-                "text": f"{batter.at_bat}",
-                "flex": 2,
                 "align": "center",
                 "size": "xxs",
                 "gravity": "center"
             },
             {
                 "type": "text",
-                "text": f"{batter.run}",
-                "flex": 2,
-                "align": "center",
-                "size": "xxs",
-                "gravity": "center"
-            },
-            {
-                "type": "text",
-                "text": f"{batter.hit}",
-                "flex": 2,
-                "align": "center",
-                "size": "xxs",
-                "gravity": "center"
-            },
-            {
-                "type": "text",
-                "text": f"{batter.rbi}",
-                "flex": 2,
-                "align": "center",
-                "size": "xxs",
-                "gravity": "center"
-            },
-            {
-                "type": "text",
-                "text": f"{batter.bb}",
-                "flex": 2,
-                "align": "center",
-                "size": "xxs",
-                "gravity": "center"
-            },
-            {
-                "type": "text",
-                "text": f"{batter.so}",
-                "flex": 2,
-                "align": "center",
-                "size": "xxs",
-                "gravity": "center"
-            },
-            {
-                "type": "text",
-                "text": f"{batter.avg}",
+                "text": pitcher.whip,
                 "flex": 3,
                 "align": "center",
                 "size": "xxs",
@@ -87,7 +96,7 @@ def batter_row_flex(batter: Batter) -> Dict:
     }
 
 
-def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
+def pitching_box_flex(title: str, team_name, pitchers: List[Pitcher]) -> Dict:
     return {
         "type": "bubble",
         "body": {
@@ -96,7 +105,7 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
             "contents": [
                 {
                     "type": "text",
-                    "text": f"{title}",
+                    "text": title,
                     "weight": "bold",
                     "align": "start",
                     "color": "#082568",
@@ -109,7 +118,7 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                     "size": "xl",
                     "gravity": "center",
                     "margin": "md",
-                    "text": f"{team_name}"
+                    "text": team_name
                 },
                 {
                     "type": "separator",
@@ -127,12 +136,12 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                             "contents": [
                                 {
                                     "type": "text",
-                                    "text": "打者",
-                                    "flex": 7,
+                                    "text": "投手",
+                                    "flex": 4,
                                     "color": "#9FA8DA",
-                                    "size": "xxs",
                                     "weight": "bold",
-                                    "align": "start"
+                                    "align": "start",
+                                    "size": "xxs"
                                 },
                                 {
                                     "type": "text",
@@ -140,12 +149,12 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                                     "color": "#9FA8DA",
                                     "weight": "bold",
                                     "flex": 2,
-                                    "align": "center",
-                                    "text": "AB"
+                                    "align": "start",
+                                    "text": "IP"
                                 },
                                 {
                                     "type": "text",
-                                    "text": "R",
+                                    "text": "PC",
                                     "size": "xxs",
                                     "color": "#9FA8DA",
                                     "align": "center",
@@ -163,7 +172,16 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                                 },
                                 {
                                     "type": "text",
-                                    "text": "RBI",
+                                    "text": "R",
+                                    "size": "xxs",
+                                    "color": "#9FA8DA",
+                                    "align": "center",
+                                    "weight": "bold",
+                                    "flex": 2
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "ER",
                                     "size": "xxs",
                                     "color": "#9FA8DA",
                                     "align": "center",
@@ -181,7 +199,7 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                                 },
                                 {
                                     "type": "text",
-                                    "text": "SO",
+                                    "text": "K",
                                     "size": "xxs",
                                     "color": "#9FA8DA",
                                     "align": "center",
@@ -190,7 +208,16 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                                 },
                                 {
                                     "type": "text",
-                                    "text": "AVG",
+                                    "text": "ERA",
+                                    "size": "xxs",
+                                    "color": "#9FA8DA",
+                                    "align": "center",
+                                    "weight": "bold",
+                                    "flex": 3
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "WHIP",
                                     "size": "xxs",
                                     "color": "#9FA8DA",
                                     "align": "center",
@@ -203,7 +230,7 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                             "type": "separator",
                             "color": "#9FA8DA"
                         },
-                        *[batter_row_flex(batter) for batter in batters],
+                        *[pitcher_row_flex(pitcher) for pitcher in pitchers],
                         {
                             "type": "separator",
                             "color": "#9FA8DA"
@@ -211,21 +238,21 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
                     ]
                 }
             ]
-        },
+        }
     }
 
 
-def batting_box_contents(game_uid: str, footer: bool = True) -> List:
+def pitching_box_contents(game_uid: str, footer: bool = True) -> List:
     game_box = game_cache.get_game_box(game_uid)
-    if game_box.home_bat_box is None:
+    if game_box.home_pitch_box is None:
         return []
     title = f"{game_box.game_time_int} {game_box.game_title}"
-    home_flex = bat_box_flex(title=title,
-                             team_name=game_box.game_title.split("vs")[1].strip(),
-                             batters=game_box.home_bat_box)
-    away_flex = bat_box_flex(title=title,
-                             team_name=game_box.game_title.split("vs")[0].strip(),
-                             batters=game_box.away_bat_box)
+    home_flex = pitching_box_flex(title=title,
+                                  team_name=game_box.game_title.split("vs")[1].strip(),
+                                  pitchers=game_box.home_pitch_box)
+    away_flex = pitching_box_flex(title=title,
+                                  team_name=game_box.game_title.split("vs")[0].strip(),
+                                  pitchers=game_box.away_pitch_box)
     contents = [away_flex, home_flex]
     if footer:
         for flex in contents:

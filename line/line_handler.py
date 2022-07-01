@@ -17,6 +17,7 @@ from werkzeug.local import LocalProxy
 
 from config import Setting
 from line.batting_box_flex import batting_box_contents
+from line.pitching_box_flex import pitching_box_contents
 from line.game_flex import (
     flex_message_wrapper,
     match_contents,
@@ -74,8 +75,10 @@ def handle_text_message(event):
     game_titles = game_cache.get_game_title()
     game_title_to_url = {v: k for k, v in game_titles.items()}
     batting_box_to_url = {f"{v}[打擊]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
+    pitching_box_to_url = {f"{v}[投手]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
+    box_to_url = {**batting_box_to_url, **pitching_box_to_url}
 
-    logger.info(f"hit_box_qr: {batting_box_to_url}")
+    logger.info(f"box_qr: {batting_box_to_url}, {pitching_box_to_url}")
     logger.info(f"Message Event = {event}")
     alt = "觀看更多"
 
@@ -131,7 +134,7 @@ def handle_text_message(event):
     elif text == "box":
         quick_reply = QuickReply(
             items=[QuickReplyButton(action=MessageAction(label=k, text=k))
-                   for k in batting_box_to_url.keys()]
+                   for k in box_to_url.keys()]
         )
         reply_text = "想要查看的box?"
 
@@ -144,6 +147,16 @@ def handle_text_message(event):
     elif text in batting_box_to_url.keys():
         game_uid = batting_box_to_url[text]
         contents = batting_box_contents(game_uid)
+        if len(contents) == 0:
+            line_bot_api.reply_message(
+                event.reply_token,
+                messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
+            )
+            return
+
+    elif text in pitching_box_to_url.keys():
+        game_uid = pitching_box_to_url[text]
+        contents = pitching_box_contents(game_uid)
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,

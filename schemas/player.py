@@ -58,7 +58,8 @@ class Pitcher(BaseModel):
         # ips = row[1].split("/")
         # ip = f"{ips[0]}" + f".{row[1][-2]}" if len(ips) > 1 else ""
 
-        values = names + [ip] + [row[3], row[5], row[-5], row[-4], row[7], row[10]] + row[-2:]
+        values = names + [ip] + [row[3], row[5], row[-5], row[-4], row[7], row[10]] + \
+            [row[-2].replace("empty", " ")] + [row[-1].replace("empty", " ")]
         keys = cls.__fields__.keys()
         team_dict = dict(zip(keys, values))
         return cls(**team_dict)
