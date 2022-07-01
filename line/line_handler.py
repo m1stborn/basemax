@@ -60,8 +60,8 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="今日賽事", text="今日賽事")),
         QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
-        QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
         QuickReplyButton(action=MessageAction(label="box", text="box")),
+        QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
         QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
     ]
 )

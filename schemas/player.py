@@ -22,7 +22,7 @@ class Batter(BaseModel):
         names = re.split(r'(\d*)([\u4e00-\u9fff．]+)([\d*a-zA-z(),\s]+)', sub)[1:-1]
         if len(names) == 0:  # handle total row
             names = [' ', 'Total', ' ']
-        values = names + row[1:5] + [row[9], row[12], row[-1].replace("0", "").replace("empty", " ")]
+        values = names + row[1:5] + [row[9], row[12], row[-1].replace("0.", ".").replace("empty", " ")]
 
         keys = cls.__fields__.keys()
         team_dict = dict(zip(keys, values))
