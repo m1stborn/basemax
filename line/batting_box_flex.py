@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, List, Union
 
 from line.footer_flex import footer_flex
@@ -214,14 +215,15 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
     }
 
 
-def bat_box_contents(game_uid: str, footer: bool = True) -> List:
+def batting_box_contents(game_uid: str, footer: bool = True) -> List:
     game_box = game_cache.get_game_box(game_uid)
     if game_box.home_bat_box is None:
         return []
-    home_flex = bat_box_flex(title=game_box.game_title,
+    title = f"{game_box.game_time_int} {game_box.game_title}"
+    home_flex = bat_box_flex(title=title,
                              team_name=game_box.game_title.split("vs")[1],
                              batters=game_box.home_bat_box)
-    away_flex = bat_box_flex(title=game_box.game_title,
+    away_flex = bat_box_flex(title=title,
                              team_name=game_box.game_title.split("vs")[0],
                              batters=game_box.away_bat_box)
     contents = [away_flex, home_flex]

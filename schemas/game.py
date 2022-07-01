@@ -36,6 +36,7 @@ class GameState(BaseModel):
 class GameBox(BaseModel):
     game_url_postfix: str = ""
     game_title: str = ""
+    game_time_int: str = ""
     away_bat_box: Optional[List[Batter]]
     away_pitch_box: Optional[List[Pitcher]]
     home_bat_box: Optional[List[Batter]]

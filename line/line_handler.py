@@ -16,7 +16,7 @@ from linebot.models import (
 from werkzeug.local import LocalProxy
 
 from config import Setting
-from line.bat_boxscore_flex import bat_box_contents
+from line.batting_box_flex import batting_box_contents
 from line.game_flex import (
     flex_message_wrapper,
     match_contents,
@@ -74,11 +74,7 @@ def handle_text_message(event):
     game_titles = game_cache.get_game_title()
     game_title_to_url = {v: k for k, v in game_titles.items()}
     batting_box_to_url = {f"{v}[打擊]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
-    # if len(default_quick_reply.items) == 5:
-    #     default_quick_reply.items.extend(
-    #         [QuickReplyButton(action=MessageAction(label=k, text=k))
-    #             for k in hit_box_to_url.keys()]
-    #     )
+
     logger.info(f"hit_box_qr: {batting_box_to_url}")
     logger.info(f"Message Event = {event}")
     alt = "觀看更多"
@@ -147,7 +143,7 @@ def handle_text_message(event):
 
     elif text in batting_box_to_url.keys():
         game_uid = batting_box_to_url[text]
-        contents = bat_box_contents(game_uid)
+        contents = batting_box_contents(game_uid)
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,

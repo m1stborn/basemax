@@ -36,7 +36,7 @@ def get_game_title() -> Dict[str, str]:
     games = {k: Game(**game) for k, game in games_json.items()}
     # TODO: make short team name Game' s attribute
     game_titles = {url: f"{short_team_name[game.team_away]}vs{short_team_name[game.team_home]}".strip()
-                   for url, game in games.items()}
+                   for url, game in games.items() if "延賽" not in game.game_time}
     return game_titles
 
 
