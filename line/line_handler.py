@@ -16,6 +16,8 @@ from linebot.models import (
 from werkzeug.local import LocalProxy
 
 from config import Setting
+from line.batting_box_flex import batting_box_contents
+from line.pitching_box_flex import pitching_box_contents
 from line.game_flex import (
     flex_message_wrapper,
     match_contents,
@@ -29,7 +31,6 @@ from models import game_cache, line_user
 
 settings = Setting()
 logger = LocalProxy(lambda: current_app.logger)
-
 
 line_blueprint = Blueprint('line', __name__, )
 
@@ -60,6 +61,7 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="今日賽事", text="今日賽事")),
         QuickReplyButton(action=MessageAction(label="文字轉播", text="文字轉播")),
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
+        QuickReplyButton(action=MessageAction(label="box", text="box")),
         QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
         QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
     ]
@@ -71,13 +73,16 @@ def handle_text_message(event):
     text = event.message.text
 
     game_titles = game_cache.get_game_title()
-    game_titles_to_url = {v: k for k, v in game_titles.items()}
+    game_title_to_url = {v: k for k, v in game_titles.items()}
+    batting_box_to_url = {f"{v}[打擊]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
+    pitching_box_to_url = {f"{v}[投手]": k for k, v in game_titles.items()}  # keys: <game>[投手] # value: game_uid
+    box_to_url = {**batting_box_to_url, **pitching_box_to_url}
 
+    logger.info(f"box_qr: {batting_box_to_url}, {pitching_box_to_url}")
     logger.info(f"Message Event = {event}")
     alt = "觀看更多"
 
     quick_reply = default_quick_reply
-
     if text == "今日賽事":
         alt = "今日賽事"
         contents = match_contents()
@@ -114,17 +119,50 @@ def handle_text_message(event):
 
     elif text in game_titles.values():
         user = line_user.get_user_by_id(event.source.user_id)
-        game_cache.update_broadcast_list(game_titles_to_url[text], user.line_notify_access_token)
+        game_cache.update_broadcast_list(game_title_to_url[text], user.line_notify_access_token)
 
         # Now the broadcast_list caching to notify token, not user_id anymore.
         user = line_user.get_user_by_id(event.source.user_id)
         logger.info(f"Get user: {user}")
-        game_cache.update_broadcast_list(game_titles_to_url[text], user.line_notify_access_token)
+        game_cache.update_broadcast_list(game_title_to_url[text], user.line_notify_access_token)
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(text=f"開始轉播{text}", quick_reply=quick_reply)
         )
         return
+
+    elif text == "box":
+        quick_reply = QuickReply(
+            items=[QuickReplyButton(action=MessageAction(label=k, text=k))
+                   for k in box_to_url.keys()]
+        )
+        reply_text = "想要查看的box?"
+
+        line_bot_api.reply_message(
+            event.reply_token,
+            messages=TextSendMessage(text=reply_text, quick_reply=quick_reply),
+        )
+        return
+
+    elif text in batting_box_to_url.keys():
+        game_uid = batting_box_to_url[text]
+        contents = batting_box_contents(game_uid)
+        if len(contents) == 0:
+            line_bot_api.reply_message(
+                event.reply_token,
+                messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
+            )
+            return
+
+    elif text in pitching_box_to_url.keys():
+        game_uid = pitching_box_to_url[text]
+        contents = pitching_box_contents(game_uid)
+        if len(contents) == 0:
+            line_bot_api.reply_message(
+                event.reply_token,
+                messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
+            )
+            return
 
     elif text == "即時比數":
         contents = scoreboard_contents()
@@ -188,6 +226,6 @@ def get_notify_connect_reply(line_id: str) -> str:
         'state': line_id
     }
     url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
-    reply_text = f"第一次使用文字轉播請至以下網址連動LINE NOTIFY與CPBLbot:\n{url}\n" \
-                 f"連結成功後即可在Line Notify頻道中接收文字轉播!"
+    reply_text = f"第一次使用文字轉播請至以下網址連結LINE NOTIFY與CPBLbot:\n{url}\n" \
+                 f"連結成功後即可在Line Notify聊天室中接收文字轉播!"
     return reply_text
