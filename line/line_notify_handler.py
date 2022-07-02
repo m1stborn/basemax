@@ -28,6 +28,7 @@ NOTIFY_API_URL = "https://notify-api.line.me/api/notify"
 
 @line_notify_blueprint.route("/")
 def handle_index():
+    # TODO: main page
     return render_template("line_notify_index.html")
 
 
@@ -47,8 +48,7 @@ def handle_confirm():
     logger.info(f"New Line Notify user: {line_id}, {token}")
     line_user.insert_line_user(line_id, token)
 
-    # TODO: successful template
-    return "Connect to Line Notify Successful!"
+    return render_template("line_notify_success.html")
 
 
 @line_notify_blueprint.route("/line/notify/scoring_play", methods=["POST"])

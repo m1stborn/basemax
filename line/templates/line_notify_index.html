@@ -24,7 +24,7 @@
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 {#                    <ul class="navbar-nav mb-2 mb-lg-0">#}
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="#!">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Features</a></li>
+{#                        <li class="nav-item"><a class="nav-link" href="#!">Features</a></li>#}
 {#                        <li class="nav-item"><a class="nav-link" href="#!">Contact</a></li>#}
                         <li class="nav-item"><a class="nav-link" href="https://github.com/m1stborn/CPBL-Linebot"><i class="bi bi-github"></i></a></li>
                     </ul>
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="fs-3">將帳號連接至line notify即可接收中職的即時文字轉播!連接後至CPBLbot選擇想要轉播的賽事開始文字轉播吧</p>
+                        <p class="fs-3">將帳號連接至line notify即可啟用中職的"文字轉播"功能!連接後至CPBLbot選擇想要轉播的賽事開始文字轉播吧</p>
                         <button type="button" class="btn btn-primary"
                                 style=" --bs-btn-bg: #9fa8da;
                                         --bs-btn-border-color: #9fa8da;
@@ -95,22 +95,9 @@
                         <div class="card bg-light border-0 h-75">
                             <div class="card-body text-center">
                                 <h2 class="fs-4 fw-bold mt-2">文字轉播</h2>
-                                <p class="mb-0">With Bootstrap 5, we've created a fresh new layout for this template!</p>
+                                <p class="mb-0">在聊天室輸入"即時比數"，選擇想要轉播的賽事，即可以透過LINE Notify收到轉播訊息</p>
                             </div>
-                            <img src="{{url_for('static', filename='feat4.jpeg')}}"
-                                 class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-xxl-3 mb-5">
-                        <div class="feature bg-gradient text-white mb-4 mt-n4">
-                            <i class="bi bi-clipboard-data" style="box-sizing: border-box"></i>
-                        </div>
-                        <div class="card bg-light border-0 h-75">
-                            <div class="card-body text-center">
-                                <h2 class="fs-4 fw-bold mt-2">即時比數</h2>
-                                <p class="mb-0">With Bootstrap 5, we've created a fresh new layout for this template!</p>
-                            </div>
-                            <img src="{{url_for('static', filename='feat3.jpeg')}}"
+                            <img src="{{url_for('static', filename='feat5.jpeg')}}"
                                  class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
                         </div>
                     </div>
@@ -121,9 +108,22 @@
                         <div class="card bg-light border-0 h-75">
                             <div class="card-body text-center">
                                 <h2 class="fs-4 fw-bold mt-2">今日賽事</h2>
-                                <p class="mb-0">With Bootstrap 5, we've created a fresh new layout for this template!</p>
+                                <p class="mb-0">在聊天室輸入"今日賽事"指令可察看今日賽事</p>
                             </div>
                             <img src="{{url_for('static', filename='feat2.jpeg')}}"
+                                 class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-xxl-3 mb-5">
+                        <div class="feature bg-gradient text-white mb-4 mt-n4">
+                            <i class="bi bi-clipboard-data" style="box-sizing: border-box"></i>
+                        </div>
+                        <div class="card bg-light border-0 h-75">
+                            <div class="card-body text-center">
+                                <h2 class="fs-4 fw-bold mt-2">即時比數</h2>
+                                <p class="mb-0">在聊天室輸入"即時比數"指令可察看即時賽況</p>
+                            </div>
+                            <img src="{{url_for('static', filename='feat3.jpeg')}}"
                                  class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
                         </div>
                     </div>
@@ -134,10 +134,51 @@
                         <div class="card bg-light border-0 h-75">
                             <div class="card-body text-center">
                                 <h2 class="fs-4 fw-bold mt-2">戰績排行</h2>
-                                <p class="mb-0">With Bootstrap 5, we've created a fresh new layout for this template!</p>
+                                <p class="mb-0">在聊天室輸入"戰績排行"指令可查看當前戰績排行</p>
+                            </div>
+                            <img src="{{url_for('static', filename='feat1.jpeg')}}"
+                                 class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-xxl-3 mb-5">
+                        <div class="feature bg-gradient text-white mb-4 mt-n4">
+                            <i class="bi bi-trophy" style="box-sizing: border-box"></i>
+                        </div>
+                        <div class="card bg-light border-0 h-75">
+                            <div class="card-body text-center">
+                                <h2 class="fs-4 fw-bold mt-2">快速指令</h2>
+                                <p class="mb-0">快速回復按鈕，快速選擇想要的功能</p>
                             </div>
 
-                            <img src="{{url_for('static', filename='feat1.jpeg')}}"
+                            <img src="{{url_for('static', filename='feat8.jpeg')}}"
+                                 class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-xxl-3 mb-5">
+                        <div class="feature bg-gradient text-white mb-4 mt-n4">
+                            <i class="bi bi-trophy" style="box-sizing: border-box"></i>
+                        </div>
+                        <div class="card bg-light border-0 h-75">
+                            <div class="card-body text-center">
+                                <h2 class="fs-4 fw-bold mt-2">Box Score</h2>
+                                <p class="mb-0">在聊天室輸入"Box"，選擇場次後可查看當前比賽數據</p>
+                            </div>
+
+                            <img src="{{url_for('static', filename='feat7.jpeg')}}"
+                                 class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-xxl-3 mb-5">
+                        <div class="feature bg-gradient text-white mb-4 mt-n4">
+                            <i class="bi bi-trophy" style="box-sizing: border-box"></i>
+                        </div>
+                        <div class="card bg-light border-0 h-75">
+                            <div class="card-body text-center">
+                                <h2 class="fs-4 fw-bold mt-2">分享好友</h2>
+                                <p class="mb-0">所有圖卡訊息皆可分享給好友，一起當個最有同理心的棒球迷 :)</p>
+                            </div>
+
+                            <img src="{{url_for('static', filename='feat11.jpeg')}}"
                                  class="card-img-bottom img-fluid feature-img" alt="即時比數" style="max-height: 300px; width: auto;">
                         </div>
                     </div>
@@ -156,7 +197,7 @@
             </div>
         </section>
         <!-- Footer-->
-        <footer class="py-5 bg-dark">
+        <footer class="py-5 bg-dark fixed-bottom">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; CPBLbot 2022</p></div>
         </footer>
         <!-- Bootstrap core JS-->
@@ -167,7 +208,6 @@
 
     <style>
         body {
-            {#background-image: url('https://raw.githubusercontent.com/m1stborn/CPBL-Linebot/master/assets/logo_dragon_large.png?token=GHSAT0AAAAAABUPYCXMCVUYLP73YDHFCYXUYUP4PBA');#}
             {#background-image: url("https://1080motion.com/wp-content/uploads/2017/10/houston-astros-1030x679.jpg");#}
             background-image: url("https://images.unsplash.com/photo-1629219644109-b4df0ab25a7b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1473&q=80");
             background-repeat: no-repeat;
