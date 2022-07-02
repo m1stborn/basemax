@@ -24,7 +24,8 @@ base_wrap_image = {
     "011": "https://www.dropbox.com/s/18vwj9g4l9tg1z5/011.png?dl=1",
     "100": "https://www.dropbox.com/s/3k5qhysl2po8l7h/100.png?dl=1",
     "110": "https://www.dropbox.com/s/465tmx3uhgp3qz1/110.png?dl=1",
-    "111": "https://www.dropbox.com/s/8asj2xtmyjowp7m/111.png?dl=1"
+    "111": "https://www.dropbox.com/s/8asj2xtmyjowp7m/111.png?dl=1",
+    "101": "https://www.dropbox.com/s/aiyzqgtexdbq1x9/101.png?dl=1"
 }
 
 

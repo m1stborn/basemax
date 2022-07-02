@@ -75,7 +75,7 @@ def handle_text_message(event):
     game_titles = game_cache.get_game_title()
     game_title_to_url = {v: k for k, v in game_titles.items()}
     batting_box_to_url = {f"{v}[打擊]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
-    pitching_box_to_url = {f"{v}[投手]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
+    pitching_box_to_url = {f"{v}[投手]": k for k, v in game_titles.items()}  # keys: <game>[投手] # value: game_uid
     box_to_url = {**batting_box_to_url, **pitching_box_to_url}
 
     logger.info(f"box_qr: {batting_box_to_url}, {pitching_box_to_url}")
@@ -226,6 +226,6 @@ def get_notify_connect_reply(line_id: str) -> str:
         'state': line_id
     }
     url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
-    reply_text = f"第一次使用文字轉播請至以下網址連動LINE NOTIFY與CPBLbot:\n{url}\n" \
-                 f"連結成功後即可在Line Notify頻道中接收文字轉播!"
+    reply_text = f"第一次使用文字轉播請至以下網址連結LINE NOTIFY與CPBLbot:\n{url}\n" \
+                 f"連結成功後即可在Line Notify聊天室中接收文字轉播!"
     return reply_text

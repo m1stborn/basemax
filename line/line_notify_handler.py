@@ -65,11 +65,9 @@ def handle_notify_scoring_play():
     game_url = scoring_play_obj.get("game_url_postfix")
     scoring_play = scoring_play_obj.get("scoring_play")
     long_title = scoring_play_obj.get("game_title")
-    logger.info(f"Ori: {long_title}")
     access_tokens = game_cache.get_broadcast_list(game_url)
     for play in scoring_play:
         title = long_title.replace("vs", f" {play['score']} ")
-        logger.info(f"Replace: {title}, {play['score']}")
         text = f"{title}\n" \
                f"{play['inning']}\n" \
                f"{play['play']}\n\n" \
@@ -142,6 +140,3 @@ def send_notify(message: str, access_token: str, notification_disabled: bool = F
     if response.status_code == 400:
         logger.error(f"Status code 400: send_notify")
     logger.info(f"response: {response}")
-
-"INFO in line_notify_handler: handle_line_notify-link: https://notify-bot.line.me/oauth/authorize?scope=notify&response_type=code&client_id=zhYsa4ixdd1dZiPlQUXai3&redirect_uri=https%3A%2F%2Fcpblbot-stage.herokuapp.com%2F%2Fline%2Fnotify%2Fconfirm&state=U20662a9b60796b7b502a28dca827efab"
-"INFO in line_notify_handler: handle_line_notify-link: https://notify-bot.line.me/oauth/authorize?scope=notify&response_type=code&client_id=QTNgYk1WXMiDrESnclR4Nh&redirect_uri=https%3A%2F%2Fcpblbot.herokuapp.com%2Fline%2Fnotify%2Fconfirm&state=U20662a9b60796b7b502a28dca827efab"
