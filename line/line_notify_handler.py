@@ -29,6 +29,7 @@ NOTIFY_API_URL = "https://notify-api.line.me/api/notify"
 @line_notify_blueprint.route("/")
 def handle_index():
     # TODO: main page
+    # TODO: image size
     return render_template("line_notify_index.html")
 
 
