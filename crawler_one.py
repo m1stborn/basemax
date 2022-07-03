@@ -4,7 +4,7 @@ import os
 import re
 import time
 from argparse import Namespace, ArgumentParser
-from datetime import date
+from datetime import date, datetime
 from multiprocessing import Process, Lock
 from random import randint
 from typing import Dict, Union
@@ -70,6 +70,7 @@ def get_page(url: str, wait: int = 0) -> str:
     return source
 
 
+# TODO: custom date include month
 @error_handler(Exception, logger=logger)
 def crawl_today_games_info(wait: int = 0.5, days: int = None) -> Dict[str, Game]:
     page = get_page(cpbl.CPBL_SCHEDULE_URL, wait)
@@ -158,6 +159,14 @@ team_name_map = {
     '富邦悍將': '富邦悍將'
 }
 
+short_team = {
+    '樂天桃猿': '樂天',
+    '中信兄弟': '中信',
+    '味全龍': '味全',
+    '統一7-ELEVEn獅': '統一',
+    '富邦悍將': '富邦'
+}
+
 
 @error_handler(Exception, logger=logger)
 def crawl_game_score_plays(game: Game, wait: int = 0.5) -> List[Play]:
@@ -180,8 +189,8 @@ def crawl_game_score_plays(game: Game, wait: int = 0.5) -> List[Play]:
             # score = score.replace("Rakuten Monkeys", game.team_away)
             score = score.replace("富邦悍將", "")
             score = score.replace("Rakuten Monkeys", "")
-            score = score.strip()
-            score = f"{team_name_map[game.team_away]} {score} {team_name_map[game.team_home]}"
+            score = score.strip().replace(" ", "")
+            # score = f"{team_name_map[game.team_away]} {score} {team_name_map[game.team_home]}"
             game_play.append(
                 Play(inning=inning, play=play_desc_clean, score=score)
             )
@@ -190,7 +199,10 @@ def crawl_game_score_plays(game: Game, wait: int = 0.5) -> List[Play]:
 
 
 @error_handler(Exception, logger=logger)
-def crawl_box_score_tables(game: Game, wait: int = 0.5, rt_list: bool = False) -> Union[GameBox, List]:
+def crawl_box_score_tables(game: Game,
+                           wait: int = 0.5,
+                           rt_list: bool = False,
+                           url: str = None) -> Union[GameBox, List, None]:
     # with browser_lock:
     #     browser.get(game.game_url)
     #     time.sleep(wait)
@@ -215,6 +227,8 @@ def crawl_box_score_tables(game: Game, wait: int = 0.5, rt_list: bool = False) -
     #     page = browser.page_source
 
     page = get_page(game.game_url, wait)
+    if url is not None:
+        page = get_page(url, wait)
     soup = BeautifulSoup(page, "html.parser")
 
     # title = soup.find("div", class_="DistTitle")
@@ -237,17 +251,22 @@ def crawl_box_score_tables(game: Game, wait: int = 0.5, rt_list: bool = False) -
         return tables
 
     # Validation
-    if len(tables) == 0:
-        return GameBox()
+    if len(tables) != 6:
+        logger.info(f"crawl_box_score_tables: {tables}")
+        return None
 
     away_bat_box = [Batter.from_list(b) for b in tables[1]]
     home_bat_box = [Batter.from_list(b) for b in tables[4]]
     away_pitch_box = [Pitcher.from_list(b) for b in tables[2]]
     home_pitch_box = [Pitcher.from_list(b) for b in tables[5]]
 
+    day = game.game_time.replace("比賽中 ", "").rsplit(' ', 1)[0].strip()
+    d = datetime.strptime(day, "%B %d, %Y").strftime("%m/%d")
+
     game_title = f"{game.team_away} vs {game.team_home}".strip()
     return GameBox(game_url_postfix=game.game_url_postfix,
                    game_title=game_title,
+                   game_time_int=d,
                    away_bat_box=away_bat_box,
                    home_bat_box=home_bat_box,
                    away_pitch_box=away_pitch_box,
@@ -294,6 +313,9 @@ def check_game_end(game_live_url: str, wait: int = 0.5) -> bool:
     game_status_soup = soup.find("li", class_="actived")
 
     tag_soup = game_status_soup.find("div", class_="tag game_status")
+    # Early return for special case "比賽暫停"
+    if tag_soup is None:
+        return False
     game_stats = tag_soup.get_text()
     return game_stats == "比賽結束"
 
@@ -301,7 +323,7 @@ def check_game_end(game_live_url: str, wait: int = 0.5) -> bool:
 def stream_scoring_play(game: Game, plays: List[Play]):
     headers = {"Authorization": f"Bearer {settings.TOKEN}"}
     payload = {
-        "game_title": f"{game.team_away}vs{game.team_home}",
+        "game_title": f"{short_team[game.team_away]}vs{short_team[game.team_home]}",
         "game_url_postfix": game.game_url_postfix,
         "scoring_play": json.loads(json.dumps(plays, default=vars))
     }
@@ -331,19 +353,22 @@ def game_tracker(game: Game, args):
 
             # 2.2 Get game box
             game_box = crawl_box_score_tables(game)
-            game_cache.update_game_box(game.game_url_postfix, game_box=game_box)
+            if game_box is not None and not args.local:
+                game_cache.update_game_box(game.game_url_postfix, game_box=game_box)
 
             # 3. Get Scoring plays
-            tmp_scoring_plays = crawl_game_score_plays(game)
+            tmp_scoring_plays: List[Play] = crawl_game_score_plays(game)
             if len(tmp_scoring_plays) > len(scoring_plays):
                 new_scoring_plays = tmp_scoring_plays[len(scoring_plays):]
                 logger.info(f"Game: {game.game_url}, New scoring play = {new_scoring_plays}")
 
                 scoring_plays = tmp_scoring_plays
-                current_score = scoring_plays[-1].score.split(" ")
+                # current_score = scoring_plays[-1].score.split(" ")
 
                 updated_game = game
-                updated_game.current_score = "".join(current_score[3:6])
+                # updated_game.current_score = "".join(current_score[3:6])
+                updated_game.current_score = scoring_plays[-1].score
+                logger.info(f"current score: {updated_game.current_score}, {scoring_plays[-1].score}")
                 updated_game.scoring_play = scoring_plays
 
                 if not args.local:
@@ -353,6 +378,9 @@ def game_tracker(game: Game, args):
             # 4. Check game end
             if check_game_end(game.game_live_url):
                 logger.info(f"Game {game.game_url_postfix} ended.")
+                last_play = scoring_plays[-1]
+                last_play.play = "比賽結束"
+                stream_scoring_play(game, [last_play])
                 break
 
             time.sleep(3 + randint(0, 7))
