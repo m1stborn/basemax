@@ -50,7 +50,7 @@ if os.name == "nt":
 
 else:
     # In container env, need to wait til Remote WebDriver is opened.
-    time.sleep(5)
+    time.sleep(15)
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--log-level=3")
