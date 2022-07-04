@@ -13,6 +13,7 @@ from typing import List, Optional
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -51,11 +52,15 @@ if os.name == "nt":
 else:
     # In container env, need to wait til Remote WebDriver is opened.
     time.sleep(15)
-    options = webdriver.ChromeOptions()
+    options = webdriver.FirefoxOptions()
     options.add_argument("--headless")
-    options.add_argument("--log-level=3")
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
+    browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options,
+                               desired_capabilities=DesiredCapabilities.FIREFOX)
+    # options = webdriver.ChromeOptions()
+    # options.add_argument("--headless")
+    # options.add_argument("--log-level=3")
+    # options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    # browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
 
 
 def get_page(url: str, wait: int = 0) -> str:
@@ -261,6 +266,7 @@ def crawl_box_score_tables(game: Game,
     home_pitch_box = [Pitcher.from_list(b) for b in tables[5]]
 
     day = game.game_time.replace("比賽中 ", "").rsplit(' ', 1)[0].strip()
+    # TODO: fix unconverted data remains:  保留
     d = datetime.strptime(day, "%B %d, %Y").strftime("%m/%d")
 
     game_title = f"{game.team_away} vs {game.team_home}".strip()
@@ -368,7 +374,7 @@ def game_tracker(game: Game, args):
                 updated_game = game
                 # updated_game.current_score = "".join(current_score[3:6])
                 updated_game.current_score = scoring_plays[-1].score
-                logger.info(f"current score: {updated_game.current_score}, {scoring_plays[-1].score}")
+                # logger.info(f"current score: {updated_game.current_score}, {scoring_plays[-1].score}")
                 updated_game.scoring_play = scoring_plays
 
                 if not args.local:
@@ -395,6 +401,12 @@ def main(args):
     # 1. Get Today's Box url
     games = crawl_today_games_info()
     logger.info(f"Today's games: {games}")
+
+    # TODO: check crawler status: "restart from today", "begin"
+    # Idea:
+    # a = Play(inning='7 上', play='第1棒 2B 林立： 擊出左外野高飛球，二壘安打 。1分打點。 二壘跑者嚴宏鈞回本壘得分。', score='3:0')
+    # b = Play(inning='7 上', play='第1棒 2B 林立： 擊出左外野高飛球，二壘安打 。1分打點。 二壘跑者嚴宏鈞回本壘得分。', score='3:0')
+    # print(a == b)
 
     if not args.local:
         game_cache.init_data(games)
