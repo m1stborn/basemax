@@ -266,6 +266,7 @@ def crawl_box_score_tables(game: Game,
     home_pitch_box = [Pitcher.from_list(b) for b in tables[5]]
 
     day = game.game_time.replace("比賽中 ", "").rsplit(' ', 1)[0].strip()
+    day = day.replace("保留", "")
     # TODO: fix unconverted data remains:  保留
     d = datetime.strptime(day, "%B %d, %Y").strftime("%m/%d")
 
@@ -343,7 +344,7 @@ def stream_scoring_play(game: Game, plays: List[Play]):
 
 def game_tracker(game: Game, args):
     logger.info(f"Start tracking: {game.game_url_postfix}")
-    scoring_plays = []
+    scoring_plays = [] if game.scoring_play is None else game.scoring_play
     try:
         while True:
             # 1. Check game started
@@ -386,6 +387,7 @@ def game_tracker(game: Game, args):
                 logger.info(f"Game {game.game_url_postfix} ended.")
                 last_play = scoring_plays[-1]
                 last_play.play = "比賽結束"
+                last_play.inning = game_state.inning
                 stream_scoring_play(game, [last_play])
                 break
 
@@ -397,20 +399,29 @@ def game_tracker(game: Game, args):
     return
 
 
+def standing_tracker():
+    return
+
+
+def restore_games(games: Dict[str, Game]):
+    old_games = game_cache.get_games_info()
+    if set(games.keys()).issubset(set(old_games.keys())):
+        # 'restore'
+        return old_games
+    else:
+        # 'begin'
+        game_cache.init_data(games)
+        game_cache.update_games_data(games)
+        return games
+
+
 def main(args):
     # 1. Get Today's Box url
     games = crawl_today_games_info()
     logger.info(f"Today's games: {games}")
 
-    # TODO: check crawler status: "restart from today", "begin"
-    # Idea:
-    # a = Play(inning='7 上', play='第1棒 2B 林立： 擊出左外野高飛球，二壘安打 。1分打點。 二壘跑者嚴宏鈞回本壘得分。', score='3:0')
-    # b = Play(inning='7 上', play='第1棒 2B 林立： 擊出左外野高飛球，二壘安打 。1分打點。 二壘跑者嚴宏鈞回本壘得分。', score='3:0')
-    # print(a == b)
-
     if not args.local:
-        game_cache.init_data(games)
-        game_cache.update_games_data(games)
+        restore_games(games)
 
     # 2. Tracking today's games: only track the game that are not postponed
     games = {k: game for k, game in games.items() if "延賽" not in game.game_time}
@@ -424,6 +435,7 @@ def main(args):
 
     # 3. Update standing
     title, teams = crawl_standings()
+    # TODO: while true
     game_cache.update_standings(title, teams)
 
 
