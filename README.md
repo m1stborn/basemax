@@ -101,5 +101,5 @@ You can also run crawler locally
 
 - [ ] Update README.md
 - [ ] Main page
-- [ ] Resize feature image
+- [ ] Resize feature image and change replace dropbox image
 - [ ] script for deployment to gce

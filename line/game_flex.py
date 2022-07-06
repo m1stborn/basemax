@@ -8,24 +8,27 @@ from models.game_cache import (
     get_game_states,
 )
 from schemas.game import Game, GameState
+from config import Setting
+
+settings = Setting()
 
 logo_large_url = {
-    "中信兄弟": "https://www.dropbox.com/s/ey3sjbds59umt9p/logo_brothers_large.png?dl=1",
-    "味全龍": "https://www.dropbox.com/s/rqgyx6zaaf4sj8h/logo_dragon_large.png?dl=1",
-    "富邦悍將": "https://www.dropbox.com/s/94aq394s7w3b5wu/logo_fubon_large.png?dl=1",
-    "統一7-ELEVEn獅": "https://www.dropbox.com/s/9ckrf50o8m3hj71/logo_lions_large.png?dl=1",
-    "樂天桃猿": "https://www.dropbox.com/s/e0qbbbdb1ul5dm2/logo_monkeys_large.png?dl=1"
+    '樂天桃猿': f'{settings.API_BASE}/logo/logo_monkeys_large.png',
+    '中信兄弟': f'{settings.API_BASE}/logo/logo_brothers_large.png',
+    '味全龍': f'{settings.API_BASE}/logo/logo_dragon_large.png',
+    '統一7-ELEVEn獅': f'{settings.API_BASE}/logo/logo_lions_large.png',
+    '富邦悍將': f'{settings.API_BASE}/logo/logo_fubon_large.png'
 }
 
 base_wrap_image = {
-    "000": "https://www.dropbox.com/s/h4o0osgrz7xh82b/000.png?dl=1",
-    "001": "https://www.dropbox.com/s/vvadsdj9mzlidv4/001.png?dl=1",
-    "010": "https://www.dropbox.com/s/ff5590ug7612uzk/010.png?dl=1",
-    "011": "https://www.dropbox.com/s/18vwj9g4l9tg1z5/011.png?dl=1",
-    "100": "https://www.dropbox.com/s/3k5qhysl2po8l7h/100.png?dl=1",
-    "110": "https://www.dropbox.com/s/465tmx3uhgp3qz1/110.png?dl=1",
-    "111": "https://www.dropbox.com/s/8asj2xtmyjowp7m/111.png?dl=1",
-    "101": "https://www.dropbox.com/s/aiyzqgtexdbq1x9/101.png?dl=1"
+    "000": f'{settings.API_BASE}/base/000.png',
+    "001": f'{settings.API_BASE}/base/001.png',
+    "010": f'{settings.API_BASE}/base/010.png',
+    "011": f'{settings.API_BASE}/base/011.png',
+    "100": f'{settings.API_BASE}/base/100.png',
+    "110": f'{settings.API_BASE}/base/110.png',
+    "111": f'{settings.API_BASE}/base/111.png',
+    "101": f'{settings.API_BASE}/base/101.png'
 }
 
 

@@ -421,10 +421,6 @@ def standing_tracker():
     return
 
 
-def standing_tracker():
-    return
-
-
 def restore_games(games: Dict[str, Game]):
     old_games = game_cache.get_games_info()
     if set(games.keys()).issubset(set(old_games.keys())):

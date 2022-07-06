@@ -1,9 +1,14 @@
 from typing import Dict, List
 
+from flask import url_for
+
 from schemas.standing import Team
 from models import game_cache
 from line.footer_flex import footer_flex
+from config import Setting
 
+
+settings = Setting()
 
 team_name_map = {
     '樂天桃猿': '樂天桃猿',
@@ -13,13 +18,12 @@ team_name_map = {
     '富邦悍將': '富邦悍將'
 }
 
-
 logo_small_url = {
-    '樂天桃猿': "https://www.dropbox.com/s/fyvn64j1c40xqre/logo_monkeys.png?dl=1",
-    '中信兄弟': "https://www.dropbox.com/s/6x8s615dkw69dbj/logo_brothers.png?dl=1",
-    '味全龍': "https://www.dropbox.com/s/zths04obxcgmwnz/logo_dragon.png?dl=1",
-    '統一7-ELEVEn獅': "https://www.dropbox.com/s/1kh4sjle1gfoxpv/logo_lions.png?dl=1",
-    '富邦悍將': "https://www.dropbox.com/s/7m82iev26piqit0/logo_fubon.png?dl=1"
+    '樂天桃猿': f"{settings.API_BASE}/logo/logo_monkeys.png",
+    '中信兄弟': f"{settings.API_BASE}/logo/logo_brothers.png",
+    '味全龍': f"{settings.API_BASE}/logo/logo_dragon.png",
+    '統一7-ELEVEn獅': f"{settings.API_BASE}/logo/logo_lions.png",
+    '富邦悍將': f"{settings.API_BASE}/logo/logo_fubon.png"
 }
 
 
