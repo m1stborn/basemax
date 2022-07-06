@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Dict, List, Union
+from urllib.parse import urlencode
 
 from line.footer_flex import footer_flex
 from schemas.game import GameBox
@@ -228,7 +229,10 @@ def batting_box_contents(game_uid: str, footer: bool = True) -> List:
                              batters=game_box.away_bat_box)
     contents = [away_flex, home_flex]
     if footer:
+        query_string = {
+            'gameSno': game_uid.split("&")[-1].split("=")[-1]
+        }
         for flex in contents:
-            flex["footer"] = footer_flex()
+            flex["footer"] = footer_flex(post_fix=f"/batbox?{urlencode(query_string)}")
 
     return contents

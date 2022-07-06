@@ -12,6 +12,9 @@ from flask import (
 from werkzeug.local import LocalProxy
 
 from config import Setting
+from line.pitching_box_flex import pitching_box_contents
+from models import game_cache
+from line.batting_box_flex import batting_box_contents
 from line.game_flex import (
     scoreboard_contents,
     match_contents,
@@ -55,6 +58,28 @@ def liff_share_standing(action):
     elif action == "score":
         alt = "分享CPBL即時比數"
         contents = scoreboard_contents(footer=False)
+        flex = flex_json(alt, contents)
+
+    elif action == "batbox":
+        alt = "分享CPBL boxscore"
+        game_idx = request.args.get('gameSno')
+        boxes = game_cache.get_game_boxes()
+        game_uid_matches = [key for key, value in boxes.items() if game_idx in key]
+        logger.info(f'batbox {game_uid_matches}')
+        if len(game_uid_matches) < 0:
+            return abort(400)
+        contents = batting_box_contents(game_uid=game_uid_matches[-1], footer=False)
+        flex = flex_json(alt, contents)
+
+    elif action == "pitchbox":
+        alt = "分享CPBL boxscore"
+        game_idx = request.args.get('gameSno')
+        boxes = game_cache.get_game_boxes()
+        game_uid_matches = [key for key, value in boxes.items() if game_idx in key]
+        logger.info(f'pitchbox {game_uid_matches}')
+        if len(game_uid_matches) < 0:
+            return abort(400)
+        contents = pitching_box_contents(game_uid=game_uid_matches[-1], footer=False)
         flex = flex_json(alt, contents)
 
     return Response(render_template('share_message.html', flex=flex, liff_id=settings.LIFF_SHARE_ID))
