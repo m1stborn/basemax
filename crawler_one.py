@@ -387,7 +387,26 @@ def game_tracker(game: Game, args):
 
     except KeyboardInterrupt:
         browser.quit()
-        logger.info("Gracefully shot down, quit web driver")
+        logger.info("Gracefully shut down game_tracker, quit web driver")
+    return
+
+
+def standing_tracker():
+    _, old_standing = game_cache.get_standings()
+    try:
+        while True:
+            title, stands = crawl_standings()
+            if old_standing == stands:
+                logger.info("standing not update yet.")
+                time.sleep(60)
+                continue
+            elif old_standing != stands and len(old_standing) == len(stands):
+                logger.info("standing update.")
+                game_cache.update_standings(title, stands)
+                break
+    except KeyboardInterrupt:
+        logger.info("Gracefully shut down standing_tracker")
+
     return
 
 
@@ -411,8 +430,9 @@ def main(args):
         process_list[i].join()
 
     # 3. Update standing
-    title, teams = crawl_standings()
-    game_cache.update_standings(title, teams)
+    # title, teams = crawl_standings()
+    # game_cache.update_standings(title, teams)
+    standing_tracker()
 
 
 def parse_args() -> Namespace:
