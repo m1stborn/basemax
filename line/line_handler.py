@@ -64,7 +64,7 @@ default_quick_reply = QuickReply(
         QuickReplyButton(action=MessageAction(label="即時比數", text="即時比數")),
         QuickReplyButton(action=MessageAction(label="box", text="box")),
         QuickReplyButton(action=MessageAction(label="球隊戰績", text="球隊戰績")),
-        QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
+        # QuickReplyButton(action=MessageAction(label="連結Notify", text="連結Notify")),
     ]
 )
 
@@ -204,8 +204,7 @@ def handle_sticker_message(event):
         'state': event.source.user_id
     }
     url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
-    welcome_message = f"""
-歡迎使用 CPBLBot 中職轉播機器人!
+    welcome_message = f"""歡迎使用 CPBLBot 中職機器人!
 請按以下步驟連接 LINE Notify 以啟用文字轉播功能。
 1. 開啟下方網址
 2. 選擇第一個「透過1對1聊天接收LINE Notify的通知」
@@ -213,7 +212,7 @@ def handle_sticker_message(event):
 {url}
 連動成功後即可在Line Notify聊天室中接收文字轉播!
 
-你將能使用這些指令: 今日賽事、文字轉播、即時比數、box、球隊戰績，獲得中華職棒的最新資訊!
+你將能使用這些功能: 今日賽事、文字轉播、即時比數、box、球隊戰績!
 (若未連結Line Notify則無法使用文字轉播)
 """
     line_bot_api.reply_message(
