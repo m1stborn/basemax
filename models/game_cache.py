@@ -120,6 +120,12 @@ def get_game_box(game_uid: str) -> GameBox:
     return game_box[game_uid]
 
 
+def get_game_boxes() -> Dict[str, GameBox]:
+    game_box_json = json.loads(r.get('games_box').decode('utf-8'))
+    game_box = {k: GameBox(**box) for k, box in game_box_json.items()}
+    return game_box
+
+
 def init_data(games):
     games_uid = [url for url, game in games.items()]
     empty_broadcast_list = {url: [] for url, game in games.items()}

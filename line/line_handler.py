@@ -6,6 +6,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (
     MessageEvent,
+    FollowEvent,
     TextMessage,
     StickerMessage,
     TextSendMessage,
@@ -76,6 +77,9 @@ def handle_text_message(event):
     game_title_to_url = {v: k for k, v in game_titles.items()}
     batting_box_to_url = {f"{v}[打擊]": k for k, v in game_titles.items()}  # keys: <game>[打擊] # value: game_uid
     pitching_box_to_url = {f"{v}[投手]": k for k, v in game_titles.items()}  # keys: <game>[投手] # value: game_uid
+
+    # TODO: only put available box to list
+    # boxes = game_cache.get_game_boxes()
     box_to_url = {**batting_box_to_url, **pitching_box_to_url}
 
     logger.info(f"box_qr: {batting_box_to_url}, {pitching_box_to_url}")
@@ -104,12 +108,6 @@ def handle_text_message(event):
         if not line_user.check_notify_connect(event.source.user_id):
             append_text = get_notify_connect_reply(event.source.user_id)
             reply_text = f"{append_text}\n{reply_text}"
-
-            # line_bot_api.reply_message(
-            #     event.reply_token,
-            #     messages=TextSendMessage(text=append_text, quick_reply=quick_reply)
-            # )
-            # return
 
         line_bot_api.reply_message(
             event.reply_token,
@@ -150,7 +148,7 @@ def handle_text_message(event):
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
-                messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
+                messages=TextSendMessage(text="比賽尚未開始", quick_reply=quick_reply)
             )
             return
 
@@ -160,7 +158,7 @@ def handle_text_message(event):
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
-                messages=TextSendMessage(text="目前無進行中的賽事", quick_reply=quick_reply)
+                messages=TextSendMessage(text="比賽尚未開始", quick_reply=quick_reply)
             )
             return
 
@@ -198,6 +196,42 @@ def handle_text_message(event):
         event.reply_token,
         messages=flex
     )
+
+
+@handler.add(FollowEvent)
+def handle_sticker_message(event):
+    query_string = {
+        'state': event.source.user_id
+    }
+    url = f"{settings.API_BASE}/line/notify?{urlencode(query_string)}"
+    welcome_message = f"""
+歡迎使用 CPBLBot 中職轉播機器人!
+請按以下步驟連接 LINE Notify 以啟用文字轉播功能。
+1. 開啟下方網址
+2. 選擇第一個「透過1對1聊天接收LINE Notify的通知」
+3. 點擊「同意並連動」
+{url}
+連動成功後即可在Line Notify聊天室中接收文字轉播!
+
+你將能使用這些指令: 今日賽事、文字轉播、即時比數、box、球隊戰績，獲得中華職棒的最新資訊!
+(若未連結Line Notify則無法使用文字轉播)
+"""
+    line_bot_api.reply_message(
+        event.reply_token,
+        messages=TextSendMessage(text=welcome_message, quick_reply=default_quick_reply)
+    )
+
+    # TODO: get user display name
+    # example
+    # from linebot import LineBotApi
+    # from linebot.exceptions import LineBotApiError
+    #
+    # line_bot_api = LineBotApi('<channel access token>')
+    #
+    # try:
+    #     profile = line_bot_api.get_profile('<user_id>')
+    # except LineBotApiError as e:
+    #     # error handle
 
 
 @handler.add(MessageEvent, message=StickerMessage)
