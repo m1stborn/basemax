@@ -424,7 +424,7 @@ def main(args):
     logger.info(f"Today's games: {games}")
 
     if not args.local:
-        restore_games(games)
+        games = restore_games(games)
 
     # 2. Tracking today's games: only track the game that are not postponed
     games = {k: game for k, game in games.items() if "延賽" not in game.game_time}
