@@ -51,16 +51,16 @@ if os.name == "nt":
 
 else:
     # In container env, need to wait til Remote WebDriver is opened.
-    time.sleep(15)
-    options = webdriver.FirefoxOptions()
-    options.add_argument("--headless")
-    browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options,
-                               desired_capabilities=DesiredCapabilities.FIREFOX)
-    # options = webdriver.ChromeOptions()
+    time.sleep(5)
+    # options = webdriver.FirefoxOptions()
     # options.add_argument("--headless")
-    # options.add_argument("--log-level=3")
-    # options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    # browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
+    # browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options,
+    #                            desired_capabilities=DesiredCapabilities.FIREFOX)
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless")
+    options.add_argument("--log-level=3")
+    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options)
 
 
 def get_page(url: str, wait: int = 0) -> str:
@@ -345,6 +345,7 @@ def stream_scoring_play(game: Game, plays: List[Play]):
 def game_tracker(game: Game, args):
     logger.info(f"Start tracking: {game.game_url_postfix}")
     scoring_plays = [] if game.scoring_play is None else game.scoring_play
+    logger.info(f"Start plays from {scoring_plays}")
     try:
         while True:
             # 1. Check game started
@@ -375,7 +376,6 @@ def game_tracker(game: Game, args):
                 updated_game = game
                 # updated_game.current_score = "".join(current_score[3:6])
                 updated_game.current_score = scoring_plays[-1].score
-                # logger.info(f"current score: {updated_game.current_score}, {scoring_plays[-1].score}")
                 updated_game.scoring_play = scoring_plays
 
                 if not args.local:
@@ -385,9 +385,12 @@ def game_tracker(game: Game, args):
             # 4. Check game end
             if check_game_end(game.game_live_url):
                 logger.info(f"Game {game.game_url_postfix} ended.")
+                last_game_state = game_cache.get_game_state(game.game_url_postfix)
+
                 last_play = scoring_plays[-1]
                 last_play.play = "比賽結束"
-                last_play.inning = game_state.inning
+                last_play.inning = last_game_state.inning \
+                    if last_game_state is not None else "9 下"
                 stream_scoring_play(game, [last_play])
                 break
 
@@ -406,10 +409,10 @@ def standing_tracker():
 def restore_games(games: Dict[str, Game]):
     old_games = game_cache.get_games_info()
     if set(games.keys()).issubset(set(old_games.keys())):
-        # 'restore'
+        logger.info("Restoring on going games")
         return old_games
     else:
-        # 'begin'
+        logger.info("Initialize new games.")
         game_cache.init_data(games)
         game_cache.update_games_data(games)
         return games
