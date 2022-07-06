@@ -394,7 +394,7 @@ def game_tracker(game: Game, args):
                 stream_scoring_play(game, [last_play])
                 break
 
-            time.sleep(3 + randint(0, 7))
+            # time.sleep(3 + randint(0, 7))
 
     except KeyboardInterrupt:
         browser.quit()
@@ -452,8 +452,6 @@ def main(args):
         process_list[i].join()
 
     # 3. Update standing
-    # title, teams = crawl_standings()
-    # game_cache.update_standings(title, teams)
     standing_tracker()
 
 
