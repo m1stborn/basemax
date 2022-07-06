@@ -13,6 +13,7 @@ from typing import List, Optional
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -51,6 +52,10 @@ if os.name == "nt":
 else:
     # In container env, need to wait til Remote WebDriver is opened.
     time.sleep(15)
+    # options = webdriver.FirefoxOptions()
+    # options.add_argument("--headless")
+    # browser = webdriver.Remote("http://selenium:4444/wd/hub", options=options,
+    #                            desired_capabilities=DesiredCapabilities.FIREFOX)
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--log-level=3")
@@ -261,6 +266,8 @@ def crawl_box_score_tables(game: Game,
     home_pitch_box = [Pitcher.from_list(b) for b in tables[5]]
 
     day = game.game_time.replace("比賽中 ", "").rsplit(' ', 1)[0].strip()
+    day = day.replace("保留", "")
+    # TODO: fix unconverted data remains:  保留
     d = datetime.strptime(day, "%B %d, %Y").strftime("%m/%d")
 
     game_title = f"{game.team_away} vs {game.team_home}".strip()
@@ -337,7 +344,8 @@ def stream_scoring_play(game: Game, plays: List[Play]):
 
 def game_tracker(game: Game, args):
     logger.info(f"Start tracking: {game.game_url_postfix}")
-    scoring_plays = []
+    scoring_plays = [] if game.scoring_play is None else game.scoring_play
+    logger.info(f"Start plays from {scoring_plays}")
     try:
         while True:
             # 1. Check game started
@@ -368,7 +376,6 @@ def game_tracker(game: Game, args):
                 updated_game = game
                 # updated_game.current_score = "".join(current_score[3:6])
                 updated_game.current_score = scoring_plays[-1].score
-                logger.info(f"current score: {updated_game.current_score}, {scoring_plays[-1].score}")
                 updated_game.scoring_play = scoring_plays
 
                 if not args.local:
@@ -378,8 +385,12 @@ def game_tracker(game: Game, args):
             # 4. Check game end
             if check_game_end(game.game_live_url):
                 logger.info(f"Game {game.game_url_postfix} ended.")
+                last_game_state = game_cache.get_game_state(game.game_url_postfix)
+
                 last_play = scoring_plays[-1]
                 last_play.play = "比賽結束"
+                last_play.inning = last_game_state.inning \
+                    if last_game_state is not None else "9 下"
                 stream_scoring_play(game, [last_play])
                 break
 
@@ -410,14 +421,29 @@ def standing_tracker():
     return
 
 
+def standing_tracker():
+    return
+
+
+def restore_games(games: Dict[str, Game]):
+    old_games = game_cache.get_games_info()
+    if set(games.keys()).issubset(set(old_games.keys())):
+        logger.info("Restoring on going games")
+        return old_games
+    else:
+        logger.info("Initialize new games.")
+        game_cache.init_data(games)
+        game_cache.update_games_data(games)
+        return games
+
+
 def main(args):
     # 1. Get Today's Box url
     games = crawl_today_games_info()
     logger.info(f"Today's games: {games}")
 
     if not args.local:
-        game_cache.init_data(games)
-        game_cache.update_games_data(games)
+        games = restore_games(games)
 
     # 2. Tracking today's games: only track the game that are not postponed
     games = {k: game for k, game in games.items() if "延賽" not in game.game_time}

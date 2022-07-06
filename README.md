@@ -97,3 +97,9 @@ You can also run crawler locally
     ```
     python selenium_crawler.py --local
     ```
+## TODO
+
+- [ ] Update README.md
+- [ ] Main page
+- [ ] Resize feature image
+- [ ] script for deployment to gce
