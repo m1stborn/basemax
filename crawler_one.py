@@ -406,10 +406,18 @@ def game_tracker(game: Game, args):
                 last_game_state = game_cache.get_game_state(game.game_url_postfix)
 
                 last_play = scoring_plays[-1]
-                last_play.play = "比賽結束"
-                last_play.inning = last_game_state.inning \
-                    if last_game_state is not None else "9 下"
-                stream_scoring_play(game, [last_play])
+                if last_play.play is not "比賽結束":
+                    last_play.play = "比賽結束"
+                    last_play.inning = last_game_state.inning \
+                        if last_game_state is not None else "9 下"
+
+                    scoring_plays.append(last_play)
+
+                    updated_game = game
+                    updated_game.current_score = scoring_plays[-1].score
+                    updated_game.scoring_play = scoring_plays
+                    stream_scoring_play(game, [last_play])
+                    game_cache.update_one_game_data(updated_game)
                 break
 
             if datetime.now() - last_verify > timedelta(minutes=5):
@@ -454,6 +462,15 @@ def restore_games(games: Dict[str, Game]):
         return games
 
 
+def dummy_idler():
+    last_verify = datetime.now()
+    while True:
+        time.sleep(300)
+        if datetime.now() - last_verify > timedelta(minutes=5):
+            last_verify = datetime.now()
+            verify()
+
+
 def main(args):
     # 1. Get Today's Box url
     games = crawl_today_games_info()
@@ -474,6 +491,7 @@ def main(args):
 
     # 3. Update standing
     standing_tracker()
+    dummy_idler()
 
 
 def parse_args() -> Namespace:
