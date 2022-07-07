@@ -358,6 +358,8 @@ def verify():
     if response.status_code == 400:
         logger.error(f"Status code 400: payload = {payload}")
 
+    return response.json()
+
 
 def game_tracker(game: Game, args):
     logger.info(f"Start tracking: {game.game_url_postfix}")
@@ -468,7 +470,8 @@ def dummy_idler():
         time.sleep(300)
         if datetime.now() - last_verify > timedelta(minutes=5):
             last_verify = datetime.now()
-            verify()
+            response = verify()
+            logger.info(f"response: {response}")
 
 
 def main(args):
@@ -490,7 +493,7 @@ def main(args):
         process_list[i].join()
 
     # 3. Update standing
-    standing_tracker()
+    # standing_tracker()
     dummy_idler()
 
 
