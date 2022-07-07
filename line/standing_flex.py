@@ -19,11 +19,11 @@ team_name_map = {
 }
 
 logo_small_url = {
-    '樂天桃猿': f"{settings.API_BASE}/logo/logo_monkeys.png",
-    '中信兄弟': f"{settings.API_BASE}/logo/logo_brothers.png",
-    '味全龍': f"{settings.API_BASE}/logo/logo_dragon.png",
-    '統一7-ELEVEn獅': f"{settings.API_BASE}/logo/logo_lions.png",
-    '富邦悍將': f"{settings.API_BASE}/logo/logo_fubon.png"
+    '樂天桃猿': f"{settings.API_BASE}/static/logo/logo_monkeys.png",
+    '中信兄弟': f"{settings.API_BASE}/static/logo/logo_brothers.png",
+    '味全龍': f"{settings.API_BASE}/static/logo/logo_dragon.png",
+    '統一7-ELEVEn獅': f"{settings.API_BASE}/static/logo/logo_lions.png",
+    '富邦悍將': f"{settings.API_BASE}/static/logo/logo_fubon.png"
 }
 
 

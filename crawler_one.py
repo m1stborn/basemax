@@ -270,7 +270,7 @@ def crawl_box_score_tables(game: Game,
     # TODO: fix unconverted data remains:  保留
     d = datetime.strptime(day, "%B %d, %Y").strftime("%m/%d")
 
-    game_title = f"{game.team_away} vs {game.team_home}".strip()
+    game_title = f"{short_team[game.team_away]} vs {short_team[game.team_home]}".strip()
     return GameBox(game_url_postfix=game.game_url_postfix,
                    game_title=game_title,
                    game_time_int=d,

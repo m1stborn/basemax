@@ -13,22 +13,22 @@ from config import Setting
 settings = Setting()
 
 logo_large_url = {
-    '樂天桃猿': f'{settings.API_BASE}/logo/logo_monkeys_large.png',
-    '中信兄弟': f'{settings.API_BASE}/logo/logo_brothers_large.png',
-    '味全龍': f'{settings.API_BASE}/logo/logo_dragon_large.png',
-    '統一7-ELEVEn獅': f'{settings.API_BASE}/logo/logo_lions_large.png',
-    '富邦悍將': f'{settings.API_BASE}/logo/logo_fubon_large.png'
+    '樂天桃猿': f'{settings.API_BASE}/static/logo/logo_monkeys_large.png',
+    '中信兄弟': f'{settings.API_BASE}/static/logo/logo_brothers_large.png',
+    '味全龍': f'{settings.API_BASE}/static/logo/logo_dragon_large.png',
+    '統一7-ELEVEn獅': f'{settings.API_BASE}/static/logo/logo_lions_large.png',
+    '富邦悍將': f'{settings.API_BASE}/static/logo/logo_fubon_large.png'
 }
 
 base_wrap_image = {
-    "000": f'{settings.API_BASE}/base/000.png',
-    "001": f'{settings.API_BASE}/base/001.png',
-    "010": f'{settings.API_BASE}/base/010.png',
-    "011": f'{settings.API_BASE}/base/011.png',
-    "100": f'{settings.API_BASE}/base/100.png',
-    "110": f'{settings.API_BASE}/base/110.png',
-    "111": f'{settings.API_BASE}/base/111.png',
-    "101": f'{settings.API_BASE}/base/101.png'
+    "000": f'{settings.API_BASE}/static/base/000.png',
+    "001": f'{settings.API_BASE}/static/base/001.png',
+    "010": f'{settings.API_BASE}/static/base/010.png',
+    "011": f'{settings.API_BASE}/static/base/011.png',
+    "100": f'{settings.API_BASE}/static/base/100.png',
+    "110": f'{settings.API_BASE}/static/base/110.png',
+    "111": f'{settings.API_BASE}/static/base/111.png',
+    "101": f'{settings.API_BASE}/static/base/101.png'
 }
 
 
