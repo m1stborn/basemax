@@ -406,7 +406,7 @@ def game_tracker(game: Game, args):
                 last_game_state = game_cache.get_game_state(game.game_url_postfix)
 
                 last_play = scoring_plays[-1]
-                if last_play.play is not "比賽結束":
+                if last_play.play != "比賽結束":
                     last_play.play = "比賽結束"
                     last_play.inning = last_game_state.inning \
                         if last_game_state is not None else "9 下"
