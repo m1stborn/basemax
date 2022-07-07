@@ -493,7 +493,7 @@ def main(args):
         process_list[i].join()
 
     # 3. Update standing
-    # standing_tracker()
+    standing_tracker()
     dummy_idler()
 
 
