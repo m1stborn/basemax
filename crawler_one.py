@@ -394,7 +394,7 @@ def game_tracker(game: Game, args):
                 stream_scoring_play(game, [last_play])
                 break
 
-            # time.sleep(3 + randint(0, 7))
+            time.sleep(3 + randint(0, 7))
 
     except KeyboardInterrupt:
         browser.quit()
