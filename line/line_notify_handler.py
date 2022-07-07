@@ -1,15 +1,15 @@
-import logging
+import json
 import uuid
 from urllib.parse import urlencode
 
 import jwt
+import requests
+from flask import Blueprint, request, render_template, current_app, jsonify, abort
 from jwt.exceptions import (
     InvalidSignatureError,
     InvalidTokenError,
     DecodeError,
 )
-import requests
-from flask import Blueprint, request, render_template, current_app, jsonify, abort
 from werkzeug.local import LocalProxy
 
 from config import Setting
@@ -24,13 +24,6 @@ line_notify_blueprint = Blueprint('line_notify', __name__, )
 REDIRECT_URI = f"{settings.API_BASE}/line/notify/confirm"
 NOTIFY_BOT_URL = "https://notify-bot.line.me"
 NOTIFY_API_URL = "https://notify-api.line.me/api/notify"
-
-
-@line_notify_blueprint.route("/")
-def handle_index():
-    # TODO: main page
-    # TODO: image size
-    return render_template("line_notify_index.html")
 
 
 @line_notify_blueprint.route("/line/notify")
@@ -58,7 +51,9 @@ def handle_notify_scoring_play():
     bearer = request.headers.get('Authorization')
     jwt_token = bearer.split()[1]
     try:
-        _ = jwt.decode(jwt_token, settings.CPBLBOT_SECRET_KEY, algorithms=['HS256'])
+        data = jwt.decode(jwt_token, settings.CPBLBOT_SECRET_KEY, algorithms=['HS256'])
+        if "token" in data:
+            return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
     except (InvalidSignatureError, InvalidTokenError, DecodeError) as e:
         return abort(400)
 

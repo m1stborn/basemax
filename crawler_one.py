@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import time
+import uuid
 from argparse import Namespace, ArgumentParser
 from datetime import date, datetime
 from multiprocessing import Process, Lock
@@ -342,10 +343,26 @@ def stream_scoring_play(game: Game, plays: List[Play]):
         logger.error(f"Status code 400: payload = {payload}")
 
 
+def verify():
+    headers = {"Authorization": f"Bearer {settings.TOKEN}"}
+    payload = {
+        "sub": "cpblbot-heroku",
+        "name": "m1stborn",
+        "token": str(uuid.uuid4())[:8]
+    }
+    response = requests.post(settings.API_BASE + "/line/notify/scoring_play",
+                             json=payload,
+                             headers=headers)
+
+    if response.status_code == 400:
+        logger.error(f"Status code 400: payload = {payload}")
+
+
 def game_tracker(game: Game, args):
     logger.info(f"Start tracking: {game.game_url_postfix}")
     scoring_plays = [] if game.scoring_play is None else game.scoring_play
     logger.info(f"Start plays from {scoring_plays}")
+    counter = 0
     try:
         while True:
             # 1. Check game started
@@ -395,6 +412,10 @@ def game_tracker(game: Game, args):
                 break
 
             time.sleep(3 + randint(0, 7))
+            counter += 1
+            if counter == 5:
+                counter = 0
+                verify()
 
     except KeyboardInterrupt:
         browser.quit()
