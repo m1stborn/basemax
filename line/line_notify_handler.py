@@ -53,6 +53,7 @@ def handle_notify_scoring_play():
     try:
         data = jwt.decode(jwt_token, settings.CPBLBOT_SECRET_KEY, algorithms=['HS256'])
         if "token" in data:
+            logger.info(data)
             return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
     except (InvalidSignatureError, InvalidTokenError, DecodeError) as e:
         return abort(400)
