@@ -42,12 +42,12 @@ class AutoVerify:
 
         return response.json()
 
-    def timebase_verify(self, delta: 5):
+    def timebase_verify(self, delta=5):
         if datetime.now() - self.last_verify_time > timedelta(seconds=delta*60):
             self.last_verify_time = datetime.now()
             return self.verify()
 
-    def auto(self, delta: 5):
+    def auto(self, delta=5):
         while True:
             time.sleep(delta * 60)
             if datetime.now() - self.last_verify_time > timedelta(seconds=delta*60):
