@@ -22,11 +22,13 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 
 from config import Setting, CPBLSetting
+from line.verify import AutoVerify
 from models import game_cache
 from schemas.game import Game, GameState, Play, GameBox
 from schemas.player import Batter, Pitcher
 from schemas.standing import Team
 from utils import error_handler
+
 
 settings = Setting()
 cpbl = CPBLSetting()
@@ -344,30 +346,16 @@ def stream_scoring_play(game: Game, plays: List[Play]):
         logger.error(f"Status code 400: payload = {payload}")
 
 
-def verify():
-    payload = {
-        "sub": "cpblbot-heroku",
-        "name": "m1stborn",
-        "token": str(uuid.uuid4())[:8]
-    }
-    jwt_token = jwt.encode(payload, settings.CPBLBOT_SECRET_KEY, algorithm='HS256')
-    headers = {"Authorization": f"Bearer {jwt_token}"}
-    response = requests.post(settings.API_BASE + "/line/notify/scoring_play",
-                             headers=headers)
-
-    if response.status_code == 400:
-        logger.error(f"Status code 400: payload = {payload}")
-
-    return response.json()
-
-
 def game_tracker(game: Game, args):
     logger.info(f"Start tracking: {game.game_url_postfix}")
     scoring_plays = [] if game.scoring_play is None else game.scoring_play
     logger.info(f"Start plays from {scoring_plays}")
-    last_verify = datetime.now()
+    auto_verifier = AutoVerify()
     try:
         while True:
+            # 0. verification
+            auto_verifier.timebase_verify()
+
             # 1. Check game started
             if not check_game_start(game.game_url):
                 time.sleep(60)
@@ -422,9 +410,6 @@ def game_tracker(game: Game, args):
                     game_cache.update_one_game_data(updated_game)
                 break
 
-            if datetime.now() - last_verify > timedelta(minutes=5):
-                last_verify = datetime.now()
-                verify()
             time.sleep(3 + randint(0, 7))
 
     except KeyboardInterrupt:
@@ -464,16 +449,6 @@ def restore_games(games: Dict[str, Game]):
         return games
 
 
-def dummy_idler():
-    last_verify = datetime.now()
-    while True:
-        time.sleep(300)
-        if datetime.now() - last_verify > timedelta(minutes=5):
-            last_verify = datetime.now()
-            response = verify()
-            logger.info(f"response: {response}")
-
-
 def main(args):
     # 1. Get Today's Box url
     games = crawl_today_games_info()
@@ -494,7 +469,8 @@ def main(args):
 
     # 3. Update standing
     standing_tracker()
-    dummy_idler()
+    auto_verify = AutoVerify()
+    auto_verify.auto()
 
 
 def parse_args() -> Namespace:
