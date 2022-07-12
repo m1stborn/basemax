@@ -73,11 +73,11 @@ def scoreboard_flex(game: Game, game_state: GameState):
     img_url = base_wrap_image[wrap]
     current_scores = game.current_score if game.current_score is not None else "0:0"
 
-    inning_len = len(game_state.scores[0])
+    inning_len = 9 if len(game_state.scores[0]) <= 9 else len(game_state.scores[0])
     headers = [scoreboard_header_cell(i) for i in range(inning_len)]
 
-    game_state.scores[0] += ['-' for i in range(9-len(game_state.scores[0]))]
-    game_state.scores[1] += ['-' for i in range(9-len(game_state.scores[1]))]
+    game_state.scores[0] += ['-' for _ in range(inning_len-len(game_state.scores[0]))]
+    game_state.scores[1] += ['-' for _ in range(inning_len-len(game_state.scores[1]))]
     away_team_row = [scoreboard_row_cell(text) for text in game_state.scores[0]]
     home_team_row = [scoreboard_row_cell(text) for text in game_state.scores[1]]
 
