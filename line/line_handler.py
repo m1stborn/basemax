@@ -22,8 +22,8 @@ from line.pitching_box_flex import pitching_box_contents
 from line.game_flex import (
     flex_message_wrapper,
     match_contents,
-    scoreboard_contents,
 )
+from line.scoreboard_flex import scoreboard_innings_contents
 from line.standing_flex import (
     standing_content,
 )
@@ -163,7 +163,7 @@ def handle_text_message(event):
             return
 
     elif text == "即時比數":
-        contents = scoreboard_contents()
+        contents = scoreboard_innings_contents()
         if len(contents) == 0:
             line_bot_api.reply_message(
                 event.reply_token,
