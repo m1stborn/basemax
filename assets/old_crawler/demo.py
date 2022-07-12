@@ -4,7 +4,7 @@ import requests
 import pprint
 from argparse import ArgumentParser
 
-from models.game_mod import (
+from models.game_cache import (
     update_one_game_state,
     update_one_game_data,
     update_broadcast_list,

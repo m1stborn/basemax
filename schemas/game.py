@@ -31,6 +31,8 @@ class GameState(BaseModel):
     strike: int
     ball: int
     out: int
+    scores: List[List] = None
+    scores_fixed: List[List] = None
 
 
 class GameBox(BaseModel):

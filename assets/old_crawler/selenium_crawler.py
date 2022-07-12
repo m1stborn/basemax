@@ -1,9 +1,9 @@
 import json
 import logging
-import multiprocessing as mp
 import os
 import re
 import time
+from multiprocessing import Process, Lock
 from argparse import Namespace, ArgumentParser
 from datetime import date
 from typing import Dict
@@ -15,9 +15,10 @@ from selenium import webdriver
 # from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.chrome.webdriver import WebDriver
 
-from models import game_mod
+from models import game_cache
 from schemas.game import Game, GameState, Play
 from utils import error_handler
+
 time.sleep(5)
 
 logging.basicConfig(
@@ -317,7 +318,7 @@ def main(args):
     games = {k: game for k, game in games.items() if "延賽" not in game.game_time}
     process_list = []
     for i, (k, game) in enumerate(games.items()):
-        process_list.append(mp.Process(target=game_tracker, args=(game, args,)))
+        process_list.append(Process(target=game_tracker, args=(game, args,)))
         process_list[i].start()
 
     for i, game in enumerate(games):

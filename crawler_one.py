@@ -121,6 +121,34 @@ def crawl_today_games_info(wait: int = 0.5, days: int = None) -> Dict[str, Game]
 
 
 @error_handler(Exception, logger=logger)
+def crawl_game_scoreboard(game_url: str, wait: int = 0.5) -> (List, List):
+    page = get_page(game_url, wait)
+    soup = BeautifulSoup(page, "html.parser")
+
+    scoreboard = soup.find("div", class_="linescore scrollable")
+    scoreboard_fixed = soup.find("div", class_="linescore fixed")
+
+    score_fixed = []
+    scores = []
+
+    if scoreboard_fixed is not None:
+        rows = scoreboard_fixed.find_all('tr')
+        for row in rows[1:]:  # Skip first header row
+            cols = row.find_all('td')
+            cols = [ele.text.strip().replace("\n\n", "") for ele in cols]
+            score_fixed.append([ele for ele in cols if ele])
+
+    if scoreboard is not None:
+        rows = scoreboard.find_all('tr')
+        for row in rows[1:]:  # Skip first header row
+            cols = row.find_all('td')
+            cols = [ele.text.strip().replace("\n\n", "") for ele in cols]
+            scores.append([ele for ele in cols if ele])
+
+    return scores, score_fixed
+
+
+@error_handler(Exception, logger=logger)
 def crawl_game_state(game_url: str, wait: int = 0.5) -> Optional[GameState]:
     page = get_page(game_url, wait)
     soup = BeautifulSoup(page, "html.parser")
@@ -147,6 +175,28 @@ def crawl_game_state(game_url: str, wait: int = 0.5) -> Optional[GameState]:
 
         out = sbo.find("div", class_="out").findAll("span")
         out = sum([len(s["class"]) == 2 for s in out])
+
+        # scoreboard
+        scoreboard = soup.find("div", class_="linescore scrollable")
+        scoreboard_fixed = soup.find("div", class_="linescore fixed")
+
+        scores_fixed = []
+        scores = []
+
+        if scoreboard_fixed is not None:
+            rows = scoreboard_fixed.find_all('tr')
+            for row in rows[1:]:  # Skip first header row
+                cols = row.find_all('td')
+                cols = [ele.text.strip().replace("\n\n", "") for ele in cols]
+                scores_fixed.append([ele for ele in cols if ele])
+
+        if scoreboard is not None:
+            rows = scoreboard.find_all('tr')
+            for row in rows[1:]:  # Skip first header row
+                cols = row.find_all('td')
+                cols = [ele.text.strip().replace("\n\n", "") for ele in cols]
+                scores.append([ele for ele in cols if ele])
+
         return GameState(
             inning=inning,
             pitcher=pitcher,
@@ -155,6 +205,8 @@ def crawl_game_state(game_url: str, wait: int = 0.5) -> Optional[GameState]:
             strike=strike,
             ball=ball,
             out=out,
+            scores=scores,
+            scores_fixed=scores_fixed
         )
 
     return None
