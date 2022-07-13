@@ -71,6 +71,7 @@ def scoreboard_row_cell(text: str):
 def scoreboard_flex(game: Game, game_state: GameState):
     wrap = "".join([str(int(b)) for b in game_state.base_wrap])
     img_url = base_wrap_image[wrap]
+    print(f"scoreboard_flex: {img_url}")
     current_scores = game.current_score if game.current_score is not None else "0:0"
 
     inning_len = 9 if len(game_state.scores[0]) <= 9 else len(game_state.scores[0])
