@@ -95,7 +95,7 @@ def scoreboard_flex(game: Game, game_state: GameState):
                         {
                             "type": "text",
                             "text": team_name_map[game.team_away],
-                            "align": "end",
+                            "align": "center",
                             "gravity": "center",
                             "weight": "bold",
                             "size": "xl",
@@ -114,7 +114,7 @@ def scoreboard_flex(game: Game, game_state: GameState):
                         {
                             "type": "text",
                             "text": team_name_map[game.team_home],
-                            "align": "start",
+                            "align": "center",
                             "gravity": "center",
                             "weight": "bold",
                             "size": "xl",
