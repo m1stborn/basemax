@@ -22,6 +22,7 @@ from line.game_flex import (
 from line.standing_flex import (
     standing_content,
 )
+from line.scoreboard_flex import scoreboard_innings_contents
 
 settings = Setting()
 logger = LocalProxy(lambda: current_app.logger)
@@ -57,7 +58,8 @@ def liff_share_standing(action):
 
     elif action == "score":
         alt = "分享CPBL即時比數"
-        contents = scoreboard_contents(footer=False)
+        # contents = scoreboard_contents(footer=False)
+        contents = scoreboard_innings_contents(footer=False)
         flex = flex_json(alt, contents)
 
     elif action == "batbox":
