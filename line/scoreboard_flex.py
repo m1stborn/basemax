@@ -276,7 +276,7 @@ def scoreboard_flex(game: Game, game_state: GameState):
                                 },
                                 {
                                     "type": "text",
-                                    "text": game_state.scores_fixed[0][0],
+                                    "text": game_state.scores_fixed[1][0],
                                     "flex": 2,
                                     "size": "xxs",
                                     "align": "center",
@@ -284,7 +284,7 @@ def scoreboard_flex(game: Game, game_state: GameState):
                                 },
                                 {
                                     "type": "text",
-                                    "text": game_state.scores_fixed[0][1],
+                                    "text": game_state.scores_fixed[1][1],
                                     "flex": 2,
                                     "size": "xxs",
                                     "align": "center",
@@ -292,7 +292,7 @@ def scoreboard_flex(game: Game, game_state: GameState):
                                 },
                                 {
                                     "type": "text",
-                                    "text": game_state.scores_fixed[0][2],
+                                    "text": game_state.scores_fixed[1][2],
                                     "flex": 2,
                                     "size": "xxs",
                                     "align": "center",
