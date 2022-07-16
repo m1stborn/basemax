@@ -322,7 +322,7 @@ def crawl_box_score_tables(game: Game,
     home_pitch_box = [Pitcher.from_list(b) for b in tables[5]]
 
     day = game.game_time.replace("比賽中 ", "").rsplit(' ', 1)[0].strip()
-    day = day.replace("保留", "")
+    day = day.replace("保留", "").strip()
     # TODO: fix unconverted data remains:  保留
     d = datetime.strptime(day, "%B %d, %Y").strftime("%m/%d")
 
