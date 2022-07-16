@@ -1,9 +1,53 @@
-git pull
+# Deploy Crawler
+func_deployCrawler(){
+    echo "Start Deploy Crawler";
+    git pull
+    docker-compose down
+    docker-compose build
+    docker system prune -f
+    docker-compose up -d
+}
 
-docker-compose down
 
-docker-compose build
+# Deploy Heroku
+func_deployHeroku(){
+    git push heroku master:master
+}
 
-docker system prune -f
+# Deploy Heroku staging
+func_deployHerokuStage(){
+    git push heroku-staging master:master
+}
 
-docker-compose up -d
+# Deploy Heroku production
+func_deployHerokuProduction(){
+    git push heroku-prod master:master
+}
+
+
+func_initData(){
+    python init_database.py
+    python init_redis.py
+}
+
+# Main
+if [[ "$1" == "crawl" ]]; then
+    echo "Deploy crawler"
+    func_deployCrawler;
+
+elif [[ "$1" == "stage" ]]; then
+    echo "Deploy app to Heroku cpblbot-stage"
+    func_deployHerokuDev
+
+elif [[ "$1" == "prod" ]]; then
+    echo "Deploy app to Heroku cpblbot-prod"
+    func_deployHerokuProduction
+
+elif [[ "$1" == "data" ]]; then
+    echo  "Initialize database and redis"
+    func_initData
+
+else
+#    echo "Not specify action. Deploy Crawler" >&2
+    echo "Not specify action. Deploy Crawler"
+fi
