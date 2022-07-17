@@ -1,10 +1,18 @@
 # CPBL Line bot - 中華職棒聊天機器人
 
-[//]: # ([![Python Version]&#40;https://img.shields.io/badge/Python-%3E%3D%203.8-blue.svg&#41;]&#40;https://badge.fury.io/py/lotify&#41;)
+[![Python Version](https://img.shields.io/badge/Python-%3E%3D%203.8-blue.svg)](https://badge.fury.io/py/lotify)
 
-<a href="https://lin.ee/sxU8wpe"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
+[//]: # (<a href="https://lin.ee/sxU8wpe"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>)
+[//]: # (<img src="https://qr-official.line.me/sid/M/833kcygo.png?shortenUrl=true" alt="QR code">)
 
-<img src="https://qr-official.line.me/sid/M/833kcygo.png?shortenUrl=true" alt="QR code">
+
+# 加入好友
+https://lin.ee/VhvKZLS
+
+<a href="https://lin.ee/VhvKZLS"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
+
+<img src="https://qr-official.line.me/sid/M/591tovcw.png?shortenUrl=true" alt="">
+
 
 # Features
 
