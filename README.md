@@ -24,8 +24,8 @@
 <h3 align="center">BaseMax</h3>
 
   <p align="center">
-    中華職棒LINE聊天機器人:透過LINE提供即時文字轉播以及數據查詢等功能 <br />
-    A LINE chatbot provide CPBL baseball game stats and live broadcast.  
+    LINE聊天機器人: 透過LINE獲得<b>中華職棒</b>即時文字轉播以及數據查詢等功能，加入好友即可開始使用!<br />
+    A LINE chatbot provide <b>CPBL Baseball</b> game stats and live broadcast.  
     <br />
     <a href="https://lin.ee/VhvKZLS"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
     <br />
@@ -72,26 +72,33 @@
 
 [//]: # (`twitter_handle`, `linkedin_username`, `gmail`, `kevin1997324`, `BaseMax`, `A LINE chatbot provide CPBL baseball live broadcast and game stats`)
 
-透過LINE聊天室快速掌握中華職棒比賽資訊! <br />
+在LINE上加入BaseMax帳號後，透過LINE聊天室快速掌握中華職棒比賽資訊!
+
+
 兩大主要功能:
 1. 接收文字轉播: 透過LINE Notify接受中職的文字轉播(第一次使用需與LINE Notify連結帳號, [連結方式](#connect-to-line-notify))
 2. 在聊天室中輸入[指令](#chat-command)可以查看各種當日賽事的數據
+<div align="center">
+    <br />
+    <a href="https://lin.ee/VhvKZLS"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
+    <br />
+    <img src="https://qr-official.line.me/sid/M/591tovcw.png?shortenUrl=true" alt="">
+    <br />
+</div>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Chat Command:
 可以在聊天室輸入的指令<br />
-1. 不需要連結LINE Notify之指令
 - `今日賽事` - 查看今日比賽 - Today's game list
 - `即時比數` - 查看目前比賽的比數 - Scoreboard in real time
-- `戰績排行` - standing
-- `box` - 查看球員數據 - Box Score 
+- `球隊戰績` - 查看目前戰績排行 - standing
+- `box` - 查看本場球員數據 - Box Score 
     - ex: `統一vs味全[打擊]`, `統一vs味全[投手]`
-2. 需與LINE Notify連結帳號之指令
+
+*需與LINE Notify連結帳號才能使用之指令
 - `文字轉播` - 選擇想要轉播的比賽後從LINE Notify頻道接收文字轉播 - Live text broadcast
     - ex: `統一vs味全`
-
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 |             今日賽事              |             即時比數              |              文字轉播              |
 |:-----------------------------:|:-----------------------------:|:------------------------------:|
@@ -101,6 +108,7 @@
 |-------------------------------|-------------------------------|--------------------------------|
 | ![image](./assets/feat1.jpeg) | ![image](./assets/feat7.jpeg) | ![image](./assets/feat11.jpeg) |
 
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Connect to LINE Notify:
 (WIP)
@@ -126,7 +134,7 @@
 ## Roadmap
 
 - [X] Live game broadcast: 
-- [X] Realtime game stats: including 
+- [X] Realtime game stats:
   - today's games info
   - scoreboard
   - batter/pitcher box score 
