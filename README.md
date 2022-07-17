@@ -72,10 +72,10 @@
 
 [//]: # (`twitter_handle`, `linkedin_username`, `gmail`, `kevin1997324`, `BaseMax`, `A LINE chatbot provide CPBL baseball live broadcast and game stats`)
 
-在LINE上加入BaseMax帳號後，透過LINE聊天室快速掌握中華職棒比賽資訊!
+在LINE上加入[BaseMax](https://lin.ee/VhvKZLS)帳號後，透過LINE聊天室快速掌握中華職棒比賽資訊!
 
 
-兩大主要功能:
+主要功能:
 1. 接收文字轉播: 透過LINE Notify接受中職的文字轉播(第一次使用需與LINE Notify連結帳號, [連結方式](#connect-to-line-notify))
 2. 在聊天室中輸入[指令](#chat-command)可以查看各種當日賽事的數據
 <div align="center">
@@ -195,3 +195,5 @@ Project Link: [https://github.com/m1stborn/CPBL-Linebot](https://github.com/m1st
 [Bootstrap-url]: https://getbootstrap.com
 
 [product-screenshot]: assets/feat2.jpeg
+
+[//]: # logo design link: logomakr.com/app/8M4NDP()
