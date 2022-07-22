@@ -9,7 +9,9 @@
 ![Python][python-shield]
 ![LINE][line-shield]
 ![Flask][flask-shield]
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1sborn%2FCPBL-Linebot%2Fbadge%3Ftoken%3D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&style=for-the-badge&label=Tests)](https://actions-badge.atrox.dev/m1sborn/CPBL-Linebot/goto?token=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)
 
+[//]: # ([![Build Status]&#40;https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1stborn%2FCPBL-Linebot%2Fbadge&style=for-the-badge&label=Tests&#41;]&#40;https://actions-badge.atrox.dev/m1stborn/CPBL-Linebot/goto&#41;)
 [//]: # ([![Issues][issues-shield]][issues-url])
 
 
