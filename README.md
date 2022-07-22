@@ -9,6 +9,8 @@
 ![Python][python-shield]
 ![LINE][line-shield]
 
+[//]: # ([![Tests]&#40;https://github.com/m1stborn/CPBL-Linebot/actions/workflows/default-test.yml/badge.svg&#41;]&#40;https://github.com/m1stborn/CPBL-Linebot/actions/workflows/default-test.yml&#41;)
+
 [//]: # (![Flask][flask-shield])
 [//]: # ([![Build Status]&#40;https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1sborn%2FCPBL-Linebot%2Fbadge%3Ftoken%3D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&style=for-the-badge&label=Tests&#41;]&#40;https://actions-badge.atrox.dev/m1sborn/CPBL-Linebot/goto?token=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&#41;)
 [//]: # ([![Build Status]&#40;https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1stborn%2FCPBL-Linebot%2Fbadge&style=for-the-badge&label=Tests&#41;]&#40;https://actions-badge.atrox.dev/m1stborn/CPBL-Linebot/goto&#41;)
@@ -120,12 +122,12 @@
 
 ### Built With
 
-* ![python][python-shield-square]
-* ![Flask][flask-shield-square]
-* ![Line][line-shield-square]
-* ![Heroku][heroku-shield-square]
-* ![Docker][docker-shield-square]
-* ![GoogleCloud][googlecloud-shield-square]
+* ![python][python-shield]
+* ![Flask][flask-shield]
+* ![Line][line-shield]
+* ![Heroku][heroku-shield]
+* ![Docker][docker-shield]
+* ![GoogleCloud][googlecloud-shield]
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -186,25 +188,29 @@ Project Link: [https://github.com/m1stborn/CPBL-Linebot](https://github.com/m1st
 [license-url]: https://github.com/m1stborn/CPBL-Linebot/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
-
-[python-shield-square]: https://img.shields.io/badge/python-3.8-blue.svg?style=for-the-badge
-[flask-shield-square]: https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white
-[docker-shield-square]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
-[googlecloud-shield-square]: https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white
-[heroku-shield-square]: https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white
-[line-shield-square]: https://img.shields.io/badge/Line-00C300?style=for-the-badge&logo=line&logoColor=white
-
-[python-shield]: https://img.shields.io/badge/python-3.8-blue.svg?style=flat
-[flask-shield]: https://img.shields.io/badge/flask-%23000.svg?style=flat&logo=flask&logoColor=white
-[docker-shield]: https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white
-[googlecloud-shield]: https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=flat&logo=google-cloud&logoColor=white
-[heroku-shield]: https://img.shields.io/badge/heroku-%23430098.svg?style=flat&logo=heroku&logoColor=white
-[line-shield]: https://img.shields.io/badge/Line-00C300?style=flat&logo=line&logoColor=white
-
-
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
 [Bootstrap-url]: https://getbootstrap.com
 
-[product-screenshot]: assets/feat2.jpeg
+[//]: # ([python-shield-square]: https://img.shields.io/badge/python-3.8-blue.svg?style=for-the-badge)
+[//]: # ([flask-shield-square]: https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+[//]: # ([docker-shield-square]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+[//]: # ([googlecloud-shield-square]: https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white)
+[//]: # ([heroku-shield-square]: https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white)
+[//]: # ([line-shield-square]: https://img.shields.io/badge/Line-00C300?style=for-the-badge&logo=line&logoColor=white)
 
-[//]: # logo design link: logomakr.com/app/8M4NDP()
+[python-shield]: https://img.shields.io/badge/python-3.8-blue.svg?style=for-the-badge
+[flask-shield]: https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white
+[docker-shield]: https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white
+[googlecloud-shield]: https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white
+[heroku-shield]: https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white
+[line-shield]: https://img.shields.io/badge/Line-00C300?style=for-the-badge&logo=line&logoColor=white
+
+
+[//]: # ([python-shield]: https://img.shields.io/badge/python-3.8-blue.svg?style=flat)
+[//]: # ([flask-shield]: https://img.shields.io/badge/flask-%23000.svg?style=flat&logo=flask&logoColor=white)
+[//]: # ([docker-shield]: https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)
+[//]: # ([googlecloud-shield]: https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=flat&logo=google-cloud&logoColor=white)
+[//]: # ([heroku-shield]: https://img.shields.io/badge/heroku-%23430098.svg?style=flat&logo=heroku&logoColor=white)
+[//]: # ([line-shield]: https://img.shields.io/badge/Line-00C300?style=flat&logo=line&logoColor=white)
+
+[product-screenshot]: assets/feat2.jpeg
