@@ -22,14 +22,14 @@
 <br />
 <div align="center">
   <a href="https://github.com/m1stborn/CPBL-Linebot">
-    <img src="assets/550-5508061_baseball-player-vector-clipart.png" alt="Logo" width="80" height="90">
+    <img src="assets/Project-Logo.png" alt="Logo" width="40%" height="40%">
   </a>
 
-<h3 align="center">BaseMax</h3>
+<h3 align="center">BASEMAX</h3>
 
   <p align="center">
     LINE聊天機器人: 透過LINE獲得<b>中華職棒</b>即時文字轉播以及數據查詢等功能，加入好友即可開始使用!<br />
-    A LINE chatbot provide <b>CPBL Baseball</b> game stats and live broadcast.  
+    A awsome LINE chatbot provide <b>CPBL Baseball</b> game stats and live broadcast.  
     <br />
     <a href="https://lin.ee/VhvKZLS"><img src="https://scdn.line-apps.com/n/line_add_friends/btn/zh-Hant.png" alt="加入好友" height="36" border="0"></a>
     <br />

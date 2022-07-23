@@ -37,7 +37,7 @@ if [[ "$1" == "crawl" ]]; then
 
 elif [[ "$1" == "stage" ]]; then
     echo "Deploy app to Heroku cpblbot-stage"
-    func_deployHerokuDev
+    func_deployHerokuStage
 
 elif [[ "$1" == "prod" ]]; then
     echo "Deploy app to Heroku cpblbot-prod"
