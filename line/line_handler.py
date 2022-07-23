@@ -25,7 +25,7 @@ from line.game_flex import (
 )
 from line.scoreboard_flex import scoreboard_innings_contents
 from line.standing_flex import (
-    standing_content,
+    standing_contents,
 )
 from line.line_notify_handler import get_auth_link
 from models import game_cache, line_user
@@ -172,7 +172,7 @@ def handle_text_message(event):
             return
 
     elif text == "球隊戰績":
-        contents = standing_content()
+        contents = standing_contents()
 
     elif text == "連結Notify":
         # TODO: get line_id by func, should support group_id in future

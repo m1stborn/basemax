@@ -471,15 +471,15 @@ def game_tracker(game: Game, args):
 
 
 def standing_tracker():
-    _, old_standing = game_cache.get_standings()
+    standings = game_cache.get_standings()
     try:
         while True:
             title, stands = crawl_standings()
-            if old_standing == stands:
+            if standings[title] == stands:
                 logger.info("standing not update yet.")
                 time.sleep(60)
                 continue
-            elif old_standing != stands and len(old_standing) == len(stands):
+            elif standings[title] != stands and len(standings[title]) == len(stands):
                 logger.info("standing update.")
                 game_cache.update_standings(title, stands)
                 break

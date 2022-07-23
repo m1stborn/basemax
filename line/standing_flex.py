@@ -235,10 +235,11 @@ def standing_flex(title: str, teams: List[Team]) -> Dict:
     }
 
 
-def standing_content(footer: bool = True):
-    title, teams = game_cache.get_standings()
-    flex = standing_flex(title, teams)
+def standing_contents(footer: bool = True):
+    standings = game_cache.get_standings()
+    contents = [standing_flex(title, teams) for title, teams in standings.items()]
     if footer:
-        flex["footer"] = footer_flex()
-    return flex
+        for flex in contents:
+            flex["footer"] = footer_flex()
+    return contents
 

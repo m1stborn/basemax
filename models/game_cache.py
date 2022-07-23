@@ -58,21 +58,36 @@ def get_game_states() -> Dict[str, GameState]:
     return game_state
 
 
-def get_standings() -> (str, List[Team]):
+def get_standing_by_season(title: str = "2022年 上半季") -> List[Team]:
+    standings_json = json.loads(r.get('standings').decode('utf-8'))
+    teams = standings_json.get(title, None)
+
+    if teams is None:
+        return []
+
+    teams = [Team(**team) for team in teams["teams"]]
+    return teams
+
+
+def get_standings() -> (Dict[str, List[Team]]):
     standings_json = json.loads(r.get('standings').decode('utf-8'))
 
-    title = standings_json["title"]
-    teams = [Team(**team) for team in standings_json["teams"]]
-
-    return title, teams
+    return {title: [Team(**team) for team in teams]
+            for title, teams in standings_json.items()}
 
 
 def update_standings(title: str, teams: List[Team]):
-    dump = {
-        "title": title,
-        "teams": teams,
-    }
-    r.set('standings', json.dumps(dump, default=vars, ensure_ascii=False))
+    standings_json = json.loads(r.get('standings').decode('utf-8'))
+    standings_json[title] = teams
+
+    r.set('standings', json.dumps(standings_json, default=vars, ensure_ascii=False))
+
+
+# def tmp_set():
+#     standings_json = json.loads(r.get('standings').decode('utf-8'))
+#     _ = standings_json.pop("title", None)
+#     _ = standings_json.pop("teams", None)
+#     r.set('standings', json.dumps(standings_json, default=vars, ensure_ascii=False))
 
 
 def update_broadcast_list(game_uid: str, user_id: str):

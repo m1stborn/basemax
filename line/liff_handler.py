@@ -20,7 +20,7 @@ from line.game_flex import (
     match_contents,
 )
 from line.standing_flex import (
-    standing_content,
+    standing_contents,
 )
 from line.scoreboard_flex import scoreboard_innings_contents
 
@@ -43,12 +43,12 @@ def liff_share_standing(action):
 
     # TODO: add me flex for default
     alt = "分享CPBL戰績排行"
-    contents = standing_content(footer=False)
+    contents = standing_contents(footer=False)
     flex = flex_json(alt, contents)
 
     if action == "standing":
         alt = "分享CPBL戰績排行"
-        contents = standing_content(footer=False)
+        contents = standing_contents(footer=False)
         flex = flex_json(alt, contents)
 
     elif action == "match":
