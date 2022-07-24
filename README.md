@@ -9,11 +9,11 @@
 ![Python][python-shield]
 ![LINE][line-shield]
 
-[//]: # ([![Tests]&#40;https://github.com/m1stborn/CPBL-Linebot/actions/workflows/default-test.yml/badge.svg&#41;]&#40;https://github.com/m1stborn/CPBL-Linebot/actions/workflows/default-test.yml&#41;)
+[//]: # ([![Tests]&#40;https://github.com/m1stborn/basemax/actions/workflows/default-test.yml/badge.svg&#41;]&#40;https://github.com/m1stborn/basemax/actions/workflows/default-test.yml&#41;)
 
 [//]: # (![Flask][flask-shield])
-[//]: # ([![Build Status]&#40;https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1sborn%2FCPBL-Linebot%2Fbadge%3Ftoken%3D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&style=for-the-badge&label=Tests&#41;]&#40;https://actions-badge.atrox.dev/m1sborn/CPBL-Linebot/goto?token=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&#41;)
-[//]: # ([![Build Status]&#40;https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1stborn%2FCPBL-Linebot%2Fbadge&style=for-the-badge&label=Tests&#41;]&#40;https://actions-badge.atrox.dev/m1stborn/CPBL-Linebot/goto&#41;)
+[//]: # ([![Build Status]&#40;https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1sborn%2Fbasemax%2Fbadge%3Ftoken%3D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&style=for-the-badge&label=Tests&#41;]&#40;https://actions-badge.atrox.dev/m1sborn/basemax/goto?token=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&#41;)
+[//]: # ([![Build Status]&#40;https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fm1stborn%2Fbasemax%2Fbadge&style=for-the-badge&label=Tests&#41;]&#40;https://actions-badge.atrox.dev/m1stborn/basemax/goto&#41;)
 [//]: # ([![Issues][issues-shield]][issues-url])
 
 
@@ -21,7 +21,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/m1stborn/CPBL-Linebot">
+  <a href="https://github.com/m1stborn/basemax">
     <img src="assets/Project-Logo.png" alt="Logo" width="40%" height="40%">
   </a>
 
@@ -35,14 +35,14 @@
     <br />
     <img src="https://qr-official.line.me/sid/M/591tovcw.png?shortenUrl=true" alt="">
     <br />
-    <a href="https://github.com/m1stborn/CPBL-Linebot"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/m1stborn/basemax"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/m1stborn/CPBL-Linebot">View Demo</a>
+    <a href="#connect-to-line-notify">View Demo</a>
     ·
-    <a href="https://github.com/m1stborn/CPBL-Linebot/issues">Report Bug</a>
+    <a href="https://github.com/m1stborn/basemax/issues">Report Bug</a>
     ·
-    <a href="https://github.com/m1stborn/CPBL-Linebot/issues">Request Feature</a>
+    <a href="https://github.com/m1stborn/basemax/issues">Request Feature</a>
   </p>
 </div>
 
@@ -72,11 +72,11 @@
 
 [//]: # ([![Product Name Screen Shot][product-screenshot]]&#40;https://example.com&#41;)
 
-[//]: # (Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `m1stborn`, `CPBL-Linebot`, )
+[//]: # (Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `m1stborn`, `basemax`, )
 
 [//]: # (`twitter_handle`, `linkedin_username`, `gmail`, `kevin1997324`, `BaseMax`, `A LINE chatbot provide CPBL baseball live broadcast and game stats`)
 
-在LINE上加入[BaseMax](https://lin.ee/VhvKZLS)帳號後，透過LINE聊天室快速掌握中華職棒比賽資訊!
+在LINE上加入[BASEMAX](https://lin.ee/VhvKZLS)帳號後，透過LINE聊天室快速掌握中華職棒比賽資訊!
 
 
 主要功能:
@@ -115,7 +115,10 @@
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Connect to LINE Notify:
-(WIP)
+
+<p align="center">
+  <img src="assets/basemax-demo-5.gif" alt="Logo" width="40%" height="40%">
+</p>
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -146,7 +149,7 @@
 - [ ] Historical Game Database
 
 
-See the [open issues](https://github.com/m1stborn/CPBL-Linebot/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/m1stborn/basemax/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -169,23 +172,23 @@ See the [open issues](https://github.com/m1stborn/CPBL-Linebot/issues) for a ful
 
 Kevin Chang - kevin1997324@gmail.com
 
-Project Link: [https://github.com/m1stborn/CPBL-Linebot](https://github.com/m1stborn/CPBL-Linebot)
+Project Link: [https://github.com/m1stborn/basemax](https://github.com/m1stborn/basemax)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/m1stborn/CPBL-Linebot.svg?style=for-the-badge
-[contributors-url]: https://github.com/m1stborn/CPBL-Linebot/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/m1stborn/CPBL-Linebot.svg?style=for-the-badge
-[forks-url]: https://github.com/m1stborn/CPBL-Linebot/network/members
-[stars-shield]: https://img.shields.io/github/stars/m1stborn/CPBL-Linebot.svg?style=for-the-badge
-[stars-url]: https://github.com/m1stborn/CPBL-Linebot/stargazers
-[issues-shield]: https://img.shields.io/github/issues/m1stborn/CPBL-Linebot.svg?style=for-the-badge
-[issues-url]: https://github.com/m1stborn/CPBL-Linebot/issues
-[license-shield]: https://img.shields.io/github/license/m1stborn/CPBL-Linebot.svg?style=for-the-badge
-[license-url]: https://github.com/m1stborn/CPBL-Linebot/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/m1stborn/basemax.svg?style=for-the-badge
+[contributors-url]: https://github.com/m1stborn/basemax/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/m1stborn/basemax.svg?style=for-the-badge
+[forks-url]: https://github.com/m1stborn/basemax/network/members
+[stars-shield]: https://img.shields.io/github/stars/m1stborn/basemax.svg?style=for-the-badge
+[stars-url]: https://github.com/m1stborn/basemax/stargazers
+[issues-shield]: https://img.shields.io/github/issues/m1stborn/basemax.svg?style=for-the-badge
+[issues-url]: https://github.com/m1stborn/basemax/issues
+[license-shield]: https://img.shields.io/github/license/m1stborn/basemax.svg?style=for-the-badge
+[license-url]: https://github.com/m1stborn/basemax/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
