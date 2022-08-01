@@ -476,6 +476,7 @@ def standing_tracker():
     try:
         while True:
             title, stands = crawl_standings()
+            auto_verifier.timebase_verify()
             if standings[title] == stands:
                 logger.info("standing not update yet.")
                 time.sleep(60)
@@ -484,8 +485,6 @@ def standing_tracker():
                 logger.info("standing update.")
                 game_cache.update_standings(title, stands)
                 break
-
-            auto_verifier.timebase_verify()
 
     except KeyboardInterrupt:
         logger.info("Gracefully shut down standing_tracker")
@@ -525,6 +524,7 @@ def main(args):
 
     # 3. Update standing
     standing_tracker()
+
     auto_verify = AutoVerify()
     auto_verify.auto()
 
