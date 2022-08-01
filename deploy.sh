@@ -8,6 +8,12 @@ func_deployCrawler(){
     docker-compose up -d
 }
 
+func_buildCrawlerLocal(){
+    docker-compose down
+    docker-compose build
+    docker system prune -f
+    docker-compose up -d
+}
 
 # Deploy Heroku
 func_deployHeroku(){
@@ -34,6 +40,10 @@ func_initData(){
 if [[ "$1" == "crawl" ]]; then
     echo "Deploy crawler"
     func_deployCrawler;
+
+elif [[ "$1" == "local" ]]; then
+    echo "Build crawler locally"
+    func_buildCrawlerLocal
 
 elif [[ "$1" == "stage" ]]; then
     echo "Deploy app to Heroku cpblbot-stage"
