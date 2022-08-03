@@ -1,5 +1,5 @@
 {
-  "ON_HEROKU": "",
+  "ON_HEROKU": false,
   "API_BASE": "",
   "PORT": "",
   "REDIS_URL": "",
