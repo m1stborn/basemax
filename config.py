@@ -7,7 +7,10 @@ from pydantic import BaseSettings, BaseModel
 
 
 def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
-    return json.loads(Path('config.json').read_text())
+    if os.path.exists("config.json"):
+        return json.loads(Path('config.json').read_text())
+    elif os.path.exists("config-example.json"):
+        return json.loads(Path('config-example.json').read_text())
     # return json.loads(Path('config-stage.json').read_text())
 
 

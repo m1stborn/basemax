@@ -1,0 +1,14 @@
+{
+  "ON_HEROKU": "",
+  "API_BASE": "",
+  "PORT": "",
+  "REDIS_URL": "",
+  "DATABASE_URL": "",
+  "CHANNEL_ACCESS_TOKEN":"",
+  "CHANNEL_SECRET": "",
+  "LIFF_SHARE_ID": "",
+  "LINE_NOTIFY_CLIENT_ID": "",
+  "LINE_NOTIFY_CLIENT_SECRET": "",
+  "CPBLBOT_SECRET_KEY": "",
+  "TOKEN": ""
+}
