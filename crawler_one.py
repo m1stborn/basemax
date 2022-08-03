@@ -196,7 +196,7 @@ def crawl_game_state(game_url: str, wait: int = 0.5) -> Optional[GameState]:
                 cols = row.find_all('td')
                 cols = [ele.text.strip().replace("\n\n", "") for ele in cols]
                 scores.append([ele for ele in cols if ele])
-
+        print(f"scores:{scores}")
         return GameState(
             inning=inning,
             pitcher=pitcher,

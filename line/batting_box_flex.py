@@ -9,6 +9,7 @@ from models import game_cache
 
 
 def batter_row_flex(batter: Batter) -> Dict:
+    # position color: #DCDFE5  to #838FA8
     return {
         "type": "box",
         "layout": "horizontal",
@@ -25,7 +26,7 @@ def batter_row_flex(batter: Batter) -> Dict:
                 "text": f"{batter.pos}",
                 "flex": 3,
                 "size": "xxs",
-                "color": "#DCDFE5"
+                "color": "#838FA8"
             },
             {
                 "type": "text",
