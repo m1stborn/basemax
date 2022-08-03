@@ -1,7 +1,7 @@
 {
   "ON_HEROKU": false,
   "API_BASE": "",
-  "PORT": "",
+  "PORT": 1234,
   "REDIS_URL": "",
   "DATABASE_URL": "",
   "CHANNEL_ACCESS_TOKEN":"",
