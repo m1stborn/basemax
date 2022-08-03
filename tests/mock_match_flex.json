@@ -1,0 +1,85 @@
+{
+    "type": "bubble",
+    "header": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+            {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "image",
+                        "url": "https://cpblbot-prod.herokuapp.com/static/logo/logo_brothers_large.png"
+                    },
+                    {
+                        "type": "text",
+                        "text": "中信兄弟",
+                        "size": "lg",
+                        "weight": "bold"
+                    }
+                ]
+            },
+            {
+                "type": "text",
+                "text": "vs",
+                "align": "center",
+                "gravity": "center",
+                "style": "italic",
+                "weight": "bold",
+                "size": "xl"
+            },
+            {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "image",
+                        "url": "https://cpblbot-prod.herokuapp.com/static/logo/logo_fubon_large.png"
+                    },
+                    {
+                        "type": "text",
+                        "text": "富邦悍將",
+                        "size": "lg",
+                        "weight": "bold"
+                    }
+                ]
+            }
+        ]
+    },
+    "hero": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "0:0",
+                "align": "center",
+                "gravity": "center",
+                "weight": "bold",
+                "size": "xxl"
+            }
+        ],
+        "flex": 0
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "text",
+                "text": "新莊",
+                "weight": "bold",
+                "align": "center",
+                "gravity": "center"
+            },
+            {
+                "type": "text",
+                "text": "August 03, 2022  18:35",
+                "weight": "bold",
+                "align": "center",
+                "gravity": "center"
+            }
+        ]
+    }
+}

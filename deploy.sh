@@ -36,6 +36,10 @@ func_initData(){
     python init_redis.py
 }
 
+func_test(){
+    pytest --cov
+}
+
 # Main
 if [[ "$1" == "crawl" ]]; then
     echo "Deploy crawler"
@@ -56,6 +60,10 @@ elif [[ "$1" == "prod" ]]; then
 elif [[ "$1" == "data" ]]; then
     echo  "Initialize database and redis"
     func_initData
+
+elif [[ "$1" == "test" ]]; then
+    echo  "Run unitest"
+    func_test
 
 else
 #    echo "Not specify action. Deploy Crawler" >&2
