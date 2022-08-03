@@ -15,6 +15,10 @@ mock_game = Game(game_url_postfix='/box?year=2022&kindCode=A&gameSno=178',
                  scoring_play=None)
 
 
+def test_base() -> None:
+    assert True
+
+
 # def test_match_flex() -> None:
 #     mock_flex = match_flex(mock_game)
 #     with open("tests/mock_match_flex.json", encoding="utf-8") as file:
