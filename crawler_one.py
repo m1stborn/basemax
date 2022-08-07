@@ -484,7 +484,8 @@ def standing_tracker():
             elif standings[title] != stands and len(standings[title]) == len(stands):
                 logger.info("standing update.")
                 game_cache.update_standings(title, stands)
-                break
+                # wait til all the match update
+                # break
 
     except KeyboardInterrupt:
         logger.info("Gracefully shut down standing_tracker")

@@ -4,7 +4,7 @@ from flask import url_for
 
 from schemas.standing import Team
 from models import game_cache
-from line.footer_flex import footer_flex
+from line.footer_flex import footer_flex, share_footer_flex
 from config import Setting
 
 
@@ -235,11 +235,15 @@ def standing_flex(title: str, teams: List[Team]) -> Dict:
     }
 
 
-def standing_contents(footer: bool = True):
+def standing_contents(footer: bool = True, share_footer: bool = False):
     standings = game_cache.get_standings()
     contents = [standing_flex(title, teams) for title, teams in standings.items()][::-1]
     if footer:
         for flex in contents:
             flex["footer"] = footer_flex()
+    elif share_footer:
+        for flex in contents:
+            flex["footer"] = share_footer_flex()
+
     return contents
 

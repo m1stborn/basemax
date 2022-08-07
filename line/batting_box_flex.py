@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Dict, List, Union
 from urllib.parse import urlencode
 
-from line.footer_flex import footer_flex
+from line.footer_flex import footer_flex, share_footer_flex
 from schemas.game import GameBox
 from schemas.player import Batter
 from models import game_cache
@@ -217,7 +217,7 @@ def bat_box_flex(title: str, team_name, batters: List[Batter]) -> Dict:
     }
 
 
-def batting_box_contents(game_uid: str, footer: bool = True) -> List:
+def batting_box_contents(game_uid: str, footer: bool = True, share_footer: bool = False) -> List:
     game_box = game_cache.get_game_box(game_uid)
     if game_box.home_bat_box is None:
         return []
@@ -235,5 +235,8 @@ def batting_box_contents(game_uid: str, footer: bool = True) -> List:
         }
         for flex in contents:
             flex["footer"] = footer_flex(post_fix=f"/batbox?{urlencode(query_string)}")
+    elif share_footer:
+        for flex in contents:
+            flex["footer"] = share_footer_flex()
 
     return contents

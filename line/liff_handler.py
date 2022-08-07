@@ -48,18 +48,18 @@ def liff_share_standing(action):
 
     if action == "standing":
         alt = "分享CPBL戰績排行"
-        contents = standing_contents(footer=False)
+        contents = standing_contents(footer=False, share_footer=True)
         flex = flex_json(alt, contents)
 
     elif action == "match":
         alt = "分享CPBL今日賽事"
-        contents = match_contents(footer=False)
+        contents = match_contents(footer=False, share_footer=True)
         flex = flex_json(alt, contents)
 
     elif action == "score":
         alt = "分享CPBL即時比數"
         # contents = scoreboard_contents(footer=False)
-        contents = scoreboard_innings_contents(footer=False)
+        contents = scoreboard_innings_contents(footer=False, share_footer=True)
         flex = flex_json(alt, contents)
 
     elif action == "batbox":
@@ -70,7 +70,7 @@ def liff_share_standing(action):
         logger.info(f'batbox {game_uid_matches}')
         if len(game_uid_matches) < 0:
             return abort(400)
-        contents = batting_box_contents(game_uid=game_uid_matches[-1], footer=False)
+        contents = batting_box_contents(game_uid=game_uid_matches[-1], footer=False, share_footer=True)
         flex = flex_json(alt, contents)
 
     elif action == "pitchbox":
@@ -81,7 +81,7 @@ def liff_share_standing(action):
         logger.info(f'pitchbox {game_uid_matches}')
         if len(game_uid_matches) < 0:
             return abort(400)
-        contents = pitching_box_contents(game_uid=game_uid_matches[-1], footer=False)
+        contents = pitching_box_contents(game_uid=game_uid_matches[-1], footer=False, share_footer=True)
         flex = flex_json(alt, contents)
 
     return Response(render_template('share_message.html', flex=flex, liff_id=settings.LIFF_SHARE_ID))
